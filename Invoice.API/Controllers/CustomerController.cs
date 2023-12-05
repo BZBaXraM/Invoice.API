@@ -1,5 +1,6 @@
 using AutoMapper;
 using Invoice.API.Data;
+using Invoice.API.DTOs;
 using Invoice.API.Models;
 using Invoice.API.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -12,56 +13,67 @@ public class CustomerController(InvoiceContext context, IMapperBase mapper) : Co
 {
     private readonly IAsyncCustomerService _customerService = new CustomerService(context);
 
-    [HttpGet]
+    [HttpGet("customers")]
     public async Task<IActionResult> GetCustomers([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
         [FromQuery] string? sortBy, [FromQuery] bool? isAscending,
         [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
     {
+        // Call the CustomerService to get the list of customers
         var customers = await _customerService.GetCustomersAsync(filterOn, filterQuery, sortBy,
             isAscending ?? true,
             pageNumber,
             pageSize);
-        
-        return Ok(mapper.Map<List<Customer>>(customers));
+
+        // Map and return the result
+        return Ok(mapper.Map<List<CustomerDto>>(customers));
     }
-    
-    [HttpGet("{id:guid}")]
+
+
+    [HttpGet("customers/{id:guid}")]
     public async Task<IActionResult> GetCustomerAsync(Guid id)
     {
         var customer = await _customerService.GetCustomerAsync(id);
-        return Ok(mapper.Map<Customer>(customer));
+        return Ok(mapper.Map<CustomerDto>(customer));
     }
-    
-    [HttpPost]
-    public async Task<IActionResult> AddCustomerAsync([FromBody] Customer customer)
+
+
+    [HttpPost("customers")]
+    public async Task<IActionResult> AddCustomerAsync([FromBody] AddCustomerRequestDto requestDto)
     {
-        var newCustomer = await _customerService.AddCustomerAsync(mapper.Map<Customer>(customer));
-        return CreatedAtAction(nameof(GetCustomers), new {id = newCustomer.Id}, mapper.Map<Customer>(newCustomer));
+        var customer = mapper.Map<Customer>(requestDto);
+        var newCustomer = await _customerService.AddCustomerAsync(customer);
+
+        return CreatedAtAction(nameof(GetCustomers), new { id = newCustomer.Id }, mapper.Map<CustomerDto>(newCustomer));
     }
-    
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateCustomerAsync(Guid id, [FromBody] Customer customer)
+
+
+    [HttpPut("customers/{id:guid}")]
+    public async Task<IActionResult> UpdateCustomerAsync(Guid id, [FromBody] UpdateCustomerRequestDto requestDto)
     {
-        if (id != customer.Id)
+        if (id != requestDto.Id)
         {
-            return BadRequest();
+            return BadRequest("Invalid customer id");
         }
 
-        var updatedCustomer = await _customerService.UpdateCustomerAsync(mapper.Map<Invoice.API.Models.Customer>(customer));
-        return Ok(mapper.Map<Customer>(updatedCustomer));
+        var customer = mapper.Map<Customer>(requestDto);
+        var updatedCustomer = await _customerService.UpdateCustomerAsync(customer);
+
+        return Ok(mapper.Map<CustomerDto>(updatedCustomer));
     }
-    
-    [HttpDelete("{id:guid}")]
+
+
+    [HttpDelete("customers/{id:guid}")]
     public async Task<IActionResult> DeleteCustomerAsync(Guid id)
     {
-        var customer = await _customerService.DeleteCustomerAsync(id);
-        return Ok(mapper.Map<Customer>(customer));
+        var deletedCustomer = await _customerService.DeleteCustomerAsync(id);
+        return Ok(mapper.Map<CustomerDto>(deletedCustomer));
     }
-    
-    [HttpPatch("{id:guid}")]
+
+
+    [HttpPatch("customers/{id:guid}/archive")]
     public async Task<IActionResult> SoftDeleteCustomerAsync(Guid id)
     {
-        var customer = await _customerService.SoftDeleteCustomerAsync(id);
-        return Ok(mapper.Map<Customer>(customer));
+        var archivedCustomer = await _customerService.SoftDeleteCustomerAsync(id);
+        return Ok(mapper.Map<CustomerDto>(archivedCustomer));
     }
 }

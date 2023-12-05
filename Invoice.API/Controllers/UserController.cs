@@ -23,15 +23,15 @@ public class UserController(InvoiceContext context, IMapperBase mapper) : Contro
             pageNumber,
             pageSize);
 
-        return Ok(mapper.Map<List<Models.User>>(users));
+        return Ok(mapper.Map<List<User>>(users));
     }
 
     [HttpPost("register")]
     public async Task<IActionResult> RegisterUserAsync([FromBody] RegisterRequestDto requestDto)
     {
-
         var user = mapper.Map<User>(requestDto);
         user.Password = PasswordHasher.Hash(requestDto.Password);
+
         var newUser = await _userService.RegisterUserAsync(user);
 
         return CreatedAtAction(nameof(GetUsers), new { id = newUser.Id }, mapper.Map<UserDto>(newUser));
@@ -61,6 +61,7 @@ public class UserController(InvoiceContext context, IMapperBase mapper) : Contro
 
         return Ok(mapper.Map<UserDto>(loginUser));
     }
+
 
     [HttpPut("{id:guid}")]
     public async Task<IActionResult> UpdateUserAsync(Guid id, [FromBody] UpdateLoginRequestDto requestDto)

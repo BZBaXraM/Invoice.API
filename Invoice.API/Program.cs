@@ -18,7 +18,7 @@ builder.Services.AddDbContext<InvoiceContext>(options =>
 builder.Services.AddScoped<IAsyncCustomerService, CustomerService>();
 builder.Services.AddScoped<IAsyncInvoiceService, InvoiceService>();
 builder.Services.AddScoped<IAsyncUserService, UserService>();
-builder.Services.AddScoped<IAsyncReportService, IAsyncReportService>();
+// builder.Services.AddScoped<IAsyncReportService, IAsyncReportService>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfiles).Assembly);
 builder.Services.AddFluentValidationAutoValidation();
