@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Invoice.API.Migrations
 {
     [DbContext(typeof(InvoiceContext))]
-    [Migration("20231205164417_Initial")]
+    [Migration("20240107175404_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -138,7 +138,7 @@ namespace Invoice.API.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("InvoiceRow");
+                    b.ToTable("InvoiceRows");
                 });
 
             modelBuilder.Entity("Invoice.API.Models.User", b =>

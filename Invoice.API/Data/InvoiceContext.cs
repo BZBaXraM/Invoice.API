@@ -6,9 +6,10 @@ namespace Invoice.API.Data;
 
 public class InvoiceContext(DbContextOptions<InvoiceContext> options) : DbContext(options)
 {
-    public DbSet<Customer> Customers => Set<Customer>();
-    public DbSet<Models.Invoice> Invoices => Set<Models.Invoice>();
-    public DbSet<User> Users => Set<User>();
+    public virtual DbSet<Customer> Customers => Set<Customer>();
+    public virtual DbSet<Models.Invoice> Invoices => Set<Models.Invoice>();
+    public virtual DbSet<InvoiceRow> InvoiceRows => Set<InvoiceRow>();
+    public virtual DbSet<User> Users => Set<User>();
 
     // protected override void OnModelCreating(ModelBuilder modelBuilder)
     // {

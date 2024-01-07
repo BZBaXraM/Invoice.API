@@ -2,6 +2,7 @@ using System.Globalization;
 using Invoice.API.Data;
 using Microsoft.EntityFrameworkCore;
 using NReco.PdfGenerator;
+using System.Text; 
 
 namespace Invoice.API.Services;
 
@@ -98,8 +99,8 @@ public class InvoiceService(InvoiceContext context) : IAsyncInvoiceService
             return null!;
         }
 
-        var invoiceTemplate = await File.ReadAllTextAsync("Templates/InvoiceTemplate.html");
-        var invoiceHtml = invoiceTemplate
+        var invoiceTemplate = await File.ReadAllBytesAsync("Templates/InvoiceTemplate.html"); 
+        var invoiceHtml = Encoding.UTF8.GetString(invoiceTemplate)
             .Replace("{{InvoiceId}}", invoice.Id.ToString())
             .Replace("{{DueDate}}", invoice.StartDate.ToString("dd/MM/yyyy"))
             .Replace("{{InvoiceDate}}", invoice.CreatedAt.ToString("dd/MM/yyyy"))

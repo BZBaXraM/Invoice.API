@@ -53,7 +53,7 @@ namespace Invoice.API.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "InvoiceRow",
+                name: "InvoiceRows",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
@@ -64,9 +64,9 @@ namespace Invoice.API.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InvoiceRow", x => x.Id);
+                    table.PrimaryKey("PK_InvoiceRows", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_InvoiceRow_Invoices_InvoiceId",
+                        name: "FK_InvoiceRows_Invoices_InvoiceId",
                         column: x => x.InvoiceId,
                         principalTable: "Invoices",
                         principalColumn: "Id",
@@ -105,8 +105,8 @@ namespace Invoice.API.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_InvoiceRow_InvoiceId",
-                table: "InvoiceRow",
+                name: "IX_InvoiceRows_InvoiceId",
+                table: "InvoiceRows",
                 column: "InvoiceId");
         }
 
@@ -117,7 +117,7 @@ namespace Invoice.API.Migrations
                 name: "Customers");
 
             migrationBuilder.DropTable(
-                name: "InvoiceRow");
+                name: "InvoiceRows");
 
             migrationBuilder.DropTable(
                 name: "Users");

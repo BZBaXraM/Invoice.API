@@ -135,7 +135,7 @@ namespace Invoice.API.Migrations
 
                     b.HasIndex("InvoiceId");
 
-                    b.ToTable("InvoiceRow");
+                    b.ToTable("InvoiceRows");
                 });
 
             modelBuilder.Entity("Invoice.API.Models.User", b =>

@@ -1,89 +1,180 @@
-using AutoMapper;
-using Invoice.API.Data;
 using Invoice.API.DTOs;
 using Invoice.API.Models;
 using Invoice.API.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Invoice.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(InvoiceContext context, IMapperBase mapper) : ControllerBase
+public class UserController(
+    UserManager<AppUser> userManager,
+    SignInManager<AppUser> signInManager,
+    RoleManager<IdentityRole> roleManager,
+    ITokenService service)
+    : ControllerBase
 {
-    private readonly IAsyncUserService _userService = new UserService(context);
+    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
 
-    [HttpGet]
-    public async Task<IActionResult> GetUsers([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
-        [FromQuery] string? sortBy, [FromQuery] bool? isAscending,
-        [FromQuery] int pageNumber = 1, [FromQuery] int pageSize = 100)
-    {
-        var users = await _userService.GetUsersAsync(filterOn, filterQuery, sortBy,
-            isAscending ?? true,
-            pageNumber,
-            pageSize);
-
-        return Ok(mapper.Map<List<User>>(users));
-    }
-
+    /// <summary>
+    /// Register a user.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
     [HttpPost("register")]
-    public async Task<IActionResult> RegisterUserAsync([FromBody] RegisterRequestDto requestDto)
+    public async Task<ActionResult<AuthTokenDto>> Register([FromBody] RegisterRequestDto request)
     {
-        var user = mapper.Map<User>(requestDto);
-        user.Password = PasswordHasher.Hash(requestDto.Password);
-
-        var newUser = await _userService.RegisterUserAsync(user);
-
-        return CreatedAtAction(nameof(GetUsers), new { id = newUser.Id }, mapper.Map<UserDto>(newUser));
-    }
-
-
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteUserAsync(Guid id)
-    {
-        var deletedUser = await _userService.DeleteUserAsync(id);
-        return Ok(mapper.Map<UserDto>(deletedUser));
-    }
-
-
-    [HttpPatch("{id:guid}")]
-    public async Task<IActionResult> SoftDeleteUserAsync(Guid id)
-    {
-        var user = await _userService.DeleteUserAsync(id);
-        return Ok(mapper.Map<User>(user));
-    }
-
-    [HttpPost("login")]
-    public async Task<IActionResult> LoginUserAsync([FromBody] LoginRequestDto requestDto)
-    {
-        var user = mapper.Map<User>(requestDto);
-        var loginUser = await _userService.LoginUserAsync(user);
-
-        return Ok(mapper.Map<UserDto>(loginUser));
-    }
-
-
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpdateUserAsync(Guid id, [FromBody] UpdateLoginRequestDto requestDto)
-    {
-        if (id != requestDto.Id)
+        var existingUser = await userManager.FindByEmailAsync(request.Email);
+        if (existingUser is not null)
         {
-            return BadRequest("Invalid user id");
+            return Conflict("User with same email already exists");
         }
 
-        var user = mapper.Map<User>(requestDto);
-        var updatedUser = await _userService.UpdateUserAsync(user);
+        var user = new AppUser
+        {
+            UserName = request.Email,
+            Email = request.Email,
+            RefreshToken = Guid.NewGuid().ToString("N").ToLower()
+        };
 
-        return Ok(mapper.Map<UserDto>(updatedUser));
+        var result = await userManager.CreateAsync(user, request.Password);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        return await GenerateToken(user);
+    }
+
+    /// <summary>
+    /// Login a user.
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPost("login")]
+    public async Task<ActionResult<AuthTokenDto>> Login([FromBody] LoginRequestDto request)
+    {
+        var user = await userManager.FindByEmailAsync(request.Email);
+        if (user is null)
+        {
+            return Unauthorized();
+        }
+
+        var canSignIn = await signInManager.CheckPasswordSignInAsync(user, request.Password, false);
+        if (!canSignIn.Succeeded)
+        {
+            return Unauthorized();
+        }
+
+        var role = await userManager.GetRolesAsync(user);
+        var userClaims = await userManager.GetClaimsAsync(user);
+
+        var accessToken = service.GenerateSecurityToken(user.Id, user.UserName!, role, userClaims);
+        var refreshToken = Guid.NewGuid().ToString("N").ToLower();
+        user.RefreshToken = refreshToken;
+        await userManager.UpdateAsync(user);
+
+        return new AuthTokenDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken
+        };
+    }
+
+    /// <summary>
+    /// Refresh token - get new access token using refresh token
+    /// </summary>
+    /// <param name="request"></param>
+    /// <returns></returns>
+    [HttpPost("refresh")]
+    public async Task<ActionResult<AuthTokenDto>> Refresh(
+        [FromBody] RefreshTokenRequest request)
+    {
+        var user = await userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
+        if (user is null)
+        {
+            return Unauthorized();
+        }
+
+        return await GenerateToken(user);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<AppUser>> DeleteUser(string id)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var result = await userManager.DeleteAsync(user);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        return user;
+    }
+
+    [HttpPut("{id}")]
+    public async Task<ActionResult<AppUser>> UpdateUser(string id, [FromBody] UpdateLoginRequestDto request)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        user.UserName = request.Email;
+        user.Email = request.Email;
+        user.RefreshToken = Guid.NewGuid().ToString("N").ToLower();
+
+        var result = await userManager.UpdateAsync(user);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        return user;
+    }
+
+    [HttpPut("{id}/password")]
+    public async Task<ActionResult<AppUser>> UpdatePassword(string id, [FromBody] UpdatePasswordRequestDto request)
+    {
+        var user = await userManager.FindByIdAsync(id);
+        if (user is null)
+        {
+            return NotFound();
+        }
+
+        var result = await userManager.ChangePasswordAsync(user, request.OldPassword, request.NewPassword);
+        if (!result.Succeeded)
+        {
+            return BadRequest(result.Errors);
+        }
+
+        return user;
     }
 
 
-    [HttpPatch("{id:guid}/changepassword")]
-    public async Task<IActionResult> ChangePasswordAsync(Guid id, [FromBody] ChangePasswordRequestDto requestDto)
+    private async Task<AuthTokenDto> GenerateToken(AppUser user)
     {
-        var user = mapper.Map<User>(requestDto);
-        var changedPasswordUser = await _userService.ChangePasswordAsync(user, requestDto.NewPassword);
+        var role = await userManager.GetRolesAsync(user);
+        var userClaims = await userManager.GetClaimsAsync(user);
 
-        return Ok(mapper.Map<UserDto>(changedPasswordUser));
+        var accessToken = service.GenerateSecurityToken(user.Id, user.UserName!,
+            role, userClaims);
+        var refreshToken = user.RefreshToken;
+
+        await userManager.UpdateAsync(user);
+
+        return new AuthTokenDto
+        {
+            AccessToken = accessToken,
+            RefreshToken = refreshToken!
+        };
     }
 }
