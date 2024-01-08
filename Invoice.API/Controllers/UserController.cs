@@ -12,12 +12,9 @@ namespace Invoice.API.Controllers;
 public class UserController(
     UserManager<AppUser> userManager,
     SignInManager<AppUser> signInManager,
-    RoleManager<IdentityRole> roleManager,
     ITokenService service)
     : ControllerBase
 {
-    private readonly RoleManager<IdentityRole> _roleManager = roleManager;
-
     /// <summary>
     /// Register a user.
     /// </summary>

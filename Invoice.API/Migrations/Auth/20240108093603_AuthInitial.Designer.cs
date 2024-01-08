@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Invoice.API.Migrations.Auth
 {
     [DbContext(typeof(AuthContext))]
-    [Migration("20240107175459_AuthInitial")]
+    [Migration("20240108093603_AuthInitial")]
     partial class AuthInitial
     {
         /// <inheritdoc />

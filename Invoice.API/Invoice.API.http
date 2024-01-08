@@ -1,6 +1,17 @@
-@Invoice.API_HostAddress = http://localhost:5046
+@Invoice.API_HostAddress = https://localhost:7152
 
-GET {{Invoice.API_HostAddress}}/weatherforecast/
+GET {{Invoice.API_HostAddress}}/api/Invoice/GetInvoiceByInvoiceId?invoiceId=1 HTTP/1.1
 Accept: application/json
 
 ###
+
+HTTP/1.1 200 OK
+Content-Type: application/json; charset=utf-8
+Content-Length: 100
+
+{
+  "invoiceId": 1,
+  "invoiceNumber": "INV-0001",
+  "invoiceDate": "2019-01-01T00:00:00",
+  "invoiceAmount": 100.00
+}
