@@ -9,9 +9,16 @@ namespace Invoice.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class CustomerController(InvoiceContext context, IMapperBase mapper) : ControllerBase
+public class CustomerController : ControllerBase
 {
-    private readonly IAsyncCustomerService _customerService = new CustomerService(context);
+    private readonly IAsyncCustomerService _customerService;
+    private readonly IMapper _mapper;
+
+    public CustomerController(InvoiceContext context, IMapper mapper)
+    {
+        _customerService = new CustomerService(context);
+        _mapper = mapper;
+    }
 
     [HttpGet("customers")]
     public async Task<IActionResult> GetCustomers([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
@@ -25,7 +32,7 @@ public class CustomerController(InvoiceContext context, IMapperBase mapper) : Co
             pageSize);
 
         // Map and return the result
-        return Ok(mapper.Map<List<CustomerDto>>(customers));
+        return Ok(_mapper.Map<List<CustomerDto>>(customers));
     }
 
 
@@ -33,17 +40,18 @@ public class CustomerController(InvoiceContext context, IMapperBase mapper) : Co
     public async Task<IActionResult> GetCustomerAsync(Guid id)
     {
         var customer = await _customerService.GetCustomerAsync(id);
-        return Ok(mapper.Map<CustomerDto>(customer));
+        return Ok(_mapper.Map<CustomerDto>(customer));
     }
 
 
     [HttpPost("customers")]
     public async Task<IActionResult> AddCustomerAsync([FromBody] AddCustomerRequestDto requestDto)
     {
-        var customer = mapper.Map<Customer>(requestDto);
+        var customer = _mapper.Map<Customer>(requestDto);
         var newCustomer = await _customerService.AddCustomerAsync(customer);
 
-        return CreatedAtAction(nameof(GetCustomers), new { id = newCustomer.Id }, mapper.Map<CustomerDto>(newCustomer));
+        return CreatedAtAction(nameof(GetCustomers), new { id = newCustomer.Id },
+            _mapper.Map<CustomerDto>(newCustomer));
     }
 
 
@@ -55,10 +63,10 @@ public class CustomerController(InvoiceContext context, IMapperBase mapper) : Co
             return BadRequest("Invalid customer id");
         }
 
-        var customer = mapper.Map<Customer>(requestDto);
+        var customer = _mapper.Map<Customer>(requestDto);
         var updatedCustomer = await _customerService.UpdateCustomerAsync(customer);
 
-        return Ok(mapper.Map<CustomerDto>(updatedCustomer));
+        return Ok(_mapper.Map<CustomerDto>(updatedCustomer));
     }
 
 
@@ -66,7 +74,7 @@ public class CustomerController(InvoiceContext context, IMapperBase mapper) : Co
     public async Task<IActionResult> DeleteCustomerAsync(Guid id)
     {
         var deletedCustomer = await _customerService.DeleteCustomerAsync(id);
-        return Ok(mapper.Map<CustomerDto>(deletedCustomer));
+        return Ok(_mapper.Map<CustomerDto>(deletedCustomer));
     }
 
 
@@ -74,6 +82,6 @@ public class CustomerController(InvoiceContext context, IMapperBase mapper) : Co
     public async Task<IActionResult> SoftDeleteCustomerAsync(Guid id)
     {
         var archivedCustomer = await _customerService.SoftDeleteCustomerAsync(id);
-        return Ok(mapper.Map<CustomerDto>(archivedCustomer));
+        return Ok(_mapper.Map<CustomerDto>(archivedCustomer));
     }
 }

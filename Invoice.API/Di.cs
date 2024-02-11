@@ -34,7 +34,7 @@ public static class Di
                 Title = "Invoice.API",
                 Version = "v1"
             });
-           
+
 
             setup.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {

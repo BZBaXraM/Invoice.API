@@ -7,9 +7,17 @@ namespace Invoice.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class InvoiceController(InvoiceContext context, IMapperBase mapper) : ControllerBase
+public class InvoiceController : ControllerBase
 {
-    private readonly IAsyncInvoiceService _invoiceService = new InvoiceService(context);
+    private readonly IAsyncInvoiceService _invoiceService;
+    private readonly IMapper _mapper;
+
+    public InvoiceController(InvoiceContext context, IMapper mapper)
+    {
+        _invoiceService = new InvoiceService(context);
+        _mapper = mapper;
+    }
+
 
     [HttpGet]
     public async Task<IActionResult> GetInvoices([FromQuery] string? filterOn, [FromQuery] string? filterQuery,
@@ -21,21 +29,21 @@ public class InvoiceController(InvoiceContext context, IMapperBase mapper) : Con
             pageNumber,
             pageSize);
         
-        return Ok(mapper.Map<List<Models.Invoice>>(invoices));
+        return Ok(_mapper.Map<List<Models.Invoice>>(invoices));
     }
     
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> GetInvoiceAsync(Guid id)
     {
         var invoice = await _invoiceService.GetInvoiceAsync(id);
-        return Ok(mapper.Map<Models.Invoice>(invoice));
+        return Ok(_mapper.Map<Models.Invoice>(invoice));
     }
     
     [HttpPost]
     public async Task<IActionResult> AddInvoiceAsync([FromBody] Models.Invoice invoice)
     {
-        var newInvoice = await _invoiceService.AddInvoiceAsync(mapper.Map<Invoice.API.Models.Invoice>(invoice));
-        return CreatedAtAction(nameof(GetInvoices), new {id = newInvoice.Id}, mapper.Map<Models.Invoice>(newInvoice));
+        var newInvoice = await _invoiceService.AddInvoiceAsync(_mapper.Map<Invoice.API.Models.Invoice>(invoice));
+        return CreatedAtAction(nameof(GetInvoices), new {id = newInvoice.Id}, _mapper.Map<Models.Invoice>(newInvoice));
     }
     
     [HttpPut("{id:guid}")]
@@ -46,22 +54,22 @@ public class InvoiceController(InvoiceContext context, IMapperBase mapper) : Con
             return BadRequest();
         }
 
-        var updatedInvoice = await _invoiceService.UpdateInvoiceAsync(mapper.Map<Invoice.API.Models.Invoice>(invoice));
-        return Ok(mapper.Map<Models.Invoice>(updatedInvoice));
+        var updatedInvoice = await _invoiceService.UpdateInvoiceAsync(_mapper.Map<Invoice.API.Models.Invoice>(invoice));
+        return Ok(_mapper.Map<Models.Invoice>(updatedInvoice));
     }
     
     [HttpDelete("{id:guid}")]
     public async Task<IActionResult> DeleteInvoiceAsync(Guid id)
     {
         var invoice = await _invoiceService.DeleteInvoiceAsync(id);
-        return Ok(mapper.Map<Models.Invoice>(invoice));
+        return Ok(_mapper.Map<Models.Invoice>(invoice));
     }
     
     [HttpPatch("{id:guid}")]
     public async Task<IActionResult> SoftDeleteInvoiceAsync(Guid id)
     {
         var invoice = await _invoiceService.SoftDeleteInvoiceAsync(id);
-        return Ok(mapper.Map<Models.Invoice>(invoice));
+        return Ok(_mapper.Map<Models.Invoice>(invoice));
     }
     
     [HttpGet("{id:guid}/download")]
@@ -75,6 +83,6 @@ public class InvoiceController(InvoiceContext context, IMapperBase mapper) : Con
     public async Task<IActionResult> SendInvoiceAsync(Guid id)
     {
         var invoice = await _invoiceService.SendInvoiceAsync(id);
-        return Ok(mapper.Map<Models.Invoice>(invoice));
+        return Ok(_mapper.Map<Models.Invoice>(invoice));
     }
 }
