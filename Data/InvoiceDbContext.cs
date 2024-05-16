@@ -41,8 +41,8 @@ public class InvoiceDbContext(DbContextOptions<InvoiceDbContext> options) : DbCo
 
         modelBuilder.Entity<User>()
             .HasMany(u => u.Customers)
-            .WithOne()
-            .HasForeignKey(c => c.Id);
+            .WithOne();
+
 
         modelBuilder.Entity<Customer>()
             .HasKey(c => c.Id);
