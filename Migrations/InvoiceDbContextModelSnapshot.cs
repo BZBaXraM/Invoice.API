@@ -28,6 +28,8 @@ namespace InvoiceManager.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
@@ -51,7 +53,12 @@ namespace InvoiceManager.API.Migrations
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -168,9 +175,7 @@ namespace InvoiceManager.API.Migrations
                 {
                     b.HasOne("InvoiceManager.API.Models.User", null)
                         .WithMany("Customers")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("InvoiceManager.API.Models.InvoiceRow", b =>

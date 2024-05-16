@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace InvoiceManager.API.Migrations
 {
     [DbContext(typeof(InvoiceDbContext))]
-    [Migration("20240516182319_Initial")]
+    [Migration("20240516185130_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -30,6 +30,8 @@ namespace InvoiceManager.API.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
@@ -54,7 +56,12 @@ namespace InvoiceManager.API.Migrations
                     b.Property<DateTimeOffset>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("UserId");
 
                     b.ToTable("Customers");
                 });
@@ -171,9 +178,7 @@ namespace InvoiceManager.API.Migrations
                 {
                     b.HasOne("InvoiceManager.API.Models.User", null)
                         .WithMany("Customers")
-                        .HasForeignKey("Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
                 });
 
             modelBuilder.Entity("InvoiceManager.API.Models.InvoiceRow", b =>
