@@ -297,7 +297,14 @@ public class InvoiceService(InvoiceDbContext context) : IAsyncInvoiceService
                     stack.Item().Text($"Created At: {invoice.CreatedAt}");
                     stack.Item().Text($"Updated At: {invoice.UpdatedAt}");
                     stack.Item().Text($"Deleted At: {invoice.DeletedAt}");
-                    stack.Item().Text("Rows:").SemiBold();
+                    // stack.Item().Text($"Rows: {invoice.Rows.Select(x=> x.InvoiceId)}").SemiBold();
+                    foreach (var item in invoice.Rows)
+                    {
+                        stack.Item().Text($"Service: {item.Service}");
+                        stack.Item().Text($"Quantity: {item.Quantity}");
+                        stack.Item().Text($"Rate: {item.Rate}");
+                        stack.Item().Text($"Sum: {item.Sum}");
+                    }
                 });
             });
         });

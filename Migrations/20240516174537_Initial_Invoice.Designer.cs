@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace InvoiceManager.API.Migrations.InvoiceDb
+namespace InvoiceManager.API.Migrations
 {
     [DbContext(typeof(InvoiceDbContext))]
-    [Migration("20240516141119_InitialInvoice")]
-    partial class InitialInvoice
+    [Migration("20240516174537_Initial_Invoice")]
+    partial class Initial_Invoice
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -28,6 +28,7 @@ namespace InvoiceManager.API.Migrations.InvoiceDb
             modelBuilder.Entity("InvoiceManager.API.Models.Customer", b =>
                 {
                     b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasColumnType("integer");
 
                     b.Property<string>("Address")
