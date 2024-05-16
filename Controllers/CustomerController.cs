@@ -1,3 +1,4 @@
+using InvoiceManager.API.CustomFilters;
 using InvoiceManager.API.DTOs;
 using InvoiceManager.API.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -20,9 +21,11 @@ public class CustomerController(IAsyncCustomerService service) : ControllerBase
     /// <param name="dto"></param>
     /// <returns></returns>
     [HttpPost]
+    [ValidateModel]
     public async Task<ActionResult<CustomerDto>> CreateCustomer([FromBody] CreateCustomerDto dto)
     {
         var customer = await service.CreateCustomerAsync(dto);
+
         return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
     }
 

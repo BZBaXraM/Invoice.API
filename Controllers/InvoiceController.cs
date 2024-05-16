@@ -1,6 +1,7 @@
 using InvoiceManager.API.DTOs;
 using InvoiceManager.API.Models;
 using InvoiceManager.API.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace InvoiceManager.API.Controllers;
@@ -9,6 +10,7 @@ namespace InvoiceManager.API.Controllers;
 /// Controller for managing invoices.
 /// </summary>
 /// <param name="service"></param>
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
@@ -31,7 +33,7 @@ public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
     /// <param name="id"></param>
     /// <param name="dto"></param>
     /// <returns></returns>
-    [HttpPut("{id}")]
+    [HttpPut("{id:int}")]
     public async Task<ActionResult<InvoiceDto>> UpdateInvoice(int id, [FromBody] UpdateInvoiceDto dto)
     {
         var invoice = await service.UpdateInvoiceAsync(id, dto);
@@ -43,7 +45,7 @@ public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
     /// </summary>
     /// <param name="id"></param>
     /// <returns></returns>
-    [HttpGet("{id}")]
+    [HttpGet("{id:int}")]
     public async Task<ActionResult<InvoiceDto>> GetInvoiceById(int id)
     {
         var invoice = await service.GetInvoiceByIdAsync(id);

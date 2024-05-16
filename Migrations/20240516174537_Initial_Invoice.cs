@@ -4,10 +4,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace InvoiceManager.API.Migrations.InvoiceDb
+namespace InvoiceManager.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialInvoice : Migration
+    public partial class Initial_Invoice : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
