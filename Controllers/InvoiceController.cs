@@ -4,7 +4,6 @@ using InvoiceManager.API.Models;
 using InvoiceManager.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 
 namespace InvoiceManager.API.Controllers;
 
