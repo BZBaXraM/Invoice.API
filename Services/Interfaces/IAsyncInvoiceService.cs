@@ -1,7 +1,7 @@
 using InvoiceManager.API.DTOs;
 using InvoiceManager.API.Models;
 
-namespace InvoiceManager.API.Services;
+namespace InvoiceManager.API.Services.Interfaces;
 
 /// <summary>
 /// Service for managing invoices asynchronously.

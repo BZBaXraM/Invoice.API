@@ -21,13 +21,13 @@ public static partial class ValidationRulesExtensions
 
         if (mustContainLowercase)
         {
-            options = ruleBuilder.Must(pass => new Regex("[a-z]").IsMatch(pass))
+            options = ruleBuilder.Must(pass => MyRegex2().IsMatch(pass))
                 .WithMessage("Password must contain at least 1 lowercase letter");
         }
 
         if (mustContainDigit)
         {
-            options = ruleBuilder.Must(pass => new Regex("[0-9]").IsMatch(pass))
+            options = ruleBuilder.Must(pass => MyRegex1().IsMatch(pass))
                 .WithMessage("Password must contain at least 1 number");
         }
 
@@ -36,4 +36,8 @@ public static partial class ValidationRulesExtensions
 
     [GeneratedRegex("[A-Z]")]
     private static partial Regex MyRegex();
+    [GeneratedRegex("[0-9]")]
+    private static partial Regex MyRegex1();
+    [GeneratedRegex("[a-z]")]
+    private static partial Regex MyRegex2();
 }

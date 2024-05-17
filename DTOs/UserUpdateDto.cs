@@ -1,5 +1,3 @@
-using InvoiceManager.API.Models;
-
 namespace InvoiceManager.API.DTOs;
 
 /// <summary>
@@ -31,16 +29,4 @@ public class UserUpdateDto
     /// Date and time when the user was last updated.
     /// </summary>
     public DateTimeOffset UpdatedAt { get; set; } = DateTimeOffset.UtcNow;
-
-    private static UserUpdateDto ConvertToUserUpdateDto(User user)
-    {
-        return new UserUpdateDto
-        {
-            Name = user.Name,
-            Email = user.Email,
-            Address = user.Address,
-            PhoneNumber = user.PhoneNumber,
-            UpdatedAt = user.UpdatedAt
-        };
-    }
 }

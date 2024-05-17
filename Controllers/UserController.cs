@@ -1,6 +1,6 @@
 using InvoiceManager.API.Data.Entity;
 using InvoiceManager.API.DTOs;
-using InvoiceManager.API.Services;
+using InvoiceManager.API.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

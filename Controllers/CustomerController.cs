@@ -1,6 +1,7 @@
+using AutoMapper;
 using InvoiceManager.API.CustomFilters;
 using InvoiceManager.API.DTOs;
-using InvoiceManager.API.Services;
+using InvoiceManager.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,7 +14,7 @@ namespace InvoiceManager.API.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class CustomerController(IAsyncCustomerService service) : ControllerBase
+public class CustomerController(IAsyncCustomerService service, IMapper mapper) : ControllerBase
 {
     /// <summary>
     /// Create a new customer
@@ -26,7 +27,9 @@ public class CustomerController(IAsyncCustomerService service) : ControllerBase
     {
         var customer = await service.CreateCustomerAsync(dto);
 
-        return CreatedAtAction(nameof(GetCustomerById), new { id = customer.Id }, customer);
+        return CreatedAtAction(nameof(GetCustomerById),
+            new { id = customer.Id },
+            mapper.Map<CustomerDto>(customer));
     }
 
     /// <summary>
@@ -39,7 +42,7 @@ public class CustomerController(IAsyncCustomerService service) : ControllerBase
     public async Task<ActionResult<CustomerDto>> UpdateCustomer(int id, [FromBody] UpdateCustomerDto dto)
     {
         var customer = await service.UpdateCustomerAsync(id, dto);
-        return Ok(customer);
+        return Ok(mapper.Map<CustomerDto>(customer));
     }
 
     /// <summary>
@@ -51,7 +54,7 @@ public class CustomerController(IAsyncCustomerService service) : ControllerBase
     public async Task<ActionResult<CustomerDto>> GetCustomerById(int id)
     {
         var customer = await service.GetCustomerByIdAsync(id);
-        return Ok(customer);
+        return Ok(mapper.Map<CustomerDto>(customer));
     }
 
     /// <summary>
@@ -65,7 +68,7 @@ public class CustomerController(IAsyncCustomerService service) : ControllerBase
         [FromQuery] int pageSize = 10)
     {
         var customers = await service.GetCustomersAsync(pageNumber, pageSize);
-        return Ok(customers);
+        return Ok(mapper.Map<List<CustomerDto>>(customers));
     }
 
     /// <summary>
