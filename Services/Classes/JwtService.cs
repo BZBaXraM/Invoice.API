@@ -2,13 +2,25 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using InvoiceManager.API.Data.Entity;
+using InvoiceManager.API.Services.Interfaces;
 using Microsoft.IdentityModel.Tokens;
 
+namespace InvoiceManager.API.Services.Classes;
 
-namespace InvoiceManager.API.Services;
-
+/// <summary>
+/// The JWT service.
+/// </summary>
+/// <param name="config"></param>
 public class JwtService(JwtConfig config) : IJwtService
 {
+    /// <summary>
+    /// The configuration.
+    /// </summary>
+    /// <param name="id"></param>
+    /// <param name="email"></param>
+    /// <param name="roles"></param>
+    /// <param name="userClaims"></param>
+    /// <returns></returns>
     public string GenerateSecurityToken(string id, string email, IEnumerable<string> roles,
         IEnumerable<Claim> userClaims)
     {

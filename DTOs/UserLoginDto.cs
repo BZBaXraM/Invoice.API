@@ -1,5 +1,3 @@
-using InvoiceManager.API.Models;
-
 namespace InvoiceManager.API.DTOs;
 
 /// <summary>
@@ -10,19 +8,10 @@ public class UserLoginDto
     /// <summary>
     /// The email.
     /// </summary>
-    public string Email { get; set; } = default!;
+    public string Email { get; private init; } = default!;
 
     /// <summary>
     /// The password.
     /// </summary>
-    public string Password { get; set; } = default!;
-
-    private UserLoginDto ConvertToUserLoginDto(User user)
-    {
-        return new UserLoginDto
-        {
-            Email = user.Email,
-            Password = user.Password
-        };
-    }
+    public string Password { get; private init; } = default!;
 }

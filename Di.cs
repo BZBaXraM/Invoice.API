@@ -1,11 +1,14 @@
 using System.Text;
 using FluentValidation;
+using FluentValidation.AspNetCore;
 using InvoiceManager.API.Auth;
 using InvoiceManager.API.Data;
 using InvoiceManager.API.Data.Entity;
 using InvoiceManager.API.DTOs.Validation;
+using InvoiceManager.API.Mappings;
 using InvoiceManager.API.Providers;
-using InvoiceManager.API.Services;
+using InvoiceManager.API.Services.Classes;
+using InvoiceManager.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -78,6 +81,8 @@ public static class Di
         services.AddScoped<IAsyncUserService, UserService>();
         services.AddScoped<IAsyncCustomerService, CustomerService>();
         services.AddScoped<IAsyncInvoiceService, InvoiceService>();
+        services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
+        services.AddFluentValidationAutoValidation();
         services.AddValidatorsFromAssemblyContaining<RegisterRequestValidator>();
         services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 

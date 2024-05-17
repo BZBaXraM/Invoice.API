@@ -1,8 +1,10 @@
+using AutoMapper;
 using InvoiceManager.API.DTOs;
 using InvoiceManager.API.Models;
-using InvoiceManager.API.Services;
+using InvoiceManager.API.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.IO;
 
 namespace InvoiceManager.API.Controllers;
 
@@ -13,7 +15,7 @@ namespace InvoiceManager.API.Controllers;
 [Authorize]
 [Route("api/[controller]")]
 [ApiController]
-public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
+public class InvoiceController(IAsyncInvoiceService service, IMapper mapper) : ControllerBase
 {
     /// <summary>
     /// Creates a new invoice.
@@ -24,7 +26,7 @@ public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
     public async Task<ActionResult<InvoiceDto>> CreateInvoice([FromBody] CreateInvoiceDto dto)
     {
         var invoice = await service.CreateInvoiceAsync(dto);
-        return Ok(invoice);
+        return Ok(mapper.Map<InvoiceDto>(invoice));
     }
 
     /// <summary>
@@ -37,7 +39,7 @@ public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
     public async Task<ActionResult<InvoiceDto>> UpdateInvoice(int id, [FromBody] UpdateInvoiceDto dto)
     {
         var invoice = await service.UpdateInvoiceAsync(id, dto);
-        return Ok(invoice);
+        return Ok(mapper.Map<InvoiceDto>(invoice));
     }
 
     /// <summary>
@@ -49,7 +51,7 @@ public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
     public async Task<ActionResult<InvoiceDto>> GetInvoiceById(int id)
     {
         var invoice = await service.GetInvoiceByIdAsync(id);
-        return Ok(invoice);
+        return Ok(mapper.Map<InvoiceDto>(invoice));
     }
 
     /// <summary>
@@ -62,7 +64,7 @@ public class InvoiceController(IAsyncInvoiceService service) : ControllerBase
     public async Task<ActionResult<List<InvoiceDto>>> GetInvoices(int pageNumber, int pageSize)
     {
         var invoices = await service.GetInvoicesAsync(pageNumber, pageSize);
-        return Ok(invoices);
+        return Ok(mapper.Map<List<InvoiceDto>>(invoices));
     }
 
     /// <summary>

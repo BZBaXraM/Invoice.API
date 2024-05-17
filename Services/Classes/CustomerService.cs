@@ -1,9 +1,10 @@
 using InvoiceManager.API.Data;
 using InvoiceManager.API.DTOs;
 using InvoiceManager.API.Models;
+using InvoiceManager.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace InvoiceManager.API.Services;
+namespace InvoiceManager.API.Services.Classes;
 
 /// <summary>
 /// Customer service

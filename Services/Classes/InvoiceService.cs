@@ -1,6 +1,7 @@
 using InvoiceManager.API.Data;
 using InvoiceManager.API.DTOs;
 using InvoiceManager.API.Models;
+using InvoiceManager.API.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Packaging;
 using QuestPDF.Fluent;
@@ -8,7 +9,7 @@ using QuestPDF.Helpers;
 using QuestPDF.Infrastructure;
 using LicenseType = QuestPDF.Infrastructure.LicenseType;
 
-namespace InvoiceManager.API.Services;
+namespace InvoiceManager.API.Services.Classes;
 
 /// <summary>
 /// Represents a service for managing invoices.

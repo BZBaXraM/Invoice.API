@@ -1,7 +1,6 @@
 using InvoiceManager.API.DTOs;
-using InvoiceManager.API.Models;
 
-namespace InvoiceManager.API.Services;
+namespace InvoiceManager.API.Services.Interfaces;
 
 /// <summary>
 /// Interface for the Customer Service
