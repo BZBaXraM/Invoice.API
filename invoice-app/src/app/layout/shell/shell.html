@@ -1,0 +1,44 @@
+<div class="shell">
+  <aside class="sidebar">
+    <div class="sidebar__brand">
+      <span class="sidebar__brand-mark">IA</span>
+      <span>Invoice.API</span>
+    </div>
+
+    <nav class="sidebar__nav">
+      @for (item of navItems; track item.path) {
+        <a
+          class="sidebar__link"
+          [routerLink]="item.path"
+          routerLinkActive="is-active"
+        >
+          {{ item.labelKey | translate }}
+        </a>
+      }
+    </nav>
+
+    <div class="sidebar__footer">
+      <button type="button" class="btn btn--ghost btn--block" (click)="logout()">{{ 'shell.logout.button' | translate }}</button>
+    </div>
+  </aside>
+
+  <div class="shell__main">
+    <header class="topbar">
+      <div class="cluster">
+        <span
+          class="live-indicator"
+          [class.is-connected]="realtimeConnected()"
+          [attr.title]="realtimeConnected() ? 'Обновления в реальном времени активны' : 'Нет соединения с сервером обновлений'"
+        ></span>
+      </div>
+      <div class="cluster">
+        <app-language-switcher />
+        <div class="topbar__user">{{ claims().email ?? 'Аккаунт' }}</div>
+      </div>
+    </header>
+
+    <main class="shell__content">
+      <router-outlet />
+    </main>
+  </div>
+</div>

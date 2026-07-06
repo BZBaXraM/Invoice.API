@@ -1,0 +1,93 @@
+<div class="page" style="max-width: 42rem">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ 'profile.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'profile.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>{{ 'profile.personalCard' | translate }}</h3>
+    @if (loading()) {
+      <p class="text-muted">{{ 'common.loading' | translate }}</p>
+    }
+    <form class="stack" [formGroup]="profileForm" (ngSubmit)="saveProfile()" novalidate [hidden]="loading()">
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="firstName">{{ 'profile.fields.firstName' | translate }}</label>
+          <input id="firstName" class="input" type="text" formControlName="firstName" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="lastName">{{ 'profile.fields.lastName' | translate }}</label>
+          <input id="lastName" class="input" type="text" formControlName="lastName" />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="username">{{ 'profile.fields.username' | translate }}</label>
+          <input id="username" class="input" type="text" formControlName="username" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="email">{{ 'common.fields.email' | translate }}</label>
+          <input id="email" class="input" type="email" formControlName="email" />
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="address">{{ 'common.fields.address' | translate }}</label>
+          <input id="address" class="input" type="text" formControlName="address" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="phoneNumber">{{ 'common.fields.phone' | translate }}</label>
+          <input id="phoneNumber" class="input" type="tel" formControlName="phoneNumber" />
+        </div>
+      </div>
+
+      @if (profileError()) {
+        <div class="field__error">{{ profileError() }}</div>
+      }
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--accent" [disabled]="savingProfile()">
+          {{ (savingProfile() ? 'common.actions.saving' : 'profile.saveButton') | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card">
+    <h3>{{ 'profile.passwordCard' | translate }}</h3>
+    <form class="stack" [formGroup]="passwordForm" (ngSubmit)="changePassword()" novalidate>
+      <div class="form-grid">
+        <div class="field">
+          <label class="field__label" for="oldPassword">{{ 'profile.fields.currentPassword' | translate }}</label>
+          <app-password-input id="oldPassword" formControlName="oldPassword" autocomplete="current-password" />
+        </div>
+        <div class="field">
+          <label class="field__label" for="newPassword">{{ 'profile.fields.newPassword' | translate }}</label>
+          <app-password-input id="newPassword" formControlName="newPassword" autocomplete="new-password" />
+        </div>
+      </div>
+
+      @if (passwordError()) {
+        <div class="field__error">{{ passwordError() }}</div>
+      }
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn--secondary" [disabled]="changingPassword()">
+          {{ (changingPassword() ? 'profile.changingPasswordButton' : 'profile.changePasswordButton') | translate }}
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <div class="card" style="border-color: var(--color-danger-100)">
+    <h3>{{ 'profile.dangerZoneCard' | translate }}</h3>
+    <p class="text-muted">{{ 'profile.dangerZoneText' | translate }}</p>
+    <button type="button" class="btn btn--danger" [disabled]="deleting()" (click)="deleteAccount()">
+      {{ (deleting() ? 'profile.deletingButton' : 'profile.deleteButton') | translate }}
+    </button>
+  </div>
+</div>

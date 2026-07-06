@@ -191,6 +191,17 @@ public class AccountService(
         return ResponseModel.Success();
     }
 
+    public async Task<ResponseModel<UserResponse>> GetProfileAsync(Guid currentUserId)
+    {
+        var user = await uow.UserRepository.GetByIdAsync(currentUserId);
+        if (user is null)
+        {
+            return ResponseModel.Failure<UserResponse>("User not found", 404);
+        }
+
+        return ResponseModel.Success(user.ToUserResponse());
+    }
+
     public async Task<ResponseModel<UserResponse>> UpdateProfileAsync(Guid currentUserId, UpdateProfileRequest request)
     {
         var validation = await updateProfileValidator.ValidateAsync(request);

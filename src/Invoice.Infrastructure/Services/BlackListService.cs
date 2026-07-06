@@ -1,6 +1,3 @@
-using System.Collections.Concurrent;
-using Invoice.Application.ServiceContracts;
-
 namespace Invoice.Infrastructure.Services;
 
 public class BlackListService : IBlackListService

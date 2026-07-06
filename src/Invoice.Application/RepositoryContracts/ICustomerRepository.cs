@@ -12,7 +12,8 @@ public interface ICustomerRepository
         int pageSize,
         string? nameFilter,
         string? sortBy,
-        bool sortDescending);
+        bool sortDescending,
+        bool includeArchived = false);
 
     Task<bool> HasSentInvoicesAsync(Guid customerId);
 

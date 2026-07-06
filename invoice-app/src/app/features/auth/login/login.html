@@ -1,0 +1,43 @@
+<div class="auth-layout">
+  <div class="auth-card">
+    <div class="auth-card__brand cluster" style="justify-content: space-between">
+      <span>Invoice.API</span>
+      <app-language-switcher />
+    </div>
+    <h1>{{ 'auth.login.title' | translate }}</h1>
+    <p class="text-muted">{{ 'auth.login.subtitle' | translate }}</p>
+
+    <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label class="field__label" for="usernameOrEmail">{{ 'auth.login.fields.usernameOrEmail' | translate }}</label>
+        <input
+          id="usernameOrEmail"
+          class="input"
+          type="text"
+          formControlName="usernameOrEmail"
+          [class.is-invalid]="form.controls.usernameOrEmail.invalid && form.controls.usernameOrEmail.touched"
+          autocomplete="username"
+        />
+      </div>
+
+      <div class="field">
+        <label class="field__label" for="password">{{ 'auth.login.fields.password' | translate }}</label>
+        <app-password-input id="password" formControlName="password" autocomplete="current-password" />
+      </div>
+
+      @if (errorMessage()) {
+        <div class="field__error">{{ errorMessage() }}</div>
+      }
+
+      <button type="submit" class="btn btn--accent btn--block" [disabled]="submitting()">
+        {{ (submitting() ? 'auth.login.submitting' : 'auth.login.submit') | translate }}
+      </button>
+    </form>
+
+    <div class="auth-card__footer">
+      <a routerLink="/forgot-password">{{ 'auth.login.footer.forgotPassword' | translate }}</a>
+      <span> · </span>
+      <a routerLink="/register">{{ 'auth.login.footer.createAccount' | translate }}</a>
+    </div>
+  </div>
+</div>

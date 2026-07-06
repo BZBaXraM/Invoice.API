@@ -1,6 +1,3 @@
-using Invoice.Application.RepositoryContracts;
-using Invoice.Infrastructure.Data;
-
 namespace Invoice.Infrastructure.Repositories;
 
 public class UnitOfWork(InvoiceDbContext context) : IUnitOfWork

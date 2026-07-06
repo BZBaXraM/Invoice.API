@@ -1,0 +1,131 @@
+.shell {
+  min-height: 100vh;
+  display: flex;
+}
+
+.sidebar {
+  width: var(--sidebar-width);
+  flex-shrink: 0;
+  background: var(--surface-sidebar);
+  display: flex;
+  flex-direction: column;
+  padding: var(--space-5) var(--space-4);
+  position: sticky;
+  top: 0;
+  height: 100vh;
+}
+
+.sidebar__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  color: var(--text-on-sidebar-active);
+  font-weight: 700;
+  font-size: 1rem;
+  padding: 0 var(--space-2);
+  margin-bottom: var(--space-8);
+}
+
+.sidebar__brand-mark {
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-600);
+  color: var(--text-inverse);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.sidebar__nav {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  flex: 1;
+}
+
+.sidebar__link {
+  display: block;
+  padding: 0.625rem var(--space-3);
+  border-radius: var(--radius-md);
+  color: var(--text-on-sidebar);
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.sidebar__link:hover {
+  background: var(--surface-sidebar-hover);
+  color: var(--text-on-sidebar-active);
+  text-decoration: none;
+}
+
+.sidebar__link.is-active {
+  background: var(--color-accent-600);
+  color: var(--text-on-sidebar-active);
+}
+
+.sidebar__footer {
+  padding-top: var(--space-4);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar__footer .btn--ghost {
+  color: var(--text-on-sidebar);
+}
+
+.sidebar__footer .btn--ghost:hover {
+  background: var(--surface-sidebar-hover);
+  color: var(--text-on-sidebar-active);
+}
+
+.shell__main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  height: var(--topbar-height);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-6);
+  background: var(--surface-card);
+  border-bottom: 1px solid var(--surface-border);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.topbar__user {
+  font-size: 0.875rem;
+  color: var(--text-secondary);
+}
+
+.live-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-full);
+  background: var(--color-ink-400);
+  flex-shrink: 0;
+}
+
+.live-indicator.is-connected {
+  background: var(--color-success-600);
+  box-shadow: 0 0 0 3px var(--color-success-100);
+}
+
+.shell__content {
+  flex: 1;
+}
+
+@media (max-width: 900px) {
+  .sidebar {
+    display: none;
+  }
+}

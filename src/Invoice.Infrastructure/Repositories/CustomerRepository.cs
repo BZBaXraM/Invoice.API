@@ -1,9 +1,3 @@
-using Invoice.Application.RepositoryContracts;
-using Invoice.Domain.Entities;
-using Invoice.Domain.Enums;
-using Invoice.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-
 namespace Invoice.Infrastructure.Repositories;
 
 public class CustomerRepository(InvoiceDbContext context) : ICustomerRepository
@@ -23,10 +17,15 @@ public class CustomerRepository(InvoiceDbContext context) : ICustomerRepository
         int pageSize,
         string? nameFilter,
         string? sortBy,
-        bool sortDescending)
+        bool sortDescending,
+        bool includeArchived = false)
     {
-        var query = context.Customers
-            .Where(c => c.UserId == ownerUserId && c.DeletedAt == null);
+        var query = context.Customers.Where(c => c.UserId == ownerUserId);
+
+        if (!includeArchived)
+        {
+            query = query.Where(c => c.DeletedAt == null);
+        }
 
         if (!string.IsNullOrWhiteSpace(nameFilter))
         {

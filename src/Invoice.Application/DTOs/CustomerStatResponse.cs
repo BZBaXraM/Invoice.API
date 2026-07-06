@@ -16,4 +16,7 @@ public class CustomerStatResponse
 
     /// <summary>The total sum of those invoices.</summary>
     public decimal TotalSum { get; set; }
+
+    /// <summary>The currency the total sum is billed in.</summary>
+    public string Currency { get; set; } = "AZN";
 }

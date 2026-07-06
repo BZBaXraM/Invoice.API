@@ -1,7 +1,3 @@
-using Invoice.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-
 namespace Invoice.Infrastructure.Data;
 
 public class InvoiceDbContext(DbContextOptions<InvoiceDbContext> options) : DbContext(options)

@@ -6,16 +6,16 @@ namespace Invoice.Application.DTOs;
 public class UpdateProfileRequest
 {
     /// <summary>The user's first name.</summary>
-    public required string FirstName { get; set; }
+    public string? FirstName { get; set; }
 
     /// <summary>The user's last name.</summary>
-    public required string LastName { get; set; }
+    public string? LastName { get; set; }
 
     /// <summary>The user's username.</summary>
-    public required string Username { get; set; }
+    public string? Username { get; set; }
 
     /// <summary>The user's email address.</summary>
-    public required string Email { get; set; }
+    public string? Email { get; set; }
 
     /// <summary>The user's postal address.</summary>
     public string? Address { get; set; }

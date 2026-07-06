@@ -1,0 +1,10 @@
+**/bin
+**/obj
+**/Logs
+invoice-app/node_modules
+invoice-app/dist
+invoice-app/.angular
+.git
+.vs
+.idea
+*.user

@@ -1,12 +1,3 @@
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Security.Cryptography;
-using System.Text;
-using Invoice.Application.ServiceContracts;
-using Invoice.Domain.Entities;
-using Invoice.Infrastructure.Configs;
-using Microsoft.IdentityModel.Tokens;
-
 namespace Invoice.Infrastructure.Services;
 
 public class JwtService(JwtConfig config) : IJwtService

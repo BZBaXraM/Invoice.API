@@ -12,7 +12,19 @@ builder.Logging.AddSerilog(logger);
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddCors();
+
+const string ClientCorsPolicy = "ClientCorsPolicy";
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(ClientCorsPolicy, policy =>
+    {
+        policy.WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
+    });
+});
 
 builder.Services
     .AddApplication()
@@ -74,7 +86,7 @@ app.UseHttpsRedirection();
 
 app.UseMiddleware<ExceptionMiddleware>();
 
-app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+app.UseCors(ClientCorsPolicy);
 
 app.UseAuthentication();
 app.UseMiddleware<BlackListMiddleware>();
@@ -84,5 +96,6 @@ app.UseStaticFiles();
 app.UseDefaultFiles();
 
 app.MapControllers();
+app.MapHub<NotificationsHub>("/hubs/notifications");
 
 await app.RunAsync();

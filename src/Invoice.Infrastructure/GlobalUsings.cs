@@ -1,0 +1,27 @@
+// Global using directives
+
+global using System.Collections.Concurrent;
+global using System.IdentityModel.Tokens.Jwt;
+global using System.Security.Claims;
+global using System.Security.Cryptography;
+global using System.Text;
+global using System.Text.Json;
+global using Invoice.Application;
+global using Invoice.Application.DTOs;
+global using Invoice.Application.RepositoryContracts;
+global using Invoice.Application.ServiceContracts;
+global using Invoice.Domain.Common;
+global using Invoice.Domain.Entities;
+global using Invoice.Domain.Enums;
+global using Invoice.Infrastructure.Configs;
+global using Invoice.Infrastructure.Data;
+global using Invoice.Infrastructure.Repositories;
+global using Invoice.Infrastructure.Services;
+global using MailKit.Net.Smtp;
+global using Microsoft.AspNetCore.Authentication.JwtBearer;
+global using Microsoft.AspNetCore.Http;
+global using Microsoft.EntityFrameworkCore;
+global using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+global using Microsoft.Extensions.DependencyInjection;
+global using Microsoft.Extensions.Hosting;
+global using Microsoft.IdentityModel.Tokens;

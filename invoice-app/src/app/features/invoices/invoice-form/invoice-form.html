@@ -1,0 +1,98 @@
+<div class="page" style="max-width: 52rem">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ (isEdit ? 'invoices.form.titleEdit' : 'invoices.form.titleNew') | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'invoices.form.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <p class="text-muted">{{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card">
+      <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="customerId">{{ 'invoices.form.fields.customer' | translate }}</label>
+            <select id="customerId" class="select" formControlName="customerId">
+              <option value="" disabled>{{ 'invoices.form.customerPlaceholder' | translate }}</option>
+              @for (customer of customers(); track customer.id) {
+                <option [value]="customer.id">{{ customer.name }}</option>
+              }
+            </select>
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="startDate">{{ 'invoices.form.fields.startDate' | translate }}</label>
+            <input id="startDate" class="input" type="date" formControlName="startDate" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="endDate">{{ 'invoices.form.fields.endDate' | translate }}</label>
+            <input id="endDate" class="input" type="date" formControlName="endDate" />
+          </div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="stack" formArrayName="rows">
+          <div class="cluster" style="justify-content: space-between">
+            <h3 style="margin: 0">{{ 'invoices.form.rowsHeading' | translate }}</h3>
+            <button type="button" class="btn btn--secondary btn--sm" (click)="addRow()">{{ 'invoices.form.addRow' | translate }}</button>
+          </div>
+
+          @for (row of rowsFormArray.controls; track row; let i = $index) {
+            <div class="grid" style="grid-template-columns: 3fr 1fr 1fr 1fr auto; gap: var(--space-3); align-items: end" [formGroupName]="i">
+              <div class="field">
+                <label class="field__label">{{ 'invoices.form.fields.service' | translate }}</label>
+                <input class="input" type="text" formControlName="service" />
+              </div>
+              <div class="field">
+                <label class="field__label">{{ 'invoices.form.fields.quantity' | translate }}</label>
+                <input class="input" type="number" step="0.01" formControlName="quantity" />
+              </div>
+              <div class="field">
+                <label class="field__label">{{ 'invoices.form.fields.rate' | translate }}</label>
+                <input class="input" type="number" step="0.01" formControlName="rate" />
+              </div>
+              <div class="field">
+                <label class="field__label">{{ 'invoices.form.fields.sum' | translate }}</label>
+                <input class="input" type="text" [value]="rowSum(i).toFixed(2)" disabled />
+              </div>
+              <button
+                type="button"
+                class="btn btn--danger btn--icon"
+                [disabled]="rowsFormArray.length <= 1"
+                (click)="removeRow(i)"
+                [attr.aria-label]="'invoices.form.removeRowAria' | translate"
+              >
+                &times;
+              </button>
+            </div>
+          }
+        </div>
+
+        <div class="cluster" style="justify-content: flex-end; font-weight: 600">
+          {{ 'invoices.form.totalLabel' | translate }}{{ format.currency(totalSum()) }}
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="comment">{{ 'invoices.form.fields.comment' | translate }}</label>
+          <textarea id="comment" class="textarea" formControlName="comment"></textarea>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="field__error">{{ errorMessage() }}</div>
+        }
+
+        <div class="form-actions">
+          <a class="btn btn--secondary" routerLink="/invoices">{{ 'common.actions.cancel' | translate }}</a>
+          <button type="submit" class="btn btn--accent" [disabled]="submitting()">
+            {{ (submitting() ? 'common.actions.saving' : 'common.actions.save') | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

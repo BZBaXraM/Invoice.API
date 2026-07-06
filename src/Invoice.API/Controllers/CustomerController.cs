@@ -47,10 +47,11 @@ public class CustomerController(ICustomerService service, ICurrentUserService cu
         [FromQuery] int pageSize = 10,
         [FromQuery] string? nameFilter = null,
         [FromQuery] string? sortBy = null,
-        [FromQuery] bool sortDescending = false)
+        [FromQuery] bool sortDescending = false,
+        [FromQuery] bool includeArchived = false)
     {
         var result = await service.GetListAsync(currentUserService.UserId!.Value, pageNumber, pageSize, nameFilter,
-            sortBy, sortDescending);
+            sortBy, sortDescending, includeArchived);
         return StatusCode(result.StatusCode, result);
     }
 
@@ -71,6 +72,16 @@ public class CustomerController(ICustomerService service, ICurrentUserService cu
     public async Task<ActionResult<ResponseModel>> ArchiveCustomer(Guid id)
     {
         var result = await service.ArchiveAsync(currentUserService.UserId!.Value, id);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
+    /// Restores a previously archived customer.
+    /// </summary>
+    [HttpPost("{id:guid}/unarchive")]
+    public async Task<ActionResult<ResponseModel>> UnarchiveCustomer(Guid id)
+    {
+        var result = await service.UnarchiveAsync(currentUserService.UserId!.Value, id);
         return StatusCode(result.StatusCode, result);
     }
 }

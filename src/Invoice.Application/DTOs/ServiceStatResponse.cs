@@ -13,4 +13,7 @@ public class ServiceStatResponse
 
     /// <summary>The total sum billed for this service.</summary>
     public decimal TotalSum { get; set; }
+
+    /// <summary>The currency the total sum is billed in.</summary>
+    public string Currency { get; set; } = "AZN";
 }

@@ -8,6 +8,7 @@ public interface IAccountService
     Task<ResponseModel> RequestConfirmationCodeAsync(string email);
     Task<ResponseModel<LoginResponse>> RefreshTokenAsync(string refreshToken);
     Task<ResponseModel> LogoutAsync(string accessToken, Guid? currentUserId);
+    Task<ResponseModel<UserResponse>> GetProfileAsync(Guid currentUserId);
     Task<ResponseModel<UserResponse>> UpdateProfileAsync(Guid currentUserId, UpdateProfileRequest request);
     Task<ResponseModel> ForgetPasswordAsync(string email);
     Task<ResponseModel> ResetPasswordAsync(ResetPasswordRequest request);

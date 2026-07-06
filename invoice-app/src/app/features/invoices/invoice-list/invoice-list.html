@@ -1,0 +1,78 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">Счета</h1>
+      <p class="page-header__subtitle">Все выставленные счета по вашим клиентам.</p>
+    </div>
+    <div class="page-actions">
+      <a class="btn btn--accent" routerLink="/invoices/new">Новый счёт</a>
+    </div>
+  </div>
+
+  <div class="table-toolbar">
+    <div class="cluster">
+      <select class="select" style="max-width: 12rem" [ngModel]="statusFilter()" (ngModelChange)="onStatusChange($event)">
+        <option value="">Все статусы</option>
+        @for (status of statuses; track status) {
+          <option [value]="status">{{ ('invoiceStatus.' + status.toLowerCase()) | translate }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Клиент</th>
+          <th class="sortable" (click)="sort('startDate')">Период</th>
+          <th>Статус</th>
+          <th class="sortable text-right" (click)="sort('totalSum')">Сумма</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td colspan="5" class="text-muted">Загрузка…</td>
+          </tr>
+        } @else if (invoices().length === 0) {
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-state__title">Счета не найдены</div>
+                <p class="text-muted">Выставите первый счёт клиенту.</p>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          @for (invoice of invoices(); track invoice.id) {
+            <tr class="is-clickable" (click)="view(invoice.id)">
+              <td>{{ customerName(invoice.customerId) }}</td>
+              <td>{{ format.date(invoice.startDate) }} – {{ format.date(invoice.endDate) }}</td>
+              <td><span class="badge badge--status-{{ invoice.status.toLowerCase() }}">{{ ('invoiceStatus.' + invoice.status.toLowerCase()) | translate }}</span></td>
+              <td class="text-right">{{ format.currency(invoice.totalSum, invoice.currency) }}</td>
+              <td class="text-right">
+                <button
+                  type="button"
+                  class="btn btn--danger btn--sm"
+                  [disabled]="invoice.status !== 'Created'"
+                  (click)="remove(invoice, $event)"
+                >
+                  Удалить
+                </button>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+
+    <app-pagination
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>

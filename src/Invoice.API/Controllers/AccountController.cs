@@ -91,6 +91,17 @@ public class AccountController(IAccountService accountService, ICurrentUserServi
     }
 
     /// <summary>
+    /// Gets the current user's profile.
+    /// </summary>
+    [Authorize]
+    [HttpGet("profile")]
+    public async Task<ActionResult<ResponseModel<UserResponse>>> GetProfile()
+    {
+        var result = await accountService.GetProfileAsync(currentUserService.UserId!.Value);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
     /// Updates the current user's profile.
     /// </summary>
     [Authorize]

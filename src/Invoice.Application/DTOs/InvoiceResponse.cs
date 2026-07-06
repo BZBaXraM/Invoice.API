@@ -23,6 +23,9 @@ public class InvoiceResponse
     /// <summary>The sum of all row sums.</summary>
     public decimal TotalSum { get; set; }
 
+    /// <summary>The currency the invoice is billed in.</summary>
+    public string Currency { get; set; } = "AZN";
+
     /// <summary>An optional free-text comment.</summary>
     public string? Comment { get; set; }
 

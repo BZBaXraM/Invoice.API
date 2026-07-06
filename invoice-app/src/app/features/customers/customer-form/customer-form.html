@@ -1,0 +1,48 @@
+<div class="page" style="max-width: 42rem">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ (isEdit ? 'customers.form.titleEdit' : 'customers.form.titleNew') | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'customers.form.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  @if (loading()) {
+    <p class="text-muted">{{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card">
+      <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="field">
+          <label class="field__label" for="name">{{ 'customers.form.fields.name' | translate }}</label>
+          <input id="name" class="input" type="text" formControlName="name" />
+        </div>
+
+        <div class="field">
+          <label class="field__label" for="email">{{ 'common.fields.email' | translate }}</label>
+          <input id="email" class="input" type="email" formControlName="email" />
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="address">{{ 'common.fields.address' | translate }}</label>
+            <input id="address" class="input" type="text" formControlName="address" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="phoneNumber">{{ 'common.fields.phone' | translate }}</label>
+            <input id="phoneNumber" class="input" type="tel" formControlName="phoneNumber" />
+          </div>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="field__error">{{ errorMessage() }}</div>
+        }
+
+        <div class="form-actions">
+          <a class="btn btn--secondary" routerLink="/customers">{{ 'common.actions.cancel' | translate }}</a>
+          <button type="submit" class="btn btn--accent" [disabled]="submitting()">
+            {{ (submitting() ? 'common.actions.saving' : 'common.actions.save') | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+  }
+</div>

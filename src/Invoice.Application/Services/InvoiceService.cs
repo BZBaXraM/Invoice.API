@@ -3,7 +3,8 @@ namespace Invoice.Application.Services;
 public class InvoiceService(
     IUnitOfWork uow,
     CreateInvoiceRequestValidator createValidator,
-    UpdateInvoiceRequestValidator updateValidator) : IInvoiceService
+    UpdateInvoiceRequestValidator updateValidator,
+    IRealtimeNotifier realtimeNotifier) : IInvoiceService
 {
     public async Task<ResponseModel<InvoiceResponse>> CreateAsync(Guid ownerUserId, CreateInvoiceRequest request)
     {
@@ -44,7 +45,10 @@ public class InvoiceService(
         uow.InvoiceRepository.AddInvoice(invoice);
         await uow.CommitAsync();
 
-        return ResponseModel.Success(invoice.ToInvoiceResponse());
+        var response = invoice.ToInvoiceResponse();
+        await realtimeNotifier.InvoiceCreatedAsync(ownerUserId, response);
+
+        return ResponseModel.Success(response);
     }
 
     public async Task<ResponseModel<InvoiceResponse>> UpdateAsync(Guid ownerUserId, Guid id, UpdateInvoiceRequest request)
@@ -90,7 +94,10 @@ public class InvoiceService(
 
         await uow.CommitAsync();
 
-        return ResponseModel.Success(invoice.ToInvoiceResponse());
+        var response = invoice.ToInvoiceResponse();
+        await realtimeNotifier.InvoiceUpdatedAsync(ownerUserId, response);
+
+        return ResponseModel.Success(response);
     }
 
     public async Task<ResponseModel> UpdateStatusAsync(Guid ownerUserId, Guid id, InvoiceStatus status)
@@ -104,6 +111,8 @@ public class InvoiceService(
         invoice.Status = status;
         invoice.UpdatedAt = DateTimeOffset.UtcNow;
         await uow.CommitAsync();
+
+        await realtimeNotifier.InvoiceStatusChangedAsync(ownerUserId, id, status);
 
         return ResponseModel.Success("Invoice status updated successfully");
     }
@@ -151,6 +160,8 @@ public class InvoiceService(
         uow.InvoiceRepository.RemoveInvoice(invoice);
         await uow.CommitAsync();
 
+        await realtimeNotifier.InvoiceDeletedAsync(ownerUserId, id);
+
         return ResponseModel.Success("Invoice deleted successfully");
     }
 
@@ -164,6 +175,8 @@ public class InvoiceService(
 
         invoice.DeletedAt = DateTimeOffset.UtcNow;
         await uow.CommitAsync();
+
+        await realtimeNotifier.InvoiceArchivedAsync(ownerUserId, id);
 
         return ResponseModel.Success("Invoice archived successfully");
     }
@@ -251,7 +264,7 @@ public class InvoiceService(
             column.Item().AlignRight().Width(220).Row(row =>
             {
                 row.RelativeItem().Text("Total").SemiBold();
-                row.ConstantItem(100).AlignRight().Text($"{invoice.TotalSum:N2}").SemiBold().FontSize(12);
+                row.ConstantItem(100).AlignRight().Text($"{invoice.TotalSum:N2} AZN").SemiBold().FontSize(12);
             });
 
             if (!string.IsNullOrWhiteSpace(invoice.Comment))
@@ -320,8 +333,8 @@ public class InvoiceService(
                 table.Cell().Element(c => BodyCellStyle(c, alternate)).Text(index.ToString());
                 table.Cell().Element(c => BodyCellStyle(c, alternate)).Text(row.Service);
                 table.Cell().Element(c => BodyCellStyle(c, alternate)).AlignRight().Text(row.Quantity.ToString("N2"));
-                table.Cell().Element(c => BodyCellStyle(c, alternate)).AlignRight().Text(row.Rate.ToString("N2"));
-                table.Cell().Element(c => BodyCellStyle(c, alternate)).AlignRight().Text(row.Sum.ToString("N2"));
+                table.Cell().Element(c => BodyCellStyle(c, alternate)).AlignRight().Text($"{row.Rate:N2} AZN");
+                table.Cell().Element(c => BodyCellStyle(c, alternate)).AlignRight().Text($"{row.Sum:N2} AZN");
 
                 index++;
             }

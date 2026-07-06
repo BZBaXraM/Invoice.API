@@ -1,7 +1,3 @@
-using System.Security.Claims;
-using Invoice.Application.ServiceContracts;
-using Microsoft.AspNetCore.Http;
-
 namespace Invoice.Infrastructure.Services;
 
 public class CurrentUserService(IHttpContextAccessor httpContextAccessor) : ICurrentUserService

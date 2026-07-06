@@ -3,7 +3,8 @@ namespace Invoice.Application.Services;
 public class CustomerService(
     IUnitOfWork uow,
     CreateCustomerRequestValidator createValidator,
-    UpdateCustomerRequestValidator updateValidator) : ICustomerService
+    UpdateCustomerRequestValidator updateValidator,
+    IRealtimeNotifier realtimeNotifier) : ICustomerService
 {
     public async Task<ResponseModel<CustomerResponse>> CreateAsync(Guid ownerUserId, CreateCustomerRequest request)
     {
@@ -28,7 +29,10 @@ public class CustomerService(
         uow.CustomerRepository.AddCustomer(customer);
         await uow.CommitAsync();
 
-        return ResponseModel.Success(customer.ToCustomerResponse());
+        var response = customer.ToCustomerResponse();
+        await realtimeNotifier.CustomerCreatedAsync(ownerUserId, response);
+
+        return ResponseModel.Success(response);
     }
 
     public async Task<ResponseModel<CustomerResponse>> UpdateAsync(Guid ownerUserId, Guid id, UpdateCustomerRequest request)
@@ -54,7 +58,10 @@ public class CustomerService(
 
         await uow.CommitAsync();
 
-        return ResponseModel.Success(customer.ToCustomerResponse());
+        var response = customer.ToCustomerResponse();
+        await realtimeNotifier.CustomerUpdatedAsync(ownerUserId, response);
+
+        return ResponseModel.Success(response);
     }
 
     public async Task<ResponseModel<CustomerResponse>> GetByIdAsync(Guid ownerUserId, Guid id)
@@ -74,11 +81,12 @@ public class CustomerService(
         int pageSize,
         string? nameFilter,
         string? sortBy,
-        bool sortDescending)
+        bool sortDescending,
+        bool includeArchived = false)
     {
         var (items, totalCount) =
             await uow.CustomerRepository.GetPagedAsync(ownerUserId, pageNumber, pageSize, nameFilter, sortBy,
-                sortDescending);
+                sortDescending, includeArchived);
 
         return ResponseModel.Success(new PagedResult<CustomerResponse>
         {
@@ -105,6 +113,8 @@ public class CustomerService(
         uow.CustomerRepository.RemoveCustomer(customer);
         await uow.CommitAsync();
 
+        await realtimeNotifier.CustomerDeletedAsync(ownerUserId, id);
+
         return ResponseModel.Success("Customer deleted successfully");
     }
 
@@ -119,6 +129,30 @@ public class CustomerService(
         customer.DeletedAt = DateTimeOffset.UtcNow;
         await uow.CommitAsync();
 
+        await realtimeNotifier.CustomerArchivedAsync(ownerUserId, id);
+
         return ResponseModel.Success("Customer archived successfully");
+    }
+
+    public async Task<ResponseModel> UnarchiveAsync(Guid ownerUserId, Guid id)
+    {
+        var customer = await uow.CustomerRepository.GetByIdAsync(id, ownerUserId);
+        if (customer is null)
+        {
+            return ResponseModel.Failure("Customer not found", 404);
+        }
+
+        if (customer.DeletedAt is null)
+        {
+            return ResponseModel.Failure("Customer is not archived", 409);
+        }
+
+        customer.DeletedAt = null;
+        customer.UpdatedAt = DateTimeOffset.UtcNow;
+        await uow.CommitAsync();
+
+        await realtimeNotifier.CustomerUnarchivedAsync(ownerUserId, id);
+
+        return ResponseModel.Success("Customer unarchived successfully");
     }
 }

@@ -1,16 +1,5 @@
-using System.Text;
-using Invoice.Application.RepositoryContracts;
-using Invoice.Application.ServiceContracts;
-using Invoice.Infrastructure.Configs;
-using Invoice.Infrastructure.Data;
-using Invoice.Infrastructure.Repositories;
-using Invoice.Infrastructure.Services;
-using MailKit.Net.Smtp;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
+using Invoice.Infrastructure.Realtime;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Invoice.Infrastructure;
 
@@ -19,7 +8,8 @@ public static class DependencyInjection
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
         services.AddDbContext<InvoiceDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection") ??
+                              configuration.GetConnectionString("DockerConnection")));
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
@@ -43,16 +33,36 @@ public static class DependencyInjection
                     ValidateAudience = true,
                     ValidateLifetime = true
                 };
+
+                // Browsers can't set the Authorization header on a WebSocket handshake, so
+                // the SignalR client sends the JWT as an "access_token" query parameter instead.
+                options.Events = new JwtBearerEvents
+                {
+                    OnMessageReceived = context =>
+                    {
+                        var accessToken = context.Request.Query["access_token"];
+                        if (!string.IsNullOrEmpty(accessToken) &&
+                            context.HttpContext.Request.Path.StartsWithSegments("/hubs"))
+                        {
+                            context.Token = accessToken;
+                        }
+
+                        return Task.CompletedTask;
+                    }
+                };
             });
 
         services.AddHttpContextAccessor();
+        services.AddSignalR();
 
         services
             .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped<IJwtService, JwtService>()
             .AddScoped<ICurrentUserService, CurrentUserService>()
             .AddSingleton<IEmailService, EmailService>()
-            .AddSingleton<IBlackListService, BlackListService>();
+            .AddSingleton<IBlackListService, BlackListService>()
+            .AddSingleton<IRealtimeNotifier, SignalRRealtimeNotifier>()
+            .AddSingleton<ITranslationService, TranslationService>();
 
         return services;
     }

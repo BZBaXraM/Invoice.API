@@ -1,0 +1,101 @@
+@if (loading()) {
+  <div class="page">
+    <p class="text-muted">Загрузка…</p>
+  </div>
+} @else if (invoice(); as inv) {
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1 class="page-header__title">
+          Счёт {{ format.date(inv.startDate) }} – {{ format.date(inv.endDate) }}
+        </h1>
+        <p class="page-header__subtitle">
+          @if (customer(); as c) {
+            <a [routerLink]="['/customers', c.id]">{{ c.name }}</a>
+          }
+        </p>
+      </div>
+      <div class="page-actions">
+        <button type="button" class="btn btn--secondary" [disabled]="exporting()" (click)="exportPdf()">
+          {{ exporting() ? 'Экспорт…' : 'Скачать PDF' }}
+        </button>
+        @if (inv.status === 'Created') {
+          <a class="btn btn--secondary" [routerLink]="['/invoices', inv.id, 'edit']">Изменить</a>
+          <button type="button" class="btn btn--danger" (click)="remove()">Удалить</button>
+        }
+        <button type="button" class="btn btn--secondary" (click)="archive()">Архивировать</button>
+      </div>
+    </div>
+
+    <div class="grid grid--two">
+      <div class="card">
+        <h3>Статус</h3>
+        <div class="cluster">
+          <span class="badge badge--status-{{ inv.status.toLowerCase() }}">{{ ('invoiceStatus.' + inv.status.toLowerCase()) | translate }}</span>
+          <select
+            class="select"
+            style="max-width: 12rem"
+            [value]="inv.status"
+            [disabled]="updatingStatus()"
+            (change)="changeStatus($any($event.target).value)"
+          >
+            @for (status of statuses; track status) {
+              <option [value]="status">{{ ('invoiceStatus.' + status.toLowerCase()) | translate }}</option>
+            }
+          </select>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Итого</h3>
+        <div style="font-size: 1.5rem; font-weight: 700">{{ format.currency(inv.totalSum, inv.currency) }}</div>
+        <p class="text-muted">{{ inv.rows.length }} позиций</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <h3>Позиции</h3>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Услуга</th>
+            <th class="text-right">Кол-во</th>
+            <th class="text-right">Ставка</th>
+            <th class="text-right">Сумма</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (row of inv.rows; track row.id) {
+            <tr>
+              <td>{{ row.service }}</td>
+              <td class="text-right">{{ row.quantity }}</td>
+              <td class="text-right">{{ format.currency(row.rate, inv.currency) }}</td>
+              <td class="text-right">{{ format.currency(row.sum, inv.currency) }}</td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+
+    @if (inv.comment) {
+      <div class="card">
+        <h3>Комментарий</h3>
+        <p>{{ inv.comment }}</p>
+      </div>
+    }
+
+    <div class="card">
+      <h3>Метаданные</h3>
+      <div class="grid grid--two">
+        <div>
+          <div class="text-muted">Создан</div>
+          <div>{{ format.dateTime(inv.createdAt) }}</div>
+        </div>
+        <div>
+          <div class="text-muted">Обновлён</div>
+          <div>{{ format.dateTime(inv.updatedAt) }}</div>
+        </div>
+      </div>
+    </div>
+  </div>
+}

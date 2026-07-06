@@ -1,7 +1,3 @@
-using Invoice.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-
 namespace Invoice.Infrastructure.Extensions;
 
 public static class DatabaseExtensions

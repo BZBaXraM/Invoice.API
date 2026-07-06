@@ -1,0 +1,102 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ 'dashboard.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'dashboard.subtitle' | translate }}</p>
+    </div>
+    <div class="page-actions">
+      <input class="input" type="date" [(ngModel)]="from" (ngModelChange)="onRangeChange()" />
+      <span class="text-muted">—</span>
+      <input class="input" type="date" [(ngModel)]="to" (ngModelChange)="onRangeChange()" />
+    </div>
+  </div>
+
+  <div class="grid grid--stats">
+    <div class="card">
+      <div class="text-muted">{{ 'dashboard.stat.revenue' | translate }}</div>
+      <div style="font-size: 1.75rem; font-weight: 700">{{ format.currency(totalRevenue()) }}</div>
+    </div>
+    <div class="card">
+      <div class="text-muted">{{ 'dashboard.stat.invoiceCount' | translate }}</div>
+      <div style="font-size: 1.75rem; font-weight: 700">{{ totalInvoices() }}</div>
+    </div>
+    <div class="card">
+      <div class="text-muted">{{ 'dashboard.stat.activeCustomers' | translate }}</div>
+      <div style="font-size: 1.75rem; font-weight: 700">{{ customerStats().length }}</div>
+    </div>
+  </div>
+
+  <div class="grid grid--two">
+    <div class="card">
+      <h3>{{ 'dashboard.topCustomersCard' | translate }}</h3>
+      @if (customerStats().length === 0) {
+        <p class="text-muted">{{ 'dashboard.noData' | translate }}</p>
+      } @else {
+        <div class="stack">
+          @for (stat of customerStats(); track stat.customerId) {
+            <div>
+              <div class="cluster" style="justify-content: space-between; margin-bottom: 4px">
+                <span>{{ stat.customerName }}</span>
+                <span class="text-muted">{{ format.currency(stat.totalSum, stat.currency) }}</span>
+              </div>
+              <div style="height: 6px; background: var(--color-ink-100); border-radius: var(--radius-full)">
+                <div
+                  style="height: 100%; background: var(--color-accent-600); border-radius: var(--radius-full)"
+                  [style.width.%]="(stat.totalSum / maxCustomerSum()) * 100"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+
+    <div class="card">
+      <h3>{{ 'dashboard.topServicesCard' | translate }}</h3>
+      @if (serviceStats().length === 0) {
+        <p class="text-muted">{{ 'dashboard.noData' | translate }}</p>
+      } @else {
+        <div class="stack">
+          @for (stat of serviceStats(); track stat.service) {
+            <div>
+              <div class="cluster" style="justify-content: space-between; margin-bottom: 4px">
+                <span>{{ stat.service }}</span>
+                <span class="text-muted">{{ format.currency(stat.totalSum, stat.currency) }}</span>
+              </div>
+              <div style="height: 6px; background: var(--color-ink-100); border-radius: var(--radius-full)">
+                <div
+                  style="height: 100%; background: var(--color-ink-700); border-radius: var(--radius-full)"
+                  [style.width.%]="(stat.totalSum / maxServiceSum()) * 100"
+                ></div>
+              </div>
+            </div>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>{{ 'dashboard.statusBreakdownCard' | translate }}</h3>
+    @if (statusStats().length === 0) {
+      <p class="text-muted">{{ 'dashboard.noData' | translate }}</p>
+    } @else {
+      <div class="grid grid--stats">
+        @for (stat of statusStats(); track stat.status) {
+          <div>
+            <div class="cluster" style="justify-content: space-between; margin-bottom: 4px">
+              <span class="badge badge--status-{{ stat.status.toLowerCase() }}">{{ ('invoiceStatus.' + stat.status.toLowerCase()) | translate }}</span>
+              <span class="text-muted">{{ stat.count }}</span>
+            </div>
+            <div style="height: 6px; background: var(--color-ink-100); border-radius: var(--radius-full)">
+              <div
+                style="height: 100%; background: var(--color-ink-500); border-radius: var(--radius-full)"
+                [style.width.%]="(stat.count / maxStatusCount()) * 100"
+              ></div>
+            </div>
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

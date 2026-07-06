@@ -1,0 +1,150 @@
+// Shared, low-level utility classes used across feature components.
+@use 'mixins' as *;
+
+.page {
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+  padding: var(--space-8) var(--space-6);
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+  flex-wrap: wrap;
+}
+
+.page-header__title {
+  margin: 0;
+}
+
+.page-header__subtitle {
+  margin: var(--space-1) 0 0;
+  color: var(--text-tertiary);
+  font-size: 0.875rem;
+}
+
+.page-actions {
+  display: flex;
+  gap: var(--space-3);
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.card {
+  @include card;
+  padding: var(--space-6);
+}
+
+.card + .card {
+  margin-top: var(--space-5);
+}
+
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.cluster {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+}
+
+.grid {
+  display: grid;
+  gap: var(--space-5);
+}
+
+.grid--stats {
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+
+.grid--two {
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+}
+
+.text-muted {
+  color: var(--text-tertiary);
+}
+
+.text-secondary {
+  color: var(--text-secondary);
+}
+
+.text-right {
+  text-align: right;
+}
+
+.mono {
+  font-family: var(--font-family-mono);
+}
+
+.divider {
+  height: 1px;
+  background: var(--surface-border);
+  border: 0;
+  margin: var(--space-5) 0;
+}
+
+.empty-state {
+  text-align: center;
+  padding: var(--space-12) var(--space-6);
+  color: var(--text-tertiary);
+}
+
+.empty-state__title {
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-bottom: var(--space-1);
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--space-4);
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+.auth-layout {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--surface-page);
+  padding: var(--space-6);
+}
+
+.auth-card {
+  @include card;
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--space-8);
+}
+
+.auth-card__brand {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-6);
+  font-weight: 700;
+  font-size: 1.0625rem;
+  color: var(--text-primary);
+}
+
+.auth-card__footer {
+  margin-top: var(--space-5);
+  text-align: center;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
+}

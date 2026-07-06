@@ -1,0 +1,82 @@
+// Design tokens — restrained corporate palette (slate/ink + a single blue accent).
+// Deliberately avoids purple/violet/pink gradients and saturated "AI" neon hues.
+:root {
+  // Neutrals (ink/slate scale)
+  --color-ink-950: #0b1220;
+  --color-ink-900: #101828;
+  --color-ink-800: #1d2939;
+  --color-ink-700: #344054;
+  --color-ink-600: #475467;
+  --color-ink-500: #667085;
+  --color-ink-400: #98a2b3;
+  --color-ink-300: #d0d5dd;
+  --color-ink-200: #e4e7ec;
+  --color-ink-100: #f2f4f7;
+  --color-ink-50: #f9fafb;
+  --color-white: #ffffff;
+
+  // Accent — a single restrained blue
+  --color-accent-700: #1d4ed8;
+  --color-accent-600: #2054c7;
+  --color-accent-500: #2563eb;
+  --color-accent-100: #dbe4fb;
+  --color-accent-50: #eef2fd;
+
+  // Semantic
+  --color-success-600: #087443;
+  --color-success-100: #d7f3e3;
+  --color-warning-600: #b25e09;
+  --color-warning-100: #faedcd;
+  --color-danger-600: #b91c1c;
+  --color-danger-100: #fbe0e0;
+  --color-info-600: #0e6ba8;
+  --color-info-100: #dcedf8;
+
+  // Surfaces
+  --surface-page: var(--color-ink-50);
+  --surface-card: var(--color-white);
+  --surface-sidebar: var(--color-ink-950);
+  --surface-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --surface-border: var(--color-ink-200);
+  --surface-border-strong: var(--color-ink-300);
+
+  // Text
+  --text-primary: var(--color-ink-900);
+  --text-secondary: var(--color-ink-600);
+  --text-tertiary: var(--color-ink-500);
+  --text-inverse: var(--color-white);
+  --text-on-sidebar: var(--color-ink-300);
+  --text-on-sidebar-active: var(--color-white);
+
+  // Typography
+  --font-family-base: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica,
+    Arial, sans-serif;
+  --font-family-mono: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+
+  // Spacing scale
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+
+  // Radius
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 10px;
+  --radius-full: 999px;
+
+  // Shadow
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.06);
+  --shadow-md: 0 2px 8px rgba(16, 24, 40, 0.08);
+  --shadow-lg: 0 8px 24px rgba(16, 24, 40, 0.12);
+
+  // Layout
+  --sidebar-width: 15.5rem;
+  --topbar-height: 4rem;
+  --content-max-width: 76rem;
+}

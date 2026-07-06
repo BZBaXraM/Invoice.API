@@ -12,8 +12,10 @@ public interface ICustomerService
         int pageSize,
         string? nameFilter,
         string? sortBy,
-        bool sortDescending);
+        bool sortDescending,
+        bool includeArchived = false);
 
     Task<ResponseModel> DeleteAsync(Guid ownerUserId, Guid id);
     Task<ResponseModel> ArchiveAsync(Guid ownerUserId, Guid id);
+    Task<ResponseModel> UnarchiveAsync(Guid ownerUserId, Guid id);
 }

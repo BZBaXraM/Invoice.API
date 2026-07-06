@@ -1,8 +1,3 @@
-using Invoice.Application.DTOs;
-using Invoice.Application.RepositoryContracts;
-using Invoice.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-
 namespace Invoice.Infrastructure.Repositories;
 
 public class ReportRepository(InvoiceDbContext context) : IReportRepository

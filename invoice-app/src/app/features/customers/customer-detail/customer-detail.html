@@ -1,0 +1,94 @@
+@if (loading()) {
+  <div class="page">
+    <p class="text-muted">{{ 'common.loading' | translate }}</p>
+  </div>
+} @else if (customer(); as c) {
+  <div class="page">
+    <div class="page-header">
+      <div>
+        <h1 class="page-header__title">{{ c.name }}</h1>
+        <p class="page-header__subtitle">
+          {{ 'customers.detail.subtitlePrefix' | translate }}{{ format.date(c.createdAt) }}
+          @if (c.deletedAt) {
+            <span class="badge badge--neutral" style="margin-left: 0.5rem">{{ 'customers.list.badge.archived' | translate }}</span>
+          }
+        </p>
+      </div>
+      <div class="page-actions">
+        @if (c.deletedAt) {
+          <button type="button" class="btn btn--secondary" (click)="unarchive()">{{ 'common.actions.unarchive' | translate }}</button>
+        } @else {
+          <a class="btn btn--secondary" [routerLink]="['/customers', c.id, 'edit']">{{ 'common.actions.edit' | translate }}</a>
+          <button type="button" class="btn btn--secondary" (click)="archive()">{{ 'common.actions.archive' | translate }}</button>
+        }
+        <button type="button" class="btn btn--danger" (click)="remove()">{{ 'common.actions.delete' | translate }}</button>
+      </div>
+    </div>
+
+    <div class="grid grid--two">
+      <div class="card">
+        <h3>{{ 'customers.detail.contactCard' | translate }}</h3>
+        <div class="stack">
+          <div>
+            <div class="text-muted">{{ 'common.fields.email' | translate }}</div>
+            <div>{{ c.email }}</div>
+          </div>
+          <div>
+            <div class="text-muted">{{ 'common.fields.phone' | translate }}</div>
+            <div>{{ c.phoneNumber || '—' }}</div>
+          </div>
+          <div>
+            <div class="text-muted">{{ 'common.fields.address' | translate }}</div>
+            <div>{{ c.address || '—' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>{{ 'customers.detail.metaCard' | translate }}</h3>
+        <div class="stack">
+          <div>
+            <div class="text-muted">{{ 'common.fields.createdAt' | translate }}</div>
+            <div>{{ format.dateTime(c.createdAt) }}</div>
+          </div>
+          <div>
+            <div class="text-muted">{{ 'common.fields.updatedAt' | translate }}</div>
+            <div>{{ format.dateTime(c.updatedAt) }}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="cluster" style="justify-content: space-between">
+        <h3>{{ 'customers.detail.invoicesCard' | translate }}</h3>
+        <a class="link-btn" [routerLink]="['/invoices/new']">{{ 'customers.detail.newInvoiceLink' | translate }}</a>
+      </div>
+
+      @if (invoicesLoading()) {
+        <p class="text-muted">{{ 'common.loading' | translate }}</p>
+      } @else if (invoices().length === 0) {
+        <p class="text-muted">{{ 'customers.detail.noInvoices' | translate }}</p>
+      } @else {
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ 'customers.detail.columns.period' | translate }}</th>
+              <th>{{ 'customers.list.columns.status' | translate }}</th>
+              <th class="text-right">{{ 'invoices.form.fields.sum' | translate }}</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (invoice of invoices(); track invoice.id) {
+              <tr class="is-clickable" [routerLink]="['/invoices', invoice.id]">
+                <td>{{ format.date(invoice.startDate) }} – {{ format.date(invoice.endDate) }}</td>
+                <td><span class="badge badge--status-{{ invoice.status.toLowerCase() }}">{{ ('invoiceStatus.' + invoice.status.toLowerCase()) | translate }}</span></td>
+                <td class="text-right">{{ format.currency(invoice.totalSum, invoice.currency) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+}

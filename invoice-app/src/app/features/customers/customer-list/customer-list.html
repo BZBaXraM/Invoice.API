@@ -1,0 +1,104 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ 'customers.list.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'customers.list.subtitle' | translate }}</p>
+    </div>
+    <div class="page-actions">
+      <a class="btn btn--accent" routerLink="/customers/new">{{ 'customers.list.newButton' | translate }}</a>
+    </div>
+  </div>
+
+  <div class="table-toolbar">
+    <div class="search-input">
+      <input
+        class="input"
+        type="text"
+        [placeholder]="'customers.list.searchPlaceholder' | translate"
+        [ngModel]="nameFilter()"
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </div>
+    <label class="checkbox-row">
+      <input
+        type="checkbox"
+        [ngModel]="showArchived()"
+        (ngModelChange)="onShowArchivedChange($event)"
+      />
+      {{ 'customers.list.showArchived' | translate }}
+    </label>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th class="sortable" (click)="sort('name')">{{ 'customers.list.columns.name' | translate }}</th>
+          <th class="sortable" (click)="sort('email')">{{ 'common.fields.email' | translate }}</th>
+          <th>{{ 'common.fields.phone' | translate }}</th>
+          <th class="sortable" (click)="sort('createdAt')">{{ 'common.fields.createdAt' | translate }}</th>
+          <th>{{ 'customers.list.columns.status' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td colspan="6" class="text-muted">{{ 'common.loading' | translate }}</td>
+          </tr>
+        } @else if (customers().length === 0) {
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <div class="empty-state__title">{{ 'customers.list.empty.title' | translate }}</div>
+                <p class="text-muted">{{ 'customers.list.empty.message' | translate }}</p>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          @for (customer of customers(); track customer.id) {
+            <tr class="is-clickable" (click)="view(customer.id)">
+              <td>{{ customer.name }}</td>
+              <td>{{ customer.email }}</td>
+              <td>{{ customer.phoneNumber || '—' }}</td>
+              <td>{{ format.date(customer.createdAt) }}</td>
+              <td>
+                @if (customer.deletedAt) {
+                  <span class="badge badge--neutral">{{ 'customers.list.badge.archived' | translate }}</span>
+                } @else {
+                  <span class="badge badge--success">{{ 'customers.list.badge.active' | translate }}</span>
+                }
+              </td>
+              <td class="text-right">
+                <div class="cluster" style="justify-content: flex-end">
+                  @if (customer.deletedAt) {
+                    <button type="button" class="btn btn--secondary btn--sm" (click)="unarchive(customer, $event)">
+                      {{ 'common.actions.unarchive' | translate }}
+                    </button>
+                  } @else {
+                    <a class="btn btn--secondary btn--sm" [routerLink]="['/customers', customer.id, 'edit']" (click)="$event.stopPropagation()">
+                      {{ 'common.actions.edit' | translate }}
+                    </a>
+                    <button type="button" class="btn btn--secondary btn--sm" (click)="archive(customer, $event)">
+                      {{ 'customers.list.actions.archiveShort' | translate }}
+                    </button>
+                  }
+                  <button type="button" class="btn btn--danger btn--sm" (click)="remove(customer, $event)">
+                    {{ 'common.actions.delete' | translate }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+
+    <app-pagination
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>

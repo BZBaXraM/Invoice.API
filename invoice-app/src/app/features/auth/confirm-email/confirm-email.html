@@ -1,0 +1,39 @@
+<div class="auth-layout">
+  <div class="auth-card">
+    <div class="auth-card__brand cluster" style="justify-content: space-between">
+      <span>Invoice.API</span>
+      <app-language-switcher />
+    </div>
+    <h1>{{ 'auth.confirmEmail.title' | translate }}</h1>
+    <p class="text-muted">
+      @if (email()) {
+        {{ 'auth.confirmEmail.subtitleWithEmail' | translate:{ email: email() } }}
+      } @else {
+        {{ 'auth.confirmEmail.subtitleNoEmail' | translate }}
+      }
+    </p>
+
+    <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label class="field__label" for="code">{{ 'auth.confirmEmail.fields.code' | translate }}</label>
+        <input id="code" class="input mono" type="text" formControlName="code" autocomplete="one-time-code" />
+      </div>
+
+      @if (errorMessage()) {
+        <div class="field__error">{{ errorMessage() }}</div>
+      }
+
+      <button type="submit" class="btn btn--accent btn--block" [disabled]="submitting()">
+        {{ (submitting() ? 'auth.confirmEmail.submitting' : 'auth.confirmEmail.submit') | translate }}
+      </button>
+
+      <button type="button" class="btn btn--secondary btn--block" [disabled]="resending()" (click)="resend()">
+        {{ (resending() ? 'auth.confirmEmail.resending' : 'auth.confirmEmail.resend') | translate }}
+      </button>
+    </form>
+
+    <div class="auth-card__footer">
+      <a routerLink="/login">{{ 'auth.confirmEmail.footer.backToLogin' | translate }}</a>
+    </div>
+  </div>
+</div>

@@ -1,8 +1,3 @@
-using Invoice.Application.RepositoryContracts;
-using Invoice.Domain.Enums;
-using Invoice.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-
 namespace Invoice.Infrastructure.Repositories;
 
 public class InvoiceRepository(InvoiceDbContext context) : IInvoiceRepository

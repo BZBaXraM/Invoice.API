@@ -1,0 +1,103 @@
+@use 'mixins' as *;
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  padding: 0.5rem 0.875rem;
+  border-radius: var(--radius-md);
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+  white-space: nowrap;
+
+  &:focus-visible {
+    @include focus-ring;
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: not-allowed;
+  }
+}
+
+.btn--primary {
+  background: var(--color-ink-900);
+  color: var(--text-inverse);
+
+  &:hover:not(:disabled) {
+    background: var(--color-ink-800);
+  }
+}
+
+.btn--accent {
+  background: var(--color-accent-600);
+  color: var(--text-inverse);
+
+  &:hover:not(:disabled) {
+    background: var(--color-accent-700);
+  }
+}
+
+.btn--secondary {
+  background: var(--color-white);
+  border-color: var(--surface-border-strong);
+  color: var(--text-primary);
+
+  &:hover:not(:disabled) {
+    background: var(--color-ink-50);
+  }
+}
+
+.btn--ghost {
+  background: transparent;
+  color: var(--text-secondary);
+
+  &:hover:not(:disabled) {
+    background: var(--color-ink-100);
+    color: var(--text-primary);
+  }
+}
+
+.btn--danger {
+  background: var(--color-white);
+  border-color: var(--color-danger-100);
+  color: var(--color-danger-600);
+
+  &:hover:not(:disabled) {
+    background: var(--color-danger-100);
+  }
+}
+
+.btn--sm {
+  padding: 0.375rem 0.625rem;
+  font-size: 0.8125rem;
+}
+
+.btn--icon {
+  padding: 0.4rem;
+}
+
+.btn--block {
+  width: 100%;
+}
+
+.link-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-accent-600);
+  font-size: inherit;
+  font-weight: 600;
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
