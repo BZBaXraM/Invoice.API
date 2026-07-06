@@ -13,6 +13,22 @@
   position: sticky;
   top: 0;
   height: 100vh;
+  overflow: hidden;
+  transition:
+    width 0.2s ease,
+    padding 0.2s ease,
+    transform 0.2s ease;
+}
+
+.shell--sidebar-collapsed .sidebar {
+  width: 0;
+  padding-left: 0;
+  padding-right: 0;
+  border: none;
+}
+
+.sidebar-backdrop {
+  display: none;
 }
 
 .sidebar__brand {
@@ -24,6 +40,7 @@
   font-size: 1rem;
   padding: 0 var(--space-2);
   margin-bottom: var(--space-8);
+  white-space: nowrap;
 }
 
 .sidebar__brand-mark {
@@ -54,6 +71,7 @@
   color: var(--text-on-sidebar);
   font-size: 0.875rem;
   font-weight: 500;
+  white-space: nowrap;
 }
 
 .sidebar__link:hover {
@@ -107,25 +125,33 @@
   color: var(--text-secondary);
 }
 
-.live-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: var(--radius-full);
-  background: var(--color-ink-400);
-  flex-shrink: 0;
-}
-
-.live-indicator.is-connected {
-  background: var(--color-success-600);
-  box-shadow: 0 0 0 3px var(--color-success-100);
-}
-
 .shell__content {
   flex: 1;
 }
 
 @media (max-width: 900px) {
   .sidebar {
-    display: none;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 20;
+    width: var(--sidebar-width);
+    padding: var(--space-5) var(--space-4);
+    transform: translateX(0);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shell--sidebar-collapsed .sidebar {
+    width: var(--sidebar-width);
+    padding: var(--space-5) var(--space-4);
+    transform: translateX(-100%);
+  }
+
+  .shell:not(.shell--sidebar-collapsed) .sidebar-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 15;
   }
 }

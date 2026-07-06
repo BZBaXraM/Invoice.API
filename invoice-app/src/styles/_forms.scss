@@ -29,7 +29,7 @@
   padding: 0.5rem 0.75rem;
   border: 1px solid var(--surface-border-strong);
   border-radius: var(--radius-md);
-  background: var(--color-white);
+  background: var(--surface-card);
   color: var(--text-primary);
   transition:
     border-color 0.15s ease,
@@ -51,7 +51,7 @@
 .input:disabled,
 .select:disabled,
 .textarea:disabled {
-  background: var(--color-ink-50);
+  background: var(--surface-muted);
   color: var(--text-tertiary);
   cursor: not-allowed;
 }

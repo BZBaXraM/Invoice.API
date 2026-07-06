@@ -1,16 +1,16 @@
 services:
   postgres:
-    image: postgres:16-alpine
+    image: postgres:17
     environment:
-      POSTGRES_DB: InvoiceDb
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: root
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=InvoiceDb
     volumes:
-      - postgres-data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     ports:
-      - "5433:5432"
+      - "5432:5432"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
       interval: 5s
       timeout: 5s
       retries: 10
@@ -21,12 +21,18 @@ services:
       dockerfile: src/Invoice.API/Dockerfile
     environment:
       ASPNETCORE_ENVIRONMENT: Development
-      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Username=postgres;Password=root;Database=InvoiceDb"
+      ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Username=postgres;Password=postgres;Database=InvoiceDb"
+      ASPNETCORE_URLS: "https://+:8081;http://+:8080"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "123"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+    volumes:
+      - ${HOME}/.aspnet/https:/https:ro
     depends_on:
       postgres:
         condition: service_healthy
     ports:
-      - "7030:8080"
+      - "7030:8081"
+      - "6000:8080"
 
   client:
     build:
@@ -38,4 +44,4 @@ services:
       - "4200:80"
 
 volumes:
-  postgres-data:
+  postgres_data:

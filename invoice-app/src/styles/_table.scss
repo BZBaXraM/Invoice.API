@@ -19,7 +19,7 @@
   }
 
   thead th {
-    background: var(--color-ink-50);
+    background: var(--surface-muted);
     color: var(--text-tertiary);
     font-size: 0.75rem;
     text-transform: uppercase;
@@ -41,7 +41,7 @@
   }
 
   tbody tr.is-clickable:hover {
-    background: var(--color-ink-50);
+    background: var(--surface-muted);
   }
 
   th.sortable {

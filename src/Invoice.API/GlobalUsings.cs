@@ -15,4 +15,5 @@ global using Invoice.Infrastructure.Extensions;
 global using Invoice.Infrastructure.Realtime;
 global using Microsoft.AspNetCore.Authorization;
 global using Microsoft.AspNetCore.Mvc;
+global using Microsoft.OpenApi.Models;
 global using Serilog;

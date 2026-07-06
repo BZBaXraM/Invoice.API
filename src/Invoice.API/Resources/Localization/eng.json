@@ -9,6 +9,10 @@
   "shell.logout.message": "Are you sure you want to end the session?",
   "shell.logout.confirmLabel": "Log out",
   "shell.logout.successMessage": "You have been logged out.",
+  "shell.sidebar.hide": "Hide sidebar",
+  "shell.sidebar.show": "Show sidebar",
+  "shell.theme.toDark": "Switch to dark theme",
+  "shell.theme.toLight": "Switch to light theme",
 
   "invoiceStatus.created": "Created",
   "invoiceStatus.sent": "Sent",
@@ -44,6 +48,7 @@
   "customers.deleteConfirm.title": "Delete customer",
   "customers.deleteSuccess": "Customer deleted.",
   "customers.deleteError": "Could not delete the customer.",
+  "customers.deleteError.hasInvoices": "Cannot delete a customer that has been sent invoices.",
 
   "customers.list.title": "Customers",
   "customers.list.subtitle": "Manage customers and their contact details.",

@@ -1,4 +1,5 @@
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LocalizationService } from '../../core/services/localization.service';
@@ -6,6 +7,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { RealtimeService } from '../../core/services/realtime.service';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { LanguageSwitcherComponent } from '../../shared/components/language-switcher/language-switcher';
+import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 interface NavItem {
@@ -21,9 +23,11 @@ const NAV_ITEMS: NavItem[] = [
   { labelKey: 'nav.profile', path: '/profile', icon: 'user' },
 ];
 
+const SIDEBAR_OPEN_KEY = 'invoice_sidebar_open';
+
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LanguageSwitcherComponent, TranslatePipe],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, LanguageSwitcherComponent, ThemeToggleComponent, TranslatePipe],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
@@ -34,10 +38,11 @@ export class ShellComponent implements OnInit, OnDestroy {
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly realtime = inject(RealtimeService);
   private readonly localization = inject(LocalizationService);
+  private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
   protected readonly navItems = NAV_ITEMS;
   protected readonly claims = this.auth.claims;
-  protected readonly realtimeConnected = this.realtime.connected;
+  protected readonly sidebarOpen = signal(this.resolveInitialSidebarOpen());
 
   ngOnInit(): void {
     this.realtime.connect();
@@ -45,6 +50,28 @@ export class ShellComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.realtime.disconnect();
+  }
+
+  protected toggleSidebar(): void {
+    const next = !this.sidebarOpen();
+    this.sidebarOpen.set(next);
+    if (this.isBrowser) {
+      localStorage.setItem(SIDEBAR_OPEN_KEY, String(next));
+    }
+  }
+
+  private resolveInitialSidebarOpen(): boolean {
+    if (!this.isBrowser) {
+      return true;
+    }
+    const stored = localStorage.getItem(SIDEBAR_OPEN_KEY);
+    return stored === null ? true : stored === 'true';
+  }
+
+  protected get sidebarToggleLabel(): string {
+    return this.sidebarOpen()
+      ? this.localization.translate('shell.sidebar.hide')
+      : this.localization.translate('shell.sidebar.show');
   }
 
   protected async logout(): Promise<void> {

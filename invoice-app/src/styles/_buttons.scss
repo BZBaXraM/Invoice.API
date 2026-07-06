@@ -28,11 +28,11 @@
 }
 
 .btn--primary {
-  background: var(--color-ink-900);
+  background: var(--surface-emphasis);
   color: var(--text-inverse);
 
   &:hover:not(:disabled) {
-    background: var(--color-ink-800);
+    background: var(--surface-emphasis-hover);
   }
 }
 
@@ -46,12 +46,12 @@
 }
 
 .btn--secondary {
-  background: var(--color-white);
+  background: var(--surface-card);
   border-color: var(--surface-border-strong);
   color: var(--text-primary);
 
   &:hover:not(:disabled) {
-    background: var(--color-ink-50);
+    background: var(--surface-muted);
   }
 }
 
@@ -60,13 +60,13 @@
   color: var(--text-secondary);
 
   &:hover:not(:disabled) {
-    background: var(--color-ink-100);
+    background: var(--surface-subtle);
     color: var(--text-primary);
   }
 }
 
 .btn--danger {
-  background: var(--color-white);
+  background: var(--surface-card);
   border-color: var(--color-danger-100);
   color: var(--color-danger-600);
 

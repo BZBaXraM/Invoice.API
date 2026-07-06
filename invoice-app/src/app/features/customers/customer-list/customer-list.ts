@@ -1,4 +1,5 @@
 import { Component, inject, signal } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -161,7 +162,12 @@ export class CustomerListComponent {
         this.notifications.success(this.localization.translate('customers.deleteSuccess'));
         this.load();
       },
-      error: (err) => this.notifications.error(extractApiError(err, this.localization.translate('customers.deleteError'))),
+      error: (err) => {
+        const message = err instanceof HttpErrorResponse && err.status === 409
+          ? this.localization.translate('customers.deleteError.hasInvoices')
+          : extractApiError(err, this.localization.translate('customers.deleteError'));
+        this.notifications.error(message);
+      },
     });
   }
 }

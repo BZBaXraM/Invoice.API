@@ -20,5 +20,8 @@ COPY --from=build /app/publish .
 
 ENV ASPNETCORE_URLS=http://+:8080
 EXPOSE 8080
+# docker-compose overrides ASPNETCORE_URLS to also bind 8081 over HTTPS,
+# using a dev cert mounted from the host at /https (see docker-compose.yml).
+EXPOSE 8081
 
 ENTRYPOINT ["dotnet", "Invoice.API.dll"]

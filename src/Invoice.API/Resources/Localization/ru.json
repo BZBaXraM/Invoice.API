@@ -9,6 +9,10 @@
   "shell.logout.message": "Вы уверены, что хотите завершить сеанс?",
   "shell.logout.confirmLabel": "Выйти",
   "shell.logout.successMessage": "Вы вышли из аккаунта.",
+  "shell.sidebar.hide": "Скрыть боковую панель",
+  "shell.sidebar.show": "Показать боковую панель",
+  "shell.theme.toDark": "Включить тёмную тему",
+  "shell.theme.toLight": "Включить светлую тему",
 
   "invoiceStatus.created": "Создан",
   "invoiceStatus.sent": "Отправлен",
@@ -44,6 +48,7 @@
   "customers.deleteConfirm.title": "Удалить клиента",
   "customers.deleteSuccess": "Клиент удалён.",
   "customers.deleteError": "Не удалось удалить клиента.",
+  "customers.deleteError.hasInvoices": "Нельзя удалить клиента, которому уже отправлялись счета.",
 
   "customers.list.title": "Клиенты",
   "customers.list.subtitle": "Управление клиентами и их контактными данными.",

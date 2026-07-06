@@ -9,6 +9,10 @@
   "shell.logout.message": "Sessiyanı sonlandırmaq istədiyinizə əminsiniz?",
   "shell.logout.confirmLabel": "Çıxış",
   "shell.logout.successMessage": "Hesabdan çıxış etdiniz.",
+  "shell.sidebar.hide": "Yan paneli gizlət",
+  "shell.sidebar.show": "Yan paneli göstər",
+  "shell.theme.toDark": "Tünd temaya keç",
+  "shell.theme.toLight": "Açıq temaya keç",
 
   "invoiceStatus.created": "Yaradılıb",
   "invoiceStatus.sent": "Göndərilib",
@@ -44,6 +48,7 @@
   "customers.deleteConfirm.title": "Müştərini sil",
   "customers.deleteSuccess": "Müştəri silindi.",
   "customers.deleteError": "Müştərini silmək mümkün olmadı.",
+  "customers.deleteError.hasInvoices": "Hesab-faktura göndərilmiş müştərini silmək mümkün deyil.",
 
   "customers.list.title": "Müştərilər",
   "customers.list.subtitle": "Müştərilərin və onların əlaqə məlumatlarının idarə edilməsi.",

@@ -35,6 +35,10 @@
   // Surfaces
   --surface-page: var(--color-ink-50);
   --surface-card: var(--color-white);
+  --surface-muted: var(--color-ink-50);
+  --surface-subtle: var(--color-ink-100);
+  --surface-emphasis: var(--color-ink-900);
+  --surface-emphasis-hover: var(--color-ink-800);
   --surface-sidebar: var(--color-ink-950);
   --surface-sidebar-hover: rgba(255, 255, 255, 0.06);
   --surface-border: var(--color-ink-200);
@@ -79,4 +83,44 @@
   --sidebar-width: 15.5rem;
   --topbar-height: 4rem;
   --content-max-width: 76rem;
+}
+
+// Dark theme — neutral charcoal grays (no blue/navy tint), no neon/saturated hues.
+:root[data-theme='dark'] {
+  --color-accent-700: #6d97f2;
+  --color-accent-600: #5b8bef;
+  --color-accent-500: #4c7ff0;
+  --color-accent-100: #2a3542;
+  --color-accent-50: #262e38;
+
+  --color-success-600: #4ab787;
+  --color-success-100: #263229;
+  --color-warning-600: #d69a4f;
+  --color-warning-100: #362f22;
+  --color-danger-600: #e5837e;
+  --color-danger-100: #3a2726;
+  --color-info-600: #5aa8d8;
+  --color-info-100: #24313a;
+
+  --surface-page: #222222;
+  --surface-card: #2a2a2a;
+  --surface-muted: #2e2e2e;
+  --surface-subtle: #383838;
+  --surface-emphasis: #e4e4e4;
+  --surface-emphasis-hover: #d0d0d0;
+  --surface-sidebar: #1a1a1a;
+  --surface-sidebar-hover: rgba(255, 255, 255, 0.06);
+  --surface-border: #3a3a3a;
+  --surface-border-strong: #4a4a4a;
+
+  --text-primary: #eaeaea;
+  --text-secondary: #b0b0b0;
+  --text-tertiary: #8a8a8a;
+  --text-inverse: #1a1a1a;
+  --text-on-sidebar: #a0a0a0;
+  --text-on-sidebar-active: #ffffff;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.45);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.55);
 }
