@@ -141,11 +141,17 @@ All endpoints `[Authorize]`, take `from`/`to` (`DateTimeOffset`) as query parame
 
 ### Option A: Docker Compose (fastest)
 
+One-time setup — the API needs an HTTPS dev cert mounted from the host:
+
+```bash
+dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p 123 --trust
+```
+
 ```bash
 docker compose up --build
 ```
 
-Brings up Postgres (`localhost:5433`), the API (`localhost:7030`), and the client behind nginx (`localhost:4200`) — migrations auto-apply on first boot. The client's nginx reverse-proxies `/api/*` and `/hubs/*` to the API container, so it's the only origin the browser ever talks to. `docker compose down -v` tears everything down, including the Postgres volume.
+Brings up Postgres (`localhost:5432`), the API (`localhost:7030` HTTPS / `localhost:6000` HTTP), and the client behind nginx (`localhost:4200`) — migrations auto-apply on first boot. The client and API are separate origins: the browser talks directly to the API's HTTPS port rather than going through an nginx proxy, so CORS (`Cors:AllowedOrigins`) has to allow the client's origin. `docker compose down -v` tears everything down, including the Postgres volume.
 
 ### Option B: Run locally
 
@@ -188,4 +194,4 @@ bun install
 bun run start   # ng serve over HTTPS at https://localhost:4200 (see .cert/)
 ```
 
-`environment.development.ts` points at `https://localhost:7030/api` — run the backend first. `bun run build` produces the production bundle (used by the Docker image); it targets a relative `/api` (`environment.ts`), meant to be reverse-proxied by nginx rather than hit directly.
+`environment.development.ts` points at `https://localhost:7030/api` — run the backend first. `bun run build` produces the production bundle (used by the Docker image); it targets the same absolute `https://localhost:7030/api` (`environment.ts`) and hits the API directly rather than going through nginx.
