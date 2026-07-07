@@ -22,7 +22,10 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Username=postgres;Password=postgres;Database=InvoiceDb"
-      Jwt__SigningKey: ${Jwt__SigningKey:?set Jwt__SigningKey in .env}
+      JWT__Secret: ${JWT_SECRET:?set JWT_SECRET in .env}
+      Cors__AllowedOrigins__0: ${CORS_ORIGIN:-http://localhost:8081}
+      EmailConfig__UserName: ${EMAIL_USERNAME:?set EMAIL_USERNAME in .env}
+      EmailConfig__Password: ${EMAIL_PASSWORD:?set EMAIL_PASSWORD in .env}
 #      ASPNETCORE_URLS: "https://+:8081;http://+:8080"
 #      ASPNETCORE_Kestrel__Certificates__Default__Password: "123"
 #      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
@@ -42,7 +45,7 @@ services:
     depends_on:
       - api
     ports:
-      - "4200:80"
+      - "8081:80"
 
 volumes:
   postgres_data:
