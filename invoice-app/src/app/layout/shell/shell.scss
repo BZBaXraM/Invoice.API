@@ -123,6 +123,10 @@
 .topbar__user {
   font-size: 0.875rem;
   color: var(--text-secondary);
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .shell__content {
@@ -153,5 +157,15 @@
     inset: 0;
     background: rgba(0, 0, 0, 0.4);
     z-index: 15;
+  }
+
+  .topbar {
+    padding: 0 var(--space-4);
+  }
+}
+
+@media (max-width: 480px) {
+  .topbar__user {
+    display: none;
   }
 }

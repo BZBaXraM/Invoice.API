@@ -3,6 +3,7 @@
 .table-wrapper {
   @include card;
   overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
   @include scrollbar-thin;
 }
 

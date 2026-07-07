@@ -73,6 +73,11 @@
   position: relative;
   min-width: 220px;
 
+  @media (max-width: 640px) {
+    min-width: 0;
+    width: 100%;
+  }
+
   .input {
     padding-left: 2.25rem;
   }

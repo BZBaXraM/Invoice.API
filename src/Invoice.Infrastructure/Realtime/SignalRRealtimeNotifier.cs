@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.SignalR;
-
 namespace Invoice.Infrastructure.Realtime;
 
 public class SignalRRealtimeNotifier(IHubContext<NotificationsHub> hubContext) : IRealtimeNotifier

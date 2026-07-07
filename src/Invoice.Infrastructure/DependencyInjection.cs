@@ -1,6 +1,3 @@
-using Invoice.Infrastructure.Realtime;
-using Microsoft.Extensions.Configuration;
-
 namespace Invoice.Infrastructure;
 
 public static class DependencyInjection

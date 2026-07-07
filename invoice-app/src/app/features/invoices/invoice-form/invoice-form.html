@@ -43,7 +43,7 @@
           </div>
 
           @for (row of rowsFormArray.controls; track row; let i = $index) {
-            <div class="grid" style="grid-template-columns: 3fr 1fr 1fr 1fr auto; gap: var(--space-3); align-items: end" [formGroupName]="i">
+            <div class="invoice-row-grid" [formGroupName]="i">
               <div class="field">
                 <label class="field__label">{{ 'invoices.form.fields.service' | translate }}</label>
                 <input class="input" type="text" formControlName="service" />

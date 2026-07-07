@@ -11,6 +11,15 @@
   max-width: 22rem;
 }
 
+@media (max-width: 480px) {
+  .toast-stack {
+    left: var(--space-3);
+    right: var(--space-3);
+    top: var(--space-3);
+    max-width: none;
+  }
+}
+
 .toast {
   @include card;
   padding: var(--space-3) var(--space-4);

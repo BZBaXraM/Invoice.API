@@ -1,8 +1,3 @@
-using MailKit.Security;
-using Microsoft.Extensions.Logging;
-using MimeKit;
-using MimeKit.Text;
-
 namespace Invoice.Infrastructure.Services;
 
 public class EmailService(EmailConfig config, ILogger<EmailService> logger, SmtpClient client) : IEmailService

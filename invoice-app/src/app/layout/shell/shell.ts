@@ -65,7 +65,12 @@ export class ShellComponent implements OnInit, OnDestroy {
       return true;
     }
     const stored = localStorage.getItem(SIDEBAR_OPEN_KEY);
-    return stored === null ? true : stored === 'true';
+    if (stored !== null) {
+      return stored === 'true';
+    }
+    // No saved preference yet (first visit on this device): default to closed
+    // on narrow viewports so the drawer doesn't cover the whole screen.
+    return window.innerWidth > 900;
   }
 
   protected get sidebarToggleLabel(): string {

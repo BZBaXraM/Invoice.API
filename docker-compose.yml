@@ -20,19 +20,20 @@ services:
       context: .
       dockerfile: src/Invoice.API/Dockerfile
     environment:
-      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Username=postgres;Password=postgres;Database=InvoiceDb"
-      ASPNETCORE_URLS: "https://+:8081;http://+:8080"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "123"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
-    volumes:
-      - ${HOME}/.aspnet/https:/https:ro
+      Jwt__SigningKey: ${Jwt__SigningKey:?set Jwt__SigningKey in .env}
+#      ASPNETCORE_URLS: "https://+:8081;http://+:8080"
+#      ASPNETCORE_Kestrel__Certificates__Default__Password: "123"
+#      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/aspnetapp.pfx
+#    volumes:
+#      - ${HOME}/.aspnet/https:/https:ro
     depends_on:
       postgres:
         condition: service_healthy
     ports:
-      - "7030:8081"
-      - "6000:8080"
+#      - "7030:8081"
+      - "8080:8080"
 
   client:
     build:

@@ -485,4 +485,5 @@ $RECYCLE.BIN/
 
 CLAUDE.md
 
+src/Invoice.API/appsettings.json
 src/Invoice.API/appsettings.Development.json
