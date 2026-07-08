@@ -10,6 +10,7 @@ ASP.NET Core 10 Web API for managing invoices, customers, and reporting for an a
 - Reports: per-customer, per-service, and per-status invoice statistics over a date range.
 - Realtime updates over SignalR (`/hubs/notifications`) — the client's dashboard/lists refresh live as customers/invoices change.
 - Multi-language UI (Russian/English/Azerbaijani) — translation dictionaries are served by the API and fetched by the Angular client; see "Localization" below.
+- AI assistant chat (floating widget on every authenticated page) that finds and summarizes the user's invoices via tool calls and links them for PDF download — read-only by design; see "AI chat" below.
 - All data is strictly scoped to the owning user (`ownerUserId` from the JWT) — a user only ever sees their own records.
 
 ## Architecture
@@ -21,9 +22,9 @@ Invoice.Domain  ←  Invoice.Application  ←  Invoice.Infrastructure  ←  Invo
 ```
 
 - **Invoice.Domain** — entities (`User`, `Customer`, `Invoice`, `InvoiceRow`, `BaseEntity`), `Enums/InvoiceStatus`, the result wrapper `Common/ResponseModel`, `Exceptions/ApiException`. No ASP.NET Core/EF Core references.
-- **Invoice.Application** — DTOs (requests/responses), `ServiceContracts` + `Services` (business logic: `AccountService`, `CustomerService`, `InvoiceService`, `ReportService`), `RepositoryContracts` (`IUnitOfWork` + one interface per aggregate), `Validators` (FluentValidation), `Extensions` (manual `To*Response()` mapping), `Helpers/PasswordHelper` (BCrypt wrapper), `DependencyInjection.AddApplication()`. Also has no ASP.NET Core/EF Core references.
-- **Invoice.Infrastructure** — `Data/InvoiceDbContext`, `Repositories/` (repo implementations + `UnitOfWork`), `Services/` (`JwtService`, `CurrentUserService`, `EmailService`, `BlackListService`, `TranslationService`), `Realtime/` (`NotificationsHub`, `SignalRRealtimeNotifier`), `Migrations/`, `DependencyInjection.AddInfrastructure()`. Has a `FrameworkReference` to `Microsoft.AspNetCore.App` (needed for `IHttpContextAccessor`/JwtBearer).
-- **Invoice.API** — `Controllers/` (`AccountController`, `CustomerController`, `InvoiceController`, `ReportsController`, `TranslationController`), `Resources/Localization/{ru,eng,az}.json`, `Middlewares/` (`ExceptionMiddleware`, `BlackListMiddleware`), `Program.cs` composition root.
+- **Invoice.Application** — DTOs (requests/responses), `ServiceContracts` + `Services` (business logic: `AccountService`, `CustomerService`, `InvoiceService`, `ReportService`, `ChatService`), `RepositoryContracts` (`IUnitOfWork` + one interface per aggregate), `Validators` (FluentValidation), `Extensions` (manual `To*Response()` mapping), `Helpers/PasswordHelper` (BCrypt wrapper), the provider-agnostic AI port `IAiChatClient` + `AiMessage`/`AiTool`, `DependencyInjection.AddApplication()`. Also has no ASP.NET Core/EF Core references.
+- **Invoice.Infrastructure** — `Data/InvoiceDbContext`, `Repositories/` (repo implementations + `UnitOfWork`), `Services/` (`JwtService`, `CurrentUserService`, `EmailService`, `BlackListService`, `TranslationService`, `GroQChatClient`), `Realtime/` (`NotificationsHub`, `SignalRRealtimeNotifier`), `Migrations/`, `DependencyInjection.AddInfrastructure()`. Has a `FrameworkReference` to `Microsoft.AspNetCore.App` (needed for `IHttpContextAccessor`/JwtBearer).
+- **Invoice.API** — `Controllers/` (`AccountController`, `CustomerController`, `InvoiceController`, `ReportsController`, `TranslationController`, `ChatController`), `Resources/Localization/{ru,eng,az}.json`, `Middlewares/` (`ExceptionMiddleware`, `BlackListMiddleware`), `Program.cs` composition root.
 - **invoice-app** — Angular 21 SPA client (standalone components + signals, Bun package manager). See "Frontend" below.
 
 ### Result pattern
@@ -66,6 +67,15 @@ UI translations are served by the API, not baked into the client. `src/Invoice.A
 ### Realtime updates (SignalR)
 
 `CustomerService`/`InvoiceService` notify `IRealtimeNotifier` after every mutation (create/update/archive/unarchive/delete/status-change); `SignalRRealtimeNotifier` broadcasts to a per-user SignalR group so a logged-in user's other open tabs/sessions see changes live. Hub endpoint: `/hubs/notifications` (`[Authorize]`) — since browsers can't set an `Authorization` header on the WebSocket handshake, the client passes the JWT as an `access_token` query parameter instead.
+
+### AI chat
+
+An authenticated, read-only AI assistant over the user's invoices, backed by Groq's OpenAI-compatible chat completions API (`Groq` section in `appsettings.json`: `ApiKey`, `Model` — default `llama-3.3-70b-versatile`, `BaseUrl`).
+
+- `ChatService` (Application) runs an agent loop (max 5 iterations) with three tools: `list_invoices` and `get_invoice` (delegating to `InvoiceService`, so results are scoped to the authenticated user like everything else) and `final_answer`, which returns the structured reply (`Reply` text, follow-up `Suggestions`, and `InvoiceIds` the client turns into PDF-download buttons). The system prompt restricts the assistant to viewing invoices only — it refuses to create/modify/delete anything or answer off-topic questions.
+- The provider is swappable: Application only sees the `IAiChatClient` port and neutral `AiMessage`/`AiTool` types; `GroQChatClient` (Infrastructure) is the Groq adapter, registered as a typed `HttpClient`.
+- Chat history is stateless on the server — the client keeps it and resends it with every request.
+- On the client, the chat is a floating widget (`shared/components/chat-widget/`) mounted in the authenticated shell, so it's available on every page after login.
 
 ## Endpoints
 
@@ -127,6 +137,12 @@ All endpoints `[Authorize]`, take `from`/`to` (`DateTimeOffset`) as query parame
 | GET | `/services` | Per-service invoice count and total sum for the period |
 | GET | `/invoice-status` | Invoice counts grouped by status for the period |
 
+### `ChatController` — `api/chat`
+
+| Method | Path | Auth | Description |
+|---|---|---|---|
+| POST | `/` | ✓ | Send a message to the AI invoice chat (`message` + client-held `history`); returns a structured reply (`reply`, `suggestions`, `invoiceIds`) |
+
 ### `TranslationController` — `api/translations`
 
 | Method | Path | Auth | Description |
@@ -141,17 +157,20 @@ All endpoints `[Authorize]`, take `from`/`to` (`DateTimeOffset`) as query parame
 
 ### Option A: Docker Compose (fastest)
 
-One-time setup — the API needs an HTTPS dev cert mounted from the host:
+One-time setup — the API needs an HTTPS dev cert mounted from the host, and secrets come from a repo-root `.env` file:
 
 ```bash
 dotnet dev-certs https -ep ${HOME}/.aspnet/https/aspnetapp.pfx -p 123 --trust
+cp .env.example .env   # then fill in JWT_SECRET (64+ chars), EMAIL_USERNAME/EMAIL_PASSWORD, GROQ_API_KEY
 ```
+
+`JWT_SECRET`, `EMAIL_USERNAME`/`EMAIL_PASSWORD`, and `GROQ_API_KEY` are required — `docker compose up` fails immediately with a clear message if any is missing. Everything else in `.env.example` has working defaults.
 
 ```bash
 docker compose up --build
 ```
 
-Brings up Postgres (`localhost:5432`), the API (`localhost:7030` HTTPS / `localhost:6000` HTTP), and the client behind nginx (`localhost:4200`) — migrations auto-apply on first boot. The client and API are separate origins: the browser talks directly to the API's HTTPS port rather than going through an nginx proxy, so CORS (`Cors:AllowedOrigins`) has to allow the client's origin. `docker compose down -v` tears everything down, including the Postgres volume.
+Brings up Postgres (`localhost:5432`), the API (`localhost:7030` HTTPS / `localhost:8080` HTTP), and the client behind nginx (`localhost:4200`) — migrations auto-apply on first boot. The client and API are separate origins: the browser talks directly to the API's HTTPS port rather than going through an nginx proxy, so CORS (`Cors:AllowedOrigins`) has to allow the client's origin. `docker compose down -v` tears everything down, including the Postgres volume.
 
 ### Option B: Run locally
 
@@ -170,6 +189,7 @@ In `src/Invoice.API/appsettings.json` (or `appsettings.Development.json`), set:
 - `JWT:Secret` — a random string **at least 64 characters** long (see the `HmacSha512Signature` gotcha above).
 - `EmailConfig:From`/`UserName`/`Password` — real mailbox credentials (for Gmail, an App Password, not the regular account password).
 - `Cors:AllowedOrigins` — must include whatever origin the client runs on (defaults to `https://localhost:4200`, matching `bun run start` below).
+- `Groq:ApiKey` — a Groq API key (console.groq.com) for the AI chat; without it every `POST /api/chat` fails with a Groq 401 (the rest of the API works fine).
 
 #### Backend
 
@@ -180,9 +200,9 @@ dotnet ef migrations add <Name> --project src/Invoice.Infrastructure --startup-p
 dotnet ef database update --project src/Invoice.Infrastructure --startup-project src/Invoice.API
 ```
 
-In Development, `Program.cs` auto-applies pending migrations on startup via `InitialiseDatabaseAsync()` — running `database update` manually isn't required for local development.
+`Program.cs` auto-applies pending migrations on startup via `InitialiseDatabaseAsync()` (in every environment) — running `database update` manually isn't required.
 
-Once running, Swagger UI is available at the app's URL (Development only), e.g. `https://localhost:7030/swagger`.
+Once running, Swagger UI is available at the app's URL, e.g. `https://localhost:7030/swagger`.
 
 No test projects exist yet.
 
