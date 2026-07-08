@@ -5,7 +5,9 @@ public static class CustomerMappingExtensions
     public static CustomerResponse ToCustomerResponse(this Customer customer) => new()
     {
         Id = customer.Id,
-        Name = customer.Name,
+        FirstName = customer.FirstName,
+        LastName = customer.LastName,
+        CompanyName = customer.CompanyName,
         Address = customer.Address,
         Email = customer.Email,
         PhoneNumber = customer.PhoneNumber,

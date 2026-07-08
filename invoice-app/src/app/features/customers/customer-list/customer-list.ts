@@ -7,7 +7,7 @@ import { merge } from 'rxjs';
 import { CustomerService } from '../../../core/services/customer.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { RealtimeService } from '../../../core/services/realtime.service';
-import { CustomerResponse } from '../../../core/models/customer.model';
+import { CustomerResponse, customerFullName } from '../../../core/models/customer.model';
 import { FormatService } from '../../../core/services/format.service';
 import { LocalizationService } from '../../../core/services/localization.service';
 import { ConfirmDialogService } from '../../../shared/components/confirm-dialog/confirm-dialog.service';
@@ -15,7 +15,7 @@ import { PaginationComponent } from '../../../shared/components/pagination/pagin
 import { TranslatePipe } from '../../../shared/pipes/translate.pipe';
 import { extractApiError } from '../../../shared/utils/api-error';
 
-type SortField = 'name' | 'email' | 'createdAt';
+type SortField = 'name' | 'companyName' | 'email' | 'createdAt';
 
 @Component({
   selector: 'app-customer-list',
@@ -41,6 +41,7 @@ export class CustomerListComponent {
   protected readonly sortBy = signal<SortField>('name');
   protected readonly sortDescending = signal(false);
   protected readonly showArchived = signal(false);
+  protected readonly fullName = customerFullName;
 
   constructor() {
     this.load();
@@ -120,7 +121,7 @@ export class CustomerListComponent {
     event.stopPropagation();
     const confirmed = await this.confirmDialog.ask({
       title: this.localization.translate('customers.archiveConfirm.title'),
-      message: this.localization.translate('customers.list.archiveConfirm.message', { name: customer.name }),
+      message: this.localization.translate('customers.list.archiveConfirm.message', { name: customerFullName(customer) }),
       confirmLabel: this.localization.translate('common.actions.archive'),
     });
     if (!confirmed) {
@@ -150,7 +151,7 @@ export class CustomerListComponent {
     event.stopPropagation();
     const confirmed = await this.confirmDialog.ask({
       title: this.localization.translate('customers.deleteConfirm.title'),
-      message: this.localization.translate('customers.list.deleteConfirm.message', { name: customer.name }),
+      message: this.localization.translate('customers.list.deleteConfirm.message', { name: customerFullName(customer) }),
       confirmLabel: this.localization.translate('common.actions.delete'),
       danger: true,
     });

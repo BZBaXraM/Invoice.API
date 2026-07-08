@@ -9,11 +9,11 @@ public class ReportRepository(InvoiceDbContext context) : IReportRepository
         return await invoices
             .Join(context.Customers.Where(c => c.DeletedAt == null), i => i.CustomerId, c => c.Id,
                 (i, c) => new { i, c })
-            .GroupBy(x => new { x.c.Id, x.c.Name })
+            .GroupBy(x => new { x.c.Id, x.c.FirstName, x.c.LastName })
             .Select(g => new CustomerStatResponse
             {
                 CustomerId = g.Key.Id,
-                CustomerName = g.Key.Name,
+                CustomerName = g.Key.FirstName + " " + g.Key.LastName,
                 InvoiceCount = g.Count(),
                 TotalSum = g.Sum(x => x.i.TotalSum)
             })

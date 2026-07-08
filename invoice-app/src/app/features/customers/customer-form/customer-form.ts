@@ -27,7 +27,9 @@ export class CustomerFormComponent {
   protected readonly errorMessage = signal<string | null>(null);
 
   protected readonly form = this.fb.nonNullable.group({
-    name: ['', [Validators.required]],
+    firstName: ['', [Validators.required]],
+    lastName: ['', [Validators.required]],
+    companyName: [''],
     email: ['', [Validators.required, Validators.email]],
     address: [''],
     phoneNumber: [''],
@@ -40,7 +42,9 @@ export class CustomerFormComponent {
           this.loading.set(false);
           if (res.isSucceeded && res.data) {
             this.form.patchValue({
-              name: res.data.name,
+              firstName: res.data.firstName,
+              lastName: res.data.lastName,
+              companyName: res.data.companyName ?? '',
               email: res.data.email,
               address: res.data.address ?? '',
               phoneNumber: res.data.phoneNumber ?? '',
@@ -64,7 +68,12 @@ export class CustomerFormComponent {
     this.submitting.set(true);
     this.errorMessage.set(null);
     const raw = this.form.getRawValue();
-    const payload = { ...raw, address: raw.address || null, phoneNumber: raw.phoneNumber || null };
+    const payload = {
+      ...raw,
+      companyName: raw.companyName || null,
+      address: raw.address || null,
+      phoneNumber: raw.phoneNumber || null,
+    };
 
     const request$ = this.customerId
       ? this.customerService.update(this.customerId, payload)

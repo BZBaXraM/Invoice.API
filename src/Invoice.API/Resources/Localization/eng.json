@@ -3,7 +3,6 @@
   "nav.customers": "Customers",
   "nav.invoices": "Invoices",
   "nav.profile": "Profile",
-
   "shell.logout.button": "Log out",
   "shell.logout.title": "Log out of your account",
   "shell.logout.message": "Are you sure you want to end the session?",
@@ -13,17 +12,14 @@
   "shell.sidebar.show": "Show sidebar",
   "shell.theme.toDark": "Switch to dark theme",
   "shell.theme.toLight": "Switch to light theme",
-
   "invoiceStatus.created": "Created",
   "invoiceStatus.sent": "Sent",
   "invoiceStatus.received": "Received",
   "invoiceStatus.paid": "Paid",
   "invoiceStatus.cancelled": "Cancelled",
   "invoiceStatus.rejected": "Rejected",
-
   "errors.networkDown": "Could not reach the server. Check your connection.",
   "errors.serverError": "Internal server error. Please try again later.",
-
   "common.actions.edit": "Edit",
   "common.actions.delete": "Delete",
   "common.actions.cancel": "Cancel",
@@ -40,7 +36,6 @@
   "common.fields.createdAt": "Created",
   "common.fields.updatedAt": "Updated",
   "common.errors.generic": "Something went wrong. Please try again.",
-
   "customers.archiveConfirm.title": "Archive customer",
   "customers.archiveSuccess": "Customer archived.",
   "customers.unarchiveSuccess": "Customer restored from archive.",
@@ -49,13 +44,13 @@
   "customers.deleteSuccess": "Customer deleted.",
   "customers.deleteError": "Could not delete the customer.",
   "customers.deleteError.hasInvoices": "Cannot delete a customer that has been sent invoices.",
-
   "customers.list.title": "Customers",
   "customers.list.subtitle": "Manage customers and their contact details.",
   "customers.list.newButton": "New customer",
   "customers.list.searchPlaceholder": "Search by name…",
   "customers.list.showArchived": "Show archived",
   "customers.list.columns.name": "Name",
+  "customers.list.columns.company": "Company",
   "customers.list.columns.status": "Status",
   "customers.list.empty.title": "No customers found",
   "customers.list.empty.message": "Add your first customer to start issuing invoices.",
@@ -65,7 +60,6 @@
   "customers.list.archiveConfirm.message": "Archive “{{name}}”? The customer will be hidden, but their data will be kept.",
   "customers.list.deleteConfirm.message": "Delete “{{name}}” permanently? Only possible if the customer has never been invoiced.",
   "customers.list.loadError": "Could not load the customer list.",
-
   "customers.detail.subtitlePrefix": "Customer since ",
   "customers.detail.contactCard": "Contact details",
   "customers.detail.metaCard": "Metadata",
@@ -77,16 +71,16 @@
   "customers.detail.archiveConfirm.message": "Archive “{{name}}”?",
   "customers.detail.deleteConfirm.message": "Delete “{{name}}” permanently?",
   "customers.detail.loadError": "Could not load the customer.",
-
   "customers.form.titleEdit": "Edit customer",
   "customers.form.titleNew": "New customer",
   "customers.form.subtitle": "Customer details are used on invoices issued to them.",
-  "customers.form.fields.name": "Name / company",
+  "customers.form.fields.firstName": "First name",
+  "customers.form.fields.lastName": "Last name",
+  "customers.form.fields.companyName": "Company",
   "customers.form.updateSuccess": "Customer updated.",
   "customers.form.createSuccess": "Customer created.",
   "customers.form.loadError": "Could not load the customer.",
   "customers.form.saveError": "Could not save the customer.",
-
   "invoices.archiveConfirm.title": "Archive invoice",
   "invoices.archiveConfirm.message": "Archive this invoice?",
   "invoices.archiveSuccess": "Invoice archived.",
@@ -95,7 +89,6 @@
   "invoices.detail.deleteConfirm.message": "Delete this invoice permanently?",
   "invoices.deleteSuccess": "Invoice deleted.",
   "invoices.deleteError": "Could not delete the invoice.",
-
   "invoices.list.title": "Invoices",
   "invoices.list.subtitle": "All invoices issued to your customers.",
   "invoices.list.newButton": "New invoice",
@@ -107,7 +100,6 @@
   "invoices.list.empty.title": "No invoices found",
   "invoices.list.empty.message": "Issue your first invoice to a customer.",
   "invoices.list.loadError": "Could not load the invoices.",
-
   "invoices.detail.title": "Invoice {{start}} – {{end}}",
   "invoices.detail.exportButton": "Download PDF",
   "invoices.detail.exporting": "Exporting…",
@@ -126,7 +118,6 @@
   "invoices.detail.statusUpdateSuccess": "Invoice status updated.",
   "invoices.detail.statusUpdateError": "Could not update the status.",
   "invoices.detail.exportError": "Could not export the PDF.",
-
   "invoices.form.titleEdit": "Edit invoice",
   "invoices.form.titleNew": "New invoice",
   "invoices.form.subtitle": "Fill in the period, customer, and invoice line items.",
@@ -147,7 +138,6 @@
   "invoices.form.createSuccess": "Invoice created.",
   "invoices.form.loadError": "Could not load the invoice.",
   "invoices.form.saveError": "Could not save the invoice.",
-
   "dashboard.title": "Dashboard",
   "dashboard.subtitle": "Summary statistics for invoices in the selected period.",
   "dashboard.stat.revenue": "Revenue for period",
@@ -160,7 +150,6 @@
   "dashboard.customerStatsError": "Could not load customer statistics.",
   "dashboard.serviceStatsError": "Could not load service statistics.",
   "dashboard.statusStatsError": "Could not load status statistics.",
-
   "profile.title": "Profile",
   "profile.subtitle": "Manage your personal details and account security.",
   "profile.personalCard": "Personal details",
@@ -185,7 +174,6 @@
   "profile.deleteConfirm.message": "This action is irreversible. All your data will be deleted.",
   "profile.deleteSuccess": "Account deleted.",
   "profile.deleteError": "Could not delete the account.",
-
   "auth.login.title": "Sign in",
   "auth.login.subtitle": "Enter your details to keep working with invoices and customers.",
   "auth.login.fields.usernameOrEmail": "Email or username",
@@ -196,7 +184,6 @@
   "auth.login.footer.createAccount": "Create an account",
   "auth.login.loginError": "Could not sign in.",
   "auth.login.loginFallbackError": "Incorrect username or password.",
-
   "auth.register.title": "Register",
   "auth.register.subtitle": "Create an account to start invoicing your customers.",
   "auth.register.fields.firstName": "First name",
@@ -211,7 +198,6 @@
   "auth.register.footer.haveAccount": "Already have an account?",
   "auth.register.footer.login": "Sign in",
   "auth.register.registerError": "Could not register.",
-
   "auth.confirmEmail.title": "Confirm email",
   "auth.confirmEmail.confirmSuccess": "Email confirmed. You can now sign in.",
   "auth.confirmEmail.subtitleWithEmail": "We sent a confirmation code to {{email}}.",
@@ -225,13 +211,11 @@
   "auth.confirmEmail.confirmError": "Incorrect confirmation code.",
   "auth.confirmEmail.resendMissingEmail": "Enter your email to resend the code.",
   "auth.confirmEmail.resendSuccess": "Confirmation code resent.",
-
   "auth.forgotPassword.title": "Password recovery",
   "auth.forgotPassword.subtitle": "Enter your email — we'll send a code to reset your password.",
   "auth.forgotPassword.submit": "Send code",
   "auth.forgotPassword.submitting": "Sending…",
   "auth.forgotPassword.footer.backToLogin": "Back to sign in",
-
   "auth.resetPassword.title": "New password",
   "auth.resetPassword.subtitle": "Enter the code from the email and choose a new password.",
   "auth.resetPassword.fields.code": "Code from email",
@@ -241,17 +225,13 @@
   "auth.resetPassword.footer.backToLogin": "Back to sign in",
   "auth.resetPassword.resetSuccess": "Password changed successfully. Sign in with your new password.",
   "auth.resetPassword.resetError": "Could not reset the password.",
-
   "confirmDialog.defaultCancel": "Cancel",
   "confirmDialog.defaultConfirm": "Confirm",
-
   "pagination.range": "Showing {{start}}–{{end}} of {{total}}",
   "pagination.previous": "Previous",
   "pagination.next": "Next",
-
   "passwordInput.show": "Show password",
   "passwordInput.hide": "Hide password",
-
   "chat.launcherLabel": "Open assistant chat",
   "chat.title": "Invoice assistant",
   "chat.placeholder": "Ask about your invoices…",

@@ -11,7 +11,7 @@
         </h1>
         <p class="page-header__subtitle">
           @if (customer(); as c) {
-            <a [routerLink]="['/customers', c.id]">{{ c.name }}</a>
+            <a [routerLink]="['/customers', c.id]">{{ c.firstName }} {{ c.lastName }}</a>
           }
         </p>
       </div>

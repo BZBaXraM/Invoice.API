@@ -7,6 +7,7 @@ import { CustomerService } from '../../../core/services/customer.service';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { RealtimeService } from '../../../core/services/realtime.service';
+import { customerFullName } from '../../../core/models/customer.model';
 import { INVOICE_STATUSES, InvoiceResponse, InvoiceStatus } from '../../../core/models/invoice.model';
 import { FormatService } from '../../../core/services/format.service';
 import { LocalizationService } from '../../../core/services/localization.service';
@@ -112,7 +113,7 @@ export class InvoiceListComponent {
     this.customerService.getList({ pageNumber: 1, pageSize: 200 }).subscribe({
       next: (res) => {
         if (res.isSucceeded && res.data) {
-          this.customerNames.set(new Map(res.data.items.map((c) => [c.id, c.name])));
+          this.customerNames.set(new Map(res.data.items.map((c) => [c.id, customerFullName(c)])));
         }
       },
     });

@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Invoice.Infrastructure.Migrations
 {
     [DbContext(typeof(InvoiceDbContext))]
-    [Migration("20260704200141_Initial")]
+    [Migration("20260708180611_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -34,6 +34,9 @@ namespace Invoice.Infrastructure.Migrations
                     b.Property<string>("Address")
                         .HasColumnType("text");
 
+                    b.Property<string>("CompanyName")
+                        .HasColumnType("text");
+
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("timestamp with time zone");
 
@@ -44,7 +47,11 @@ namespace Invoice.Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<string>("Name")
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
 

@@ -7,7 +7,7 @@ import { CustomerService } from '../../../core/services/customer.service';
 import { InvoiceService } from '../../../core/services/invoice.service';
 import { NotificationService } from '../../../core/services/notification.service';
 import { RealtimeService } from '../../../core/services/realtime.service';
-import { CustomerResponse } from '../../../core/models/customer.model';
+import { CustomerResponse, customerFullName } from '../../../core/models/customer.model';
 import { InvoiceResponse } from '../../../core/models/invoice.model';
 import { FormatService } from '../../../core/services/format.service';
 import { LocalizationService } from '../../../core/services/localization.service';
@@ -106,7 +106,7 @@ export class CustomerDetailComponent {
     }
     const confirmed = await this.confirmDialog.ask({
       title: this.localization.translate('customers.archiveConfirm.title'),
-      message: this.localization.translate('customers.detail.archiveConfirm.message', { name: customer.name }),
+      message: this.localization.translate('customers.detail.archiveConfirm.message', { name: customerFullName(customer) }),
       confirmLabel: this.localization.translate('common.actions.archive'),
     });
     if (!confirmed) {
@@ -142,7 +142,7 @@ export class CustomerDetailComponent {
     }
     const confirmed = await this.confirmDialog.ask({
       title: this.localization.translate('customers.deleteConfirm.title'),
-      message: this.localization.translate('customers.detail.deleteConfirm.message', { name: customer.name }),
+      message: this.localization.translate('customers.detail.deleteConfirm.message', { name: customerFullName(customer) }),
       confirmLabel: this.localization.translate('common.actions.delete'),
       danger: true,
     });

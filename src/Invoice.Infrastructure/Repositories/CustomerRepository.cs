@@ -29,14 +29,22 @@ public class CustomerRepository(InvoiceDbContext context) : ICustomerRepository
 
         if (!string.IsNullOrWhiteSpace(nameFilter))
         {
-            query = query.Where(c => c.Name.Contains(nameFilter));
+            query = query.Where(c =>
+                c.FirstName.Contains(nameFilter) ||
+                c.LastName.Contains(nameFilter) ||
+                (c.CompanyName != null && c.CompanyName.Contains(nameFilter)));
         }
 
         query = sortBy?.ToLowerInvariant() switch
         {
             "email" => sortDescending ? query.OrderByDescending(c => c.Email) : query.OrderBy(c => c.Email),
             "createdat" => sortDescending ? query.OrderByDescending(c => c.CreatedAt) : query.OrderBy(c => c.CreatedAt),
-            _ => sortDescending ? query.OrderByDescending(c => c.Name) : query.OrderBy(c => c.Name)
+            "companyname" => sortDescending
+                ? query.OrderByDescending(c => c.CompanyName)
+                : query.OrderBy(c => c.CompanyName),
+            _ => sortDescending
+                ? query.OrderByDescending(c => c.FirstName).ThenByDescending(c => c.LastName)
+                : query.OrderBy(c => c.FirstName).ThenBy(c => c.LastName)
         };
 
         var totalCount = await query.CountAsync();

@@ -3,7 +3,6 @@
   "nav.customers": "Müştərilər",
   "nav.invoices": "Hesab-fakturalar",
   "nav.profile": "Profil",
-
   "shell.logout.button": "Çıxış",
   "shell.logout.title": "Hesabdan çıxış",
   "shell.logout.message": "Sessiyanı sonlandırmaq istədiyinizə əminsiniz?",
@@ -13,17 +12,14 @@
   "shell.sidebar.show": "Yan paneli göstər",
   "shell.theme.toDark": "Tünd temaya keç",
   "shell.theme.toLight": "Açıq temaya keç",
-
   "invoiceStatus.created": "Yaradılıb",
   "invoiceStatus.sent": "Göndərilib",
   "invoiceStatus.received": "Qəbul edilib",
   "invoiceStatus.paid": "Ödənilib",
   "invoiceStatus.cancelled": "Ləğv edilib",
   "invoiceStatus.rejected": "Rədd edilib",
-
   "errors.networkDown": "Serverlə əlaqə qurula bilmədi. Bağlantınızı yoxlayın.",
   "errors.serverError": "Daxili server xətası. Zəhmət olmasa sonra yenidən cəhd edin.",
-
   "common.actions.edit": "Redaktə et",
   "common.actions.delete": "Sil",
   "common.actions.cancel": "Ləğv et",
@@ -40,7 +36,6 @@
   "common.fields.createdAt": "Yaradılıb",
   "common.fields.updatedAt": "Yenilənib",
   "common.errors.generic": "Nəsə səhv getdi. Yenidən cəhd edin.",
-
   "customers.archiveConfirm.title": "Müştərini arxivləşdir",
   "customers.archiveSuccess": "Müştəri arxivləşdirildi.",
   "customers.unarchiveSuccess": "Müştəri arxivdən bərpa edildi.",
@@ -49,13 +44,13 @@
   "customers.deleteSuccess": "Müştəri silindi.",
   "customers.deleteError": "Müştərini silmək mümkün olmadı.",
   "customers.deleteError.hasInvoices": "Hesab-faktura göndərilmiş müştərini silmək mümkün deyil.",
-
   "customers.list.title": "Müştərilər",
   "customers.list.subtitle": "Müştərilərin və onların əlaqə məlumatlarının idarə edilməsi.",
   "customers.list.newButton": "Yeni müştəri",
   "customers.list.searchPlaceholder": "Ada görə axtar…",
   "customers.list.showArchived": "Arxivlənənləri göstər",
   "customers.list.columns.name": "Ad",
+  "customers.list.columns.company": "Şirkət",
   "customers.list.columns.status": "Status",
   "customers.list.empty.title": "Müştəri tapılmadı",
   "customers.list.empty.message": "Hesab-faktura göndərməyə başlamaq üçün ilk müştərini əlavə edin.",
@@ -65,7 +60,6 @@
   "customers.list.archiveConfirm.message": "«{{name}}» arxivləşdirilsin? Müştəri gizlədiləcək, lakin məlumatlar saxlanılacaq.",
   "customers.list.deleteConfirm.message": "«{{name}}» birdəfəlik silinsin? Yalnız müştəriyə heç bir hesab-faktura göndərilməyibsə mümkündür.",
   "customers.list.loadError": "Müştəri siyahısını yükləmək mümkün olmadı.",
-
   "customers.detail.subtitlePrefix": "Qeydiyyat tarixi: ",
   "customers.detail.contactCard": "Əlaqə məlumatları",
   "customers.detail.metaCard": "Metaməlumat",
@@ -77,16 +71,16 @@
   "customers.detail.archiveConfirm.message": "«{{name}}» arxivləşdirilsin?",
   "customers.detail.deleteConfirm.message": "«{{name}}» birdəfəlik silinsin?",
   "customers.detail.loadError": "Müştərini yükləmək mümkün olmadı.",
-
   "customers.form.titleEdit": "Müştərini redaktə et",
   "customers.form.titleNew": "Yeni müştəri",
   "customers.form.subtitle": "Müştəri məlumatları ona göndərilən hesab-fakturalarda istifadə olunur.",
-  "customers.form.fields.name": "Ad / şirkət",
+  "customers.form.fields.firstName": "Ad",
+  "customers.form.fields.lastName": "Soyad",
+  "customers.form.fields.companyName": "Şirkət",
   "customers.form.updateSuccess": "Müştəri yeniləndi.",
   "customers.form.createSuccess": "Müştəri yaradıldı.",
   "customers.form.loadError": "Müştərini yükləmək mümkün olmadı.",
   "customers.form.saveError": "Müştərini yadda saxlamaq mümkün olmadı.",
-
   "invoices.archiveConfirm.title": "Hesab-fakturanı arxivləşdir",
   "invoices.archiveConfirm.message": "Bu hesab-faktura arxivləşdirilsin?",
   "invoices.archiveSuccess": "Hesab-faktura arxivləşdirildi.",
@@ -95,7 +89,6 @@
   "invoices.detail.deleteConfirm.message": "Bu hesab-faktura birdəfəlik silinsin?",
   "invoices.deleteSuccess": "Hesab-faktura silindi.",
   "invoices.deleteError": "Hesab-fakturanı silmək mümkün olmadı.",
-
   "invoices.list.title": "Hesab-fakturalar",
   "invoices.list.subtitle": "Müştərilərinizə göndərilmiş bütün hesab-fakturalar.",
   "invoices.list.newButton": "Yeni hesab-faktura",
@@ -107,7 +100,6 @@
   "invoices.list.empty.title": "Hesab-faktura tapılmadı",
   "invoices.list.empty.message": "Müştəriyə ilk hesab-fakturanı göndərin.",
   "invoices.list.loadError": "Hesab-fakturaları yükləmək mümkün olmadı.",
-
   "invoices.detail.title": "Hesab-faktura {{start}} – {{end}}",
   "invoices.detail.exportButton": "PDF yüklə",
   "invoices.detail.exporting": "Ixrac olunur…",
@@ -126,7 +118,6 @@
   "invoices.detail.statusUpdateSuccess": "Hesab-fakturanın statusu yeniləndi.",
   "invoices.detail.statusUpdateError": "Statusu dəyişmək mümkün olmadı.",
   "invoices.detail.exportError": "PDF ixrac etmək mümkün olmadı.",
-
   "invoices.form.titleEdit": "Hesab-fakturanı redaktə et",
   "invoices.form.titleNew": "Yeni hesab-faktura",
   "invoices.form.subtitle": "Dövrü, müştərini və hesab-faktura sətirlərini doldurun.",
@@ -147,7 +138,6 @@
   "invoices.form.createSuccess": "Hesab-faktura yaradıldı.",
   "invoices.form.loadError": "Hesab-fakturanı yükləmək mümkün olmadı.",
   "invoices.form.saveError": "Hesab-fakturanı yadda saxlamaq mümkün olmadı.",
-
   "dashboard.title": "İdarəetmə paneli",
   "dashboard.subtitle": "Seçilmiş dövr üzrə hesab-fakturaların ümumi statistikası.",
   "dashboard.stat.revenue": "Dövr üzrə gəlir",
@@ -160,7 +150,6 @@
   "dashboard.customerStatsError": "Müştəri statistikasını yükləmək mümkün olmadı.",
   "dashboard.serviceStatsError": "Xidmət statistikasını yükləmək mümkün olmadı.",
   "dashboard.statusStatsError": "Status statistikasını yükləmək mümkün olmadı.",
-
   "profile.title": "Profil",
   "profile.subtitle": "Şəxsi məlumatlarınızı və hesab təhlükəsizliyini idarə edin.",
   "profile.personalCard": "Şəxsi məlumatlar",
@@ -185,7 +174,6 @@
   "profile.deleteConfirm.message": "Bu əməliyyat geri qaytarılmazdır. Bütün məlumatlarınız silinəcək.",
   "profile.deleteSuccess": "Hesab silindi.",
   "profile.deleteError": "Hesabı silmək mümkün olmadı.",
-
   "auth.login.title": "Hesaba giriş",
   "auth.login.subtitle": "Hesab-fakturalar və müştərilərlə işə davam etmək üçün məlumatlarınızı daxil edin.",
   "auth.login.fields.usernameOrEmail": "Email və ya istifadəçi adı",
@@ -196,7 +184,6 @@
   "auth.login.footer.createAccount": "Hesab yarat",
   "auth.login.loginError": "Daxil olmaq mümkün olmadı.",
   "auth.login.loginFallbackError": "Yanlış istifadəçi adı və ya şifrə.",
-
   "auth.register.title": "Qeydiyyat",
   "auth.register.subtitle": "Müştərilərinizə hesab-faktura göndərməyə başlamaq üçün hesab yaradın.",
   "auth.register.fields.firstName": "Ad",
@@ -211,7 +198,6 @@
   "auth.register.footer.haveAccount": "Artıq hesabınız var?",
   "auth.register.footer.login": "Daxil ol",
   "auth.register.registerError": "Qeydiyyatdan keçmək mümkün olmadı.",
-
   "auth.confirmEmail.title": "Email təsdiqi",
   "auth.confirmEmail.confirmSuccess": "Email təsdiqləndi. İndi daxil ola bilərsiniz.",
   "auth.confirmEmail.subtitleWithEmail": "Təsdiq kodunu {{email}} ünvanına göndərdik.",
@@ -225,13 +211,11 @@
   "auth.confirmEmail.confirmError": "Yanlış təsdiq kodu.",
   "auth.confirmEmail.resendMissingEmail": "Kodu yenidən göndərmək üçün email daxil edin.",
   "auth.confirmEmail.resendSuccess": "Təsdiq kodu yenidən göndərildi.",
-
   "auth.forgotPassword.title": "Şifrənin bərpası",
   "auth.forgotPassword.subtitle": "Email daxil edin — şifrəni sıfırlamaq üçün kod göndərəcəyik.",
   "auth.forgotPassword.submit": "Kod göndər",
   "auth.forgotPassword.submitting": "Göndərilir…",
   "auth.forgotPassword.footer.backToLogin": "Girişə qayıt",
-
   "auth.resetPassword.title": "Yeni şifrə",
   "auth.resetPassword.subtitle": "Məktubdan kodu daxil edin və yeni şifrə seçin.",
   "auth.resetPassword.fields.code": "Məktubdan kod",
@@ -241,17 +225,13 @@
   "auth.resetPassword.footer.backToLogin": "Girişə qayıt",
   "auth.resetPassword.resetSuccess": "Şifrə uğurla dəyişdirildi. Yeni şifrə ilə daxil olun.",
   "auth.resetPassword.resetError": "Şifrəni sıfırlamaq mümkün olmadı.",
-
   "confirmDialog.defaultCancel": "Ləğv et",
   "confirmDialog.defaultConfirm": "Təsdiqlə",
-
   "pagination.range": "{{start}}–{{end}} göstərilir, cəmi {{total}}",
   "pagination.previous": "Geri",
   "pagination.next": "İrəli",
-
   "passwordInput.show": "Şifrəni göstər",
   "passwordInput.hide": "Şifrəni gizlət",
-
   "chat.launcherLabel": "Assistent söhbətini aç",
   "chat.title": "Faktura assistenti",
   "chat.placeholder": "Fakturalarınız haqqında soruşun…",

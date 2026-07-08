@@ -18,7 +18,9 @@ public class CustomerService(
         var customer = new Customer
         {
             UserId = ownerUserId,
-            Name = request.Name,
+            FirstName = request.FirstName,
+            LastName = request.LastName,
+            CompanyName = request.CompanyName,
             Address = request.Address,
             Email = request.Email,
             PhoneNumber = request.PhoneNumber,
@@ -50,7 +52,9 @@ public class CustomerService(
             return ResponseModel.Failure<CustomerResponse>("Customer not found", 404);
         }
 
-        customer.Name = request.Name;
+        customer.FirstName = request.FirstName;
+        customer.LastName = request.LastName;
+        customer.CompanyName = request.CompanyName;
         customer.Address = request.Address;
         customer.Email = request.Email;
         customer.PhoneNumber = request.PhoneNumber;

@@ -1,6 +1,8 @@
 export interface CustomerResponse {
   id: string;
-  name: string;
+  firstName: string;
+  lastName: string;
+  companyName?: string | null;
   address?: string | null;
   email: string;
   phoneNumber?: string | null;
@@ -10,15 +12,23 @@ export interface CustomerResponse {
 }
 
 export interface CreateCustomerRequest {
-  name: string;
+  firstName: string;
+  lastName: string;
+  companyName?: string | null;
   address?: string | null;
   email: string;
   phoneNumber?: string | null;
 }
 
 export interface UpdateCustomerRequest {
-  name: string;
+  firstName: string;
+  lastName: string;
+  companyName?: string | null;
   address?: string | null;
   email: string;
   phoneNumber?: string | null;
+}
+
+export function customerFullName(customer: Pick<CustomerResponse, 'firstName' | 'lastName'>): string {
+  return `${customer.firstName} ${customer.lastName}`;
 }

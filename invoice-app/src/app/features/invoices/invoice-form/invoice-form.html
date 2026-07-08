@@ -17,7 +17,7 @@
             <select id="customerId" class="select" formControlName="customerId">
               <option value="" disabled>{{ 'invoices.form.customerPlaceholder' | translate }}</option>
               @for (customer of customers(); track customer.id) {
-                <option [value]="customer.id">{{ customer.name }}</option>
+                <option [value]="customer.id">{{ customer.firstName }} {{ customer.lastName }}{{ customer.companyName ? ' (' + customer.companyName + ')' : '' }}</option>
               }
             </select>
           </div>

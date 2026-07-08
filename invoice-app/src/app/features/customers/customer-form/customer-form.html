@@ -11,9 +11,20 @@
   } @else {
     <div class="card">
       <form class="stack" [formGroup]="form" (ngSubmit)="submit()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="firstName">{{ 'customers.form.fields.firstName' | translate }}</label>
+            <input id="firstName" class="input" type="text" formControlName="firstName" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="lastName">{{ 'customers.form.fields.lastName' | translate }}</label>
+            <input id="lastName" class="input" type="text" formControlName="lastName" />
+          </div>
+        </div>
+
         <div class="field">
-          <label class="field__label" for="name">{{ 'customers.form.fields.name' | translate }}</label>
-          <input id="name" class="input" type="text" formControlName="name" />
+          <label class="field__label" for="companyName">{{ 'customers.form.fields.companyName' | translate }}</label>
+          <input id="companyName" class="input" type="text" formControlName="companyName" />
         </div>
 
         <div class="field">

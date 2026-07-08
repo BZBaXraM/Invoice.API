@@ -3,7 +3,6 @@
   "nav.customers": "Клиенты",
   "nav.invoices": "Счета",
   "nav.profile": "Профиль",
-
   "shell.logout.button": "Выйти",
   "shell.logout.title": "Выйти из аккаунта",
   "shell.logout.message": "Вы уверены, что хотите завершить сеанс?",
@@ -13,17 +12,14 @@
   "shell.sidebar.show": "Показать боковую панель",
   "shell.theme.toDark": "Включить тёмную тему",
   "shell.theme.toLight": "Включить светлую тему",
-
   "invoiceStatus.created": "Создан",
   "invoiceStatus.sent": "Отправлен",
   "invoiceStatus.received": "Получен",
   "invoiceStatus.paid": "Оплачен",
   "invoiceStatus.cancelled": "Отменён",
   "invoiceStatus.rejected": "Отклонён",
-
   "errors.networkDown": "Не удалось связаться с сервером. Проверьте подключение.",
   "errors.serverError": "Внутренняя ошибка сервера. Попробуйте позже.",
-
   "common.actions.edit": "Изменить",
   "common.actions.delete": "Удалить",
   "common.actions.cancel": "Отмена",
@@ -40,7 +36,6 @@
   "common.fields.createdAt": "Создан",
   "common.fields.updatedAt": "Обновлён",
   "common.errors.generic": "Что-то пошло не так. Попробуйте снова.",
-
   "customers.archiveConfirm.title": "Архивировать клиента",
   "customers.archiveSuccess": "Клиент архивирован.",
   "customers.unarchiveSuccess": "Клиент восстановлен из архива.",
@@ -49,13 +44,13 @@
   "customers.deleteSuccess": "Клиент удалён.",
   "customers.deleteError": "Не удалось удалить клиента.",
   "customers.deleteError.hasInvoices": "Нельзя удалить клиента, которому уже отправлялись счета.",
-
   "customers.list.title": "Клиенты",
   "customers.list.subtitle": "Управление клиентами и их контактными данными.",
   "customers.list.newButton": "Новый клиент",
   "customers.list.searchPlaceholder": "Поиск по имени…",
   "customers.list.showArchived": "Показывать архивированных",
   "customers.list.columns.name": "Имя",
+  "customers.list.columns.company": "Компания",
   "customers.list.columns.status": "Статус",
   "customers.list.empty.title": "Клиенты не найдены",
   "customers.list.empty.message": "Добавьте первого клиента, чтобы начать выставлять счета.",
@@ -65,7 +60,6 @@
   "customers.list.archiveConfirm.message": "Архивировать «{{name}}»? Клиент будет скрыт, но данные сохранятся.",
   "customers.list.deleteConfirm.message": "Удалить «{{name}}» безвозвратно? Возможно только если клиенту не отправлялись счета.",
   "customers.list.loadError": "Не удалось загрузить список клиентов.",
-
   "customers.detail.subtitlePrefix": "Клиент с ",
   "customers.detail.contactCard": "Контактные данные",
   "customers.detail.metaCard": "Метаданные",
@@ -77,16 +71,16 @@
   "customers.detail.archiveConfirm.message": "Архивировать «{{name}}»?",
   "customers.detail.deleteConfirm.message": "Удалить «{{name}}» безвозвратно?",
   "customers.detail.loadError": "Не удалось загрузить клиента.",
-
   "customers.form.titleEdit": "Изменить клиента",
   "customers.form.titleNew": "Новый клиент",
   "customers.form.subtitle": "Данные клиента используются на выставляемых ему счетах.",
-  "customers.form.fields.name": "Имя / компания",
+  "customers.form.fields.firstName": "Имя",
+  "customers.form.fields.lastName": "Фамилия",
+  "customers.form.fields.companyName": "Компания",
   "customers.form.updateSuccess": "Клиент обновлён.",
   "customers.form.createSuccess": "Клиент создан.",
   "customers.form.loadError": "Не удалось загрузить клиента.",
   "customers.form.saveError": "Не удалось сохранить клиента.",
-
   "invoices.archiveConfirm.title": "Архивировать счёт",
   "invoices.archiveConfirm.message": "Архивировать этот счёт?",
   "invoices.archiveSuccess": "Счёт архивирован.",
@@ -95,7 +89,6 @@
   "invoices.detail.deleteConfirm.message": "Удалить этот счёт безвозвратно?",
   "invoices.deleteSuccess": "Счёт удалён.",
   "invoices.deleteError": "Не удалось удалить счёт.",
-
   "invoices.list.title": "Счета",
   "invoices.list.subtitle": "Все выставленные счета по вашим клиентам.",
   "invoices.list.newButton": "Новый счёт",
@@ -107,7 +100,6 @@
   "invoices.list.empty.title": "Счета не найдены",
   "invoices.list.empty.message": "Выставите первый счёт клиенту.",
   "invoices.list.loadError": "Не удалось загрузить счета.",
-
   "invoices.detail.title": "Счёт {{start}} – {{end}}",
   "invoices.detail.exportButton": "Скачать PDF",
   "invoices.detail.exporting": "Экспорт…",
@@ -126,7 +118,6 @@
   "invoices.detail.statusUpdateSuccess": "Статус счёта обновлён.",
   "invoices.detail.statusUpdateError": "Не удалось изменить статус.",
   "invoices.detail.exportError": "Не удалось экспортировать PDF.",
-
   "invoices.form.titleEdit": "Изменить счёт",
   "invoices.form.titleNew": "Новый счёт",
   "invoices.form.subtitle": "Заполните период, клиента и позиции счёта.",
@@ -147,7 +138,6 @@
   "invoices.form.createSuccess": "Счёт создан.",
   "invoices.form.loadError": "Не удалось загрузить счёт.",
   "invoices.form.saveError": "Не удалось сохранить счёт.",
-
   "dashboard.title": "Дашборд",
   "dashboard.subtitle": "Сводная статистика по счетам за выбранный период.",
   "dashboard.stat.revenue": "Выручка за период",
@@ -160,7 +150,6 @@
   "dashboard.customerStatsError": "Не удалось загрузить статистику клиентов.",
   "dashboard.serviceStatsError": "Не удалось загрузить статистику услуг.",
   "dashboard.statusStatsError": "Не удалось загрузить статистику по статусам.",
-
   "profile.title": "Профиль",
   "profile.subtitle": "Управление персональными данными и безопасностью аккаунта.",
   "profile.personalCard": "Личные данные",
@@ -185,7 +174,6 @@
   "profile.deleteConfirm.message": "Это действие необратимо. Все ваши данные будут удалены.",
   "profile.deleteSuccess": "Аккаунт удалён.",
   "profile.deleteError": "Не удалось удалить аккаунт.",
-
   "auth.login.title": "Вход в аккаунт",
   "auth.login.subtitle": "Введите данные, чтобы продолжить работу со счетами и клиентами.",
   "auth.login.fields.usernameOrEmail": "Email или логин",
@@ -196,7 +184,6 @@
   "auth.login.footer.createAccount": "Создать аккаунт",
   "auth.login.loginError": "Не удалось выполнить вход.",
   "auth.login.loginFallbackError": "Неверный логин или пароль.",
-
   "auth.register.title": "Регистрация",
   "auth.register.subtitle": "Создайте аккаунт, чтобы начать выставлять счета клиентам.",
   "auth.register.fields.firstName": "Имя",
@@ -211,7 +198,6 @@
   "auth.register.footer.haveAccount": "Уже есть аккаунт?",
   "auth.register.footer.login": "Войти",
   "auth.register.registerError": "Не удалось зарегистрироваться.",
-
   "auth.confirmEmail.title": "Подтверждение email",
   "auth.confirmEmail.confirmSuccess": "Email подтверждён. Теперь вы можете войти.",
   "auth.confirmEmail.subtitleWithEmail": "Мы отправили код подтверждения на {{email}}.",
@@ -225,13 +211,11 @@
   "auth.confirmEmail.confirmError": "Неверный код подтверждения.",
   "auth.confirmEmail.resendMissingEmail": "Укажите email, чтобы отправить код повторно.",
   "auth.confirmEmail.resendSuccess": "Код подтверждения отправлен повторно.",
-
   "auth.forgotPassword.title": "Восстановление пароля",
   "auth.forgotPassword.subtitle": "Укажите email — мы отправим код для сброса пароля.",
   "auth.forgotPassword.submit": "Отправить код",
   "auth.forgotPassword.submitting": "Отправка…",
   "auth.forgotPassword.footer.backToLogin": "Назад ко входу",
-
   "auth.resetPassword.title": "Новый пароль",
   "auth.resetPassword.subtitle": "Введите код из письма и придумайте новый пароль.",
   "auth.resetPassword.fields.code": "Код из письма",
@@ -241,17 +225,13 @@
   "auth.resetPassword.footer.backToLogin": "Назад ко входу",
   "auth.resetPassword.resetSuccess": "Пароль успешно изменён. Войдите с новым паролем.",
   "auth.resetPassword.resetError": "Не удалось сбросить пароль.",
-
   "confirmDialog.defaultCancel": "Отмена",
   "confirmDialog.defaultConfirm": "Подтвердить",
-
   "pagination.range": "Показано {{start}}–{{end}} из {{total}}",
   "pagination.previous": "Назад",
   "pagination.next": "Далее",
-
   "passwordInput.show": "Показать пароль",
   "passwordInput.hide": "Скрыть пароль",
-
   "chat.launcherLabel": "Открыть чат с ассистентом",
   "chat.title": "Ассистент по счетам",
   "chat.placeholder": "Спросите о своих счетах…",

@@ -280,7 +280,13 @@ public class InvoiceService(
         container.Column(column =>
         {
             column.Item().Text("Bill To").SemiBold().FontColor(Colors.Grey.Darken2);
-            column.Item().Text(customer?.Name ?? "Unknown customer").FontSize(12).SemiBold();
+            column.Item().Text(customer is null ? "Unknown customer" : $"{customer.FirstName} {customer.LastName}")
+                .FontSize(12).SemiBold();
+            if (!string.IsNullOrWhiteSpace(customer?.CompanyName))
+            {
+                column.Item().Text(customer.CompanyName);
+            }
+
             if (!string.IsNullOrWhiteSpace(customer?.Address))
             {
                 column.Item().Text(customer.Address);

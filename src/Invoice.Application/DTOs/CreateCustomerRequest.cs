@@ -5,8 +5,14 @@ namespace Invoice.Application.DTOs;
 /// </summary>
 public class CreateCustomerRequest
 {
-    /// <summary>The customer's name.</summary>
-    public required string Name { get; set; }
+    /// <summary>The customer's first name.</summary>
+    public required string FirstName { get; set; }
+
+    /// <summary>The customer's last name.</summary>
+    public required string LastName { get; set; }
+
+    /// <summary>The customer's company name.</summary>
+    public string? CompanyName { get; set; }
 
     /// <summary>The customer's address.</summary>
     public string? Address { get; set; }
