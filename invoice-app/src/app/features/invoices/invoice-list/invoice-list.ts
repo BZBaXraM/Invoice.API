@@ -103,7 +103,7 @@ export class InvoiceListComponent {
         },
         error: (err) => {
           this.loading.set(false);
-          this.notifications.error(extractApiError(err, 'Не удалось загрузить счета.'));
+          this.notifications.error(extractApiError(err, this.localization.translate('invoices.list.loadError')));
         },
       });
   }

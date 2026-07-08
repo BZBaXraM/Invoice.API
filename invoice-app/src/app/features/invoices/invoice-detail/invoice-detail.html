@@ -1,13 +1,13 @@
 @if (loading()) {
   <div class="page">
-    <p class="text-muted">Загрузка…</p>
+    <p class="text-muted">{{ 'common.loading' | translate }}</p>
   </div>
 } @else if (invoice(); as inv) {
   <div class="page">
     <div class="page-header">
       <div>
         <h1 class="page-header__title">
-          Счёт {{ format.date(inv.startDate) }} – {{ format.date(inv.endDate) }}
+          {{ 'invoices.detail.title' | translate: { start: format.date(inv.startDate), end: format.date(inv.endDate) } }}
         </h1>
         <p class="page-header__subtitle">
           @if (customer(); as c) {
@@ -17,19 +17,19 @@
       </div>
       <div class="page-actions">
         <button type="button" class="btn btn--secondary" [disabled]="exporting()" (click)="exportPdf()">
-          {{ exporting() ? 'Экспорт…' : 'Скачать PDF' }}
+          {{ (exporting() ? 'invoices.detail.exporting' : 'invoices.detail.exportButton') | translate }}
         </button>
         @if (inv.status === 'Created') {
-          <a class="btn btn--secondary" [routerLink]="['/invoices', inv.id, 'edit']">Изменить</a>
-          <button type="button" class="btn btn--danger" (click)="remove()">Удалить</button>
+          <a class="btn btn--secondary" [routerLink]="['/invoices', inv.id, 'edit']">{{ 'common.actions.edit' | translate }}</a>
+          <button type="button" class="btn btn--danger" (click)="remove()">{{ 'common.actions.delete' | translate }}</button>
         }
-        <button type="button" class="btn btn--secondary" (click)="archive()">Архивировать</button>
+        <button type="button" class="btn btn--secondary" (click)="archive()">{{ 'common.actions.archive' | translate }}</button>
       </div>
     </div>
 
     <div class="grid grid--two">
       <div class="card">
-        <h3>Статус</h3>
+        <h3>{{ 'invoices.detail.statusHeading' | translate }}</h3>
         <div class="cluster">
           <span class="badge badge--status-{{ inv.status.toLowerCase() }}">{{ ('invoiceStatus.' + inv.status.toLowerCase()) | translate }}</span>
           <select
@@ -47,21 +47,21 @@
       </div>
 
       <div class="card">
-        <h3>Итого</h3>
+        <h3>{{ 'invoices.detail.totalHeading' | translate }}</h3>
         <div style="font-size: 1.5rem; font-weight: 700">{{ format.currency(inv.totalSum, inv.currency) }}</div>
-        <p class="text-muted">{{ inv.rows.length }} позиций</p>
+        <p class="text-muted">{{ 'invoices.detail.itemsCount' | translate: { count: inv.rows.length } }}</p>
       </div>
     </div>
 
     <div class="card">
-      <h3>Позиции</h3>
+      <h3>{{ 'invoices.detail.rowsHeading' | translate }}</h3>
       <table class="table">
         <thead>
           <tr>
-            <th>Услуга</th>
-            <th class="text-right">Кол-во</th>
-            <th class="text-right">Ставка</th>
-            <th class="text-right">Сумма</th>
+            <th>{{ 'invoices.detail.columns.service' | translate }}</th>
+            <th class="text-right">{{ 'invoices.detail.columns.quantity' | translate }}</th>
+            <th class="text-right">{{ 'invoices.detail.columns.rate' | translate }}</th>
+            <th class="text-right">{{ 'invoices.detail.columns.sum' | translate }}</th>
           </tr>
         </thead>
         <tbody>
@@ -79,20 +79,20 @@
 
     @if (inv.comment) {
       <div class="card">
-        <h3>Комментарий</h3>
+        <h3>{{ 'invoices.detail.commentHeading' | translate }}</h3>
         <p>{{ inv.comment }}</p>
       </div>
     }
 
     <div class="card">
-      <h3>Метаданные</h3>
+      <h3>{{ 'invoices.detail.metadataHeading' | translate }}</h3>
       <div class="grid grid--two">
         <div>
-          <div class="text-muted">Создан</div>
+          <div class="text-muted">{{ 'common.fields.createdAt' | translate }}</div>
           <div>{{ format.dateTime(inv.createdAt) }}</div>
         </div>
         <div>
-          <div class="text-muted">Обновлён</div>
+          <div class="text-muted">{{ 'common.fields.updatedAt' | translate }}</div>
           <div>{{ format.dateTime(inv.updatedAt) }}</div>
         </div>
       </div>

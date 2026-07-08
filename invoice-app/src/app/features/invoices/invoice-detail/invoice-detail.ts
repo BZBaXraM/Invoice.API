@@ -55,7 +55,7 @@ export class InvoiceDetailComponent {
 
     this.realtime.invoiceDeleted$.pipe(takeUntilDestroyed()).subscribe((event) => {
       if (event.invoiceId === this.invoiceId) {
-        this.notifications.info('Этот счёт был удалён.');
+        this.notifications.info(this.localization.translate('invoices.detail.deletedNotice'));
         this.router.navigateByUrl('/invoices');
       }
     });
@@ -78,7 +78,7 @@ export class InvoiceDetailComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        this.notifications.error(extractApiError(err, 'Не удалось загрузить счёт.'));
+        this.notifications.error(extractApiError(err, this.localization.translate('invoices.detail.loadError')));
       },
     });
   }
@@ -93,15 +93,15 @@ export class InvoiceDetailComponent {
       next: (res) => {
         this.updatingStatus.set(false);
         if (res.isSucceeded) {
-          this.notifications.success('Статус счёта обновлён.');
+          this.notifications.success(this.localization.translate('invoices.detail.statusUpdateSuccess'));
           this.load();
         } else {
-          this.notifications.error(res.message || 'Не удалось изменить статус.');
+          this.notifications.error(res.message || this.localization.translate('invoices.detail.statusUpdateError'));
         }
       },
       error: (err) => {
         this.updatingStatus.set(false);
-        this.notifications.error(extractApiError(err, 'Не удалось изменить статус.'));
+        this.notifications.error(extractApiError(err, this.localization.translate('invoices.detail.statusUpdateError')));
       },
     });
   }
@@ -124,7 +124,7 @@ export class InvoiceDetailComponent {
       },
       error: (err) => {
         this.exporting.set(false);
-        this.notifications.error(extractApiError(err, 'Не удалось экспортировать PDF.'));
+        this.notifications.error(extractApiError(err, this.localization.translate('invoices.detail.exportError')));
       },
     });
   }

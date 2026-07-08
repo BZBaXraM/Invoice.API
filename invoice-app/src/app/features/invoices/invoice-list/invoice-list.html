@@ -1,18 +1,18 @@
 <div class="page">
   <div class="page-header">
     <div>
-      <h1 class="page-header__title">Счета</h1>
-      <p class="page-header__subtitle">Все выставленные счета по вашим клиентам.</p>
+      <h1 class="page-header__title">{{ 'invoices.list.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'invoices.list.subtitle' | translate }}</p>
     </div>
     <div class="page-actions">
-      <a class="btn btn--accent" routerLink="/invoices/new">Новый счёт</a>
+      <a class="btn btn--accent" routerLink="/invoices/new">{{ 'invoices.list.newButton' | translate }}</a>
     </div>
   </div>
 
   <div class="table-toolbar">
     <div class="cluster">
       <select class="select" style="max-width: 12rem" [ngModel]="statusFilter()" (ngModelChange)="onStatusChange($event)">
-        <option value="">Все статусы</option>
+        <option value="">{{ 'invoices.list.statusFilter.all' | translate }}</option>
         @for (status of statuses; track status) {
           <option [value]="status">{{ ('invoiceStatus.' + status.toLowerCase()) | translate }}</option>
         }
@@ -24,24 +24,24 @@
     <table class="table">
       <thead>
         <tr>
-          <th>Клиент</th>
-          <th class="sortable" (click)="sort('startDate')">Период</th>
-          <th>Статус</th>
-          <th class="sortable text-right" (click)="sort('totalSum')">Сумма</th>
+          <th>{{ 'invoices.list.columns.customer' | translate }}</th>
+          <th class="sortable" (click)="sort('startDate')">{{ 'invoices.list.columns.period' | translate }}</th>
+          <th>{{ 'invoices.list.columns.status' | translate }}</th>
+          <th class="sortable text-right" (click)="sort('totalSum')">{{ 'invoices.list.columns.sum' | translate }}</th>
           <th></th>
         </tr>
       </thead>
       <tbody>
         @if (loading()) {
           <tr>
-            <td colspan="5" class="text-muted">Загрузка…</td>
+            <td colspan="5" class="text-muted">{{ 'common.loading' | translate }}</td>
           </tr>
         } @else if (invoices().length === 0) {
           <tr>
             <td colspan="5">
               <div class="empty-state">
-                <div class="empty-state__title">Счета не найдены</div>
-                <p class="text-muted">Выставите первый счёт клиенту.</p>
+                <div class="empty-state__title">{{ 'invoices.list.empty.title' | translate }}</div>
+                <p class="text-muted">{{ 'invoices.list.empty.message' | translate }}</p>
               </div>
             </td>
           </tr>
@@ -59,7 +59,7 @@
                   [disabled]="invoice.status !== 'Created'"
                   (click)="remove(invoice, $event)"
                 >
-                  Удалить
+                  {{ 'common.actions.delete' | translate }}
                 </button>
               </td>
             </tr>

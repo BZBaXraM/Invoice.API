@@ -17,6 +17,15 @@ public static class DependencyInjection
         services.AddSingleton(emailConfig);
         services.AddSingleton<SmtpClient>();
 
+        GroqConfig groqConfig = new();
+        configuration.GetSection("Groq").Bind(groqConfig);
+        services.AddSingleton(groqConfig);
+        services.AddHttpClient<IAiChatClient, GroQChatClient>(client =>
+        {
+            client.BaseAddress = new Uri(groqConfig.BaseUrl);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", groqConfig.ApiKey);
+        });
+
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {

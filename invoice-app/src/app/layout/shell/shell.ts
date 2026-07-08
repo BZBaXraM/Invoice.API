@@ -8,6 +8,7 @@ import { RealtimeService } from '../../core/services/realtime.service';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
 import { LanguageSwitcherComponent } from '../../shared/components/language-switcher/language-switcher';
 import { ThemeToggleComponent } from '../../shared/components/theme-toggle/theme-toggle';
+import { ChatWidgetComponent } from '../../shared/components/chat-widget/chat-widget';
 import { TranslatePipe } from '../../shared/pipes/translate.pipe';
 
 interface NavItem {
@@ -27,7 +28,15 @@ const SIDEBAR_OPEN_KEY = 'invoice_sidebar_open';
 
 @Component({
   selector: 'app-shell',
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, LanguageSwitcherComponent, ThemeToggleComponent, TranslatePipe],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    LanguageSwitcherComponent,
+    ThemeToggleComponent,
+    ChatWidgetComponent,
+    TranslatePipe,
+  ],
   templateUrl: './shell.html',
   styleUrl: './shell.scss',
 })
