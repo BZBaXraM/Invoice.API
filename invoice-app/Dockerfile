@@ -17,6 +17,14 @@ COPY package.json bun.lock ./
 RUN bun install --frozen-lockfile
 
 COPY . .
+
+# The API base URL is compile-time config in Angular (environment.ts). The
+# default keeps the local docker-compose behavior (direct cross-origin calls
+# to the host-mapped HTTPS port); CI overrides it with the public domain,
+# where the API is same-origin behind Caddy under /api (deploy/Caddyfile).
+ARG API_URL=https://localhost:7030/api
+RUN sed -i "s|https://localhost:7030/api|${API_URL}|" src/environments/environment.ts
+
 RUN bun run build
 
 FROM nginx:alpine AS runtime

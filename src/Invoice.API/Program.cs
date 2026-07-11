@@ -75,13 +75,11 @@ builder.Services.AddSwaggerGen(setup =>
 
 var app = builder.Build();
 
-
-if (app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 {
     await app.Services.InitialiseDatabaseAsync();
     app.UseSwagger();
     app.UseSwaggerUI();
-    
 }
 
 app.UseHttpsRedirection();

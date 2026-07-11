@@ -1,0 +1,22 @@
+# Single public entry point for production (see docker-compose.prod.yml).
+# Caddy obtains and renews the Let's Encrypt certificate for {$DOMAIN}
+# automatically; WebSocket upgrades for the SignalR hub are proxied as-is.
+
+{$DOMAIN} {
+	encode gzip
+
+	handle /api/* {
+		reverse_proxy api:8080
+	}
+
+	handle /hubs/* {
+		reverse_proxy api:8080
+	}
+
+	# Everything else — the Angular client (nginx serving static files).
+	# Note: /swagger is deliberately NOT routed, so Swagger UI is not
+	# reachable from the internet even though the API maps it.
+	handle {
+		reverse_proxy client:80
+	}
+}
