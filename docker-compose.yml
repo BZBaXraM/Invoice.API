@@ -23,6 +23,11 @@ services:
       ASPNETCORE_ENVIRONMENT: Production
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-InvoiceDb};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD:-postgres}"
       JWT__Secret: ${JWT_SECRET:?set JWT_SECRET in .env}
+      # appsettings*.json are gitignored, so a fresh clone builds an image
+      # without them — supply the base JWT config here.
+      JWT__Issuer: ${JWT_ISSUER:-Invoice.API}
+      JWT__Audience: ${JWT_AUDIENCE:-Invoice.API}
+      JWT__Expiration: ${JWT_EXPIRATION:-120}
       Cors__AllowedOrigins__0: ${CORS_ORIGIN:-http://localhost:4200}
       EmailConfig__From: ${EMAIL_FROM:-4211ru@gmail.com}
       EmailConfig__SmtpServer: ${EMAIL_SMTP_SERVER:-smtp.gmail.com}

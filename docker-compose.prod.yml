@@ -31,6 +31,12 @@ services:
       ASPNETCORE_URLS: "http://+:8080"
       ConnectionStrings__DefaultConnection: "Host=postgres;Port=5432;Database=${POSTGRES_DB:-InvoiceDb};Username=${POSTGRES_USER:-postgres};Password=${POSTGRES_PASSWORD}"
       JWT__Secret: ${JWT_SECRET:?set JWT_SECRET in .env}
+      # appsettings*.json are not in the repo (purged: they used to leak
+      # secrets), so the image has no base config — issuer/audience/expiration
+      # must come from the environment or tokens break.
+      JWT__Issuer: ${JWT_ISSUER:-Invoice.API}
+      JWT__Audience: ${JWT_AUDIENCE:-Invoice.API}
+      JWT__Expiration: ${JWT_EXPIRATION:-120}
       # Client and API are same-origin behind Caddy, so CORS is only a
       # fallback here; kept pointing at the public origin for safety.
       Cors__AllowedOrigins__0: "https://${DOMAIN:?set DOMAIN in .env}"
