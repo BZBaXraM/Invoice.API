@@ -3,7 +3,7 @@ namespace Invoice.API.Controllers;
 /// <summary>
 /// Controller for managing invoices.
 /// </summary>
-[Authorize]
+[Authorize(Policy = AuthPolicies.NotAdmin)]
 [Route("api/invoices")]
 [ApiController]
 public class InvoiceController(IInvoiceService service, ICurrentUserService currentUserService) : ControllerBase

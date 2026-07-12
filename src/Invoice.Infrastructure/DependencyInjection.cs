@@ -77,6 +77,15 @@ public static class DependencyInjection
                 };
             });
 
+        services.AddAuthorization(options =>
+        {
+            // Deny-only check (rather than RequireRole("User")) so access tokens
+            // issued before the role claim existed keep working until they expire.
+            options.AddPolicy(AuthPolicies.NotAdmin, policy =>
+                policy.RequireAuthenticatedUser()
+                    .RequireAssertion(context => !context.User.IsInRole(nameof(UserRole.Admin))));
+        });
+
         services.AddHttpContextAccessor();
         services.AddSignalR();
 

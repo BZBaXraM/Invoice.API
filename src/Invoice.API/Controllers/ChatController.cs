@@ -3,7 +3,7 @@ namespace Invoice.API.Controllers;
 /// <summary>
 /// Controller for the AI invoice-viewing chat.
 /// </summary>
-[Authorize]
+[Authorize(Policy = AuthPolicies.NotAdmin)]
 [Route("api/chat")]
 [ApiController]
 public class ChatController(IChatService service, ICurrentUserService currentUserService) : ControllerBase

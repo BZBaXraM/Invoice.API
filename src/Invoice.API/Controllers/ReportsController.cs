@@ -3,7 +3,7 @@ namespace Invoice.API.Controllers;
 /// <summary>
 /// Controller for invoice/customer/service statistics reports.
 /// </summary>
-[Authorize]
+[Authorize(Policy = AuthPolicies.NotAdmin)]
 [Route("api/reports")]
 [ApiController]
 public class ReportsController(IReportService service, ICurrentUserService currentUserService) : ControllerBase
