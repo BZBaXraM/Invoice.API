@@ -52,5 +52,7 @@
     </main>
   </div>
 
-  <app-chat-widget />
+  @if (!isAdmin()) {
+    <app-chat-widget />
+  }
 </div>

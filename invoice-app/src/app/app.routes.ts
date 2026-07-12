@@ -1,5 +1,5 @@
 import { Routes } from '@angular/router';
-import { adminGuard, authGuard, guestGuard } from './core/guards/auth.guard';
+import { adminGuard, authGuard, guestGuard, nonAdminGuard } from './core/guards/auth.guard';
 import { ShellComponent } from './layout/shell/shell';
 
 export const routes: Routes = [
@@ -38,60 +38,68 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
       {
-        path: 'dashboard',
-        loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
-      },
-      {
-        path: 'customers',
-        loadComponent: () =>
-          import('./features/customers/customer-list/customer-list').then((m) => m.CustomerListComponent),
-      },
-      {
-        path: 'customers/new',
-        loadComponent: () =>
-          import('./features/customers/customer-form/customer-form').then((m) => m.CustomerFormComponent),
-      },
-      {
-        path: 'customers/:id',
-        loadComponent: () =>
-          import('./features/customers/customer-detail/customer-detail').then(
-            (m) => m.CustomerDetailComponent,
-          ),
-      },
-      {
-        path: 'customers/:id/edit',
-        loadComponent: () =>
-          import('./features/customers/customer-form/customer-form').then((m) => m.CustomerFormComponent),
-      },
-      {
-        path: 'invoices',
-        loadComponent: () =>
-          import('./features/invoices/invoice-list/invoice-list').then((m) => m.InvoiceListComponent),
-      },
-      {
-        path: 'invoices/new',
-        loadComponent: () =>
-          import('./features/invoices/invoice-form/invoice-form').then((m) => m.InvoiceFormComponent),
-      },
-      {
-        path: 'invoices/:id',
-        loadComponent: () =>
-          import('./features/invoices/invoice-detail/invoice-detail').then((m) => m.InvoiceDetailComponent),
-      },
-      {
-        path: 'invoices/:id/edit',
-        loadComponent: () =>
-          import('./features/invoices/invoice-form/invoice-form').then((m) => m.InvoiceFormComponent),
-      },
-      {
-        path: 'profile',
-        loadComponent: () => import('./features/profile/profile').then((m) => m.ProfileComponent),
-      },
-      {
         path: 'admin/users',
         canActivate: [adminGuard],
         loadComponent: () =>
           import('./features/admin/user-list/user-list').then((m) => m.AdminUserListComponent),
+      },
+      {
+        // Regular features are off-limits for the admin account — it only
+        // manages users, so nonAdminGuard bounces it to /admin/users.
+        path: '',
+        canActivateChild: [nonAdminGuard],
+        children: [
+          {
+            path: 'dashboard',
+            loadComponent: () => import('./features/dashboard/dashboard').then((m) => m.DashboardComponent),
+          },
+          {
+            path: 'customers',
+            loadComponent: () =>
+              import('./features/customers/customer-list/customer-list').then((m) => m.CustomerListComponent),
+          },
+          {
+            path: 'customers/new',
+            loadComponent: () =>
+              import('./features/customers/customer-form/customer-form').then((m) => m.CustomerFormComponent),
+          },
+          {
+            path: 'customers/:id',
+            loadComponent: () =>
+              import('./features/customers/customer-detail/customer-detail').then(
+                (m) => m.CustomerDetailComponent,
+              ),
+          },
+          {
+            path: 'customers/:id/edit',
+            loadComponent: () =>
+              import('./features/customers/customer-form/customer-form').then((m) => m.CustomerFormComponent),
+          },
+          {
+            path: 'invoices',
+            loadComponent: () =>
+              import('./features/invoices/invoice-list/invoice-list').then((m) => m.InvoiceListComponent),
+          },
+          {
+            path: 'invoices/new',
+            loadComponent: () =>
+              import('./features/invoices/invoice-form/invoice-form').then((m) => m.InvoiceFormComponent),
+          },
+          {
+            path: 'invoices/:id',
+            loadComponent: () =>
+              import('./features/invoices/invoice-detail/invoice-detail').then((m) => m.InvoiceDetailComponent),
+          },
+          {
+            path: 'invoices/:id/edit',
+            loadComponent: () =>
+              import('./features/invoices/invoice-form/invoice-form').then((m) => m.InvoiceFormComponent),
+          },
+          {
+            path: 'profile',
+            loadComponent: () => import('./features/profile/profile').then((m) => m.ProfileComponent),
+          },
+        ],
       },
     ],
   },

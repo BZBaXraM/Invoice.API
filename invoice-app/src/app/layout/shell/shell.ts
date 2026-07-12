@@ -51,9 +51,10 @@ export class ShellComponent implements OnInit, OnDestroy {
   private readonly localization = inject(LocalizationService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  protected readonly navItems = computed(() =>
-    this.auth.isAdmin() ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS,
-  );
+  // The admin account gets a stripped-down shell: only the user-management
+  // page (plus logout in the sidebar footer), none of the regular features.
+  protected readonly isAdmin = this.auth.isAdmin;
+  protected readonly navItems = computed(() => (this.isAdmin() ? [ADMIN_NAV_ITEM] : NAV_ITEMS));
   protected readonly claims = this.auth.claims;
   protected readonly sidebarOpen = signal(this.resolveInitialSidebarOpen());
 
