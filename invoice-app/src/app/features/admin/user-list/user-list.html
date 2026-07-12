@@ -1,0 +1,101 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ 'admin.users.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'admin.users.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="table-toolbar">
+    <div class="search-input">
+      <input
+        class="input"
+        type="text"
+        [placeholder]="'admin.users.searchPlaceholder' | translate"
+        [ngModel]="searchFilter()"
+        (ngModelChange)="onSearchChange($event)"
+      />
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ 'admin.users.table.name' | translate }}</th>
+          <th>{{ 'admin.users.table.username' | translate }}</th>
+          <th>{{ 'admin.users.table.email' | translate }}</th>
+          <th>{{ 'admin.users.table.confirmed' | translate }}</th>
+          <th>{{ 'admin.users.table.status' | translate }}</th>
+          <th>{{ 'admin.users.table.role' | translate }}</th>
+          <th>{{ 'admin.users.table.registered' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td colspan="8" class="text-muted">{{ 'common.loading' | translate }}</td>
+          </tr>
+        } @else if (users().length === 0) {
+          <tr>
+            <td colspan="8">
+              <div class="empty-state">
+                <div class="empty-state__title">{{ 'admin.users.empty' | translate }}</div>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          @for (user of users(); track user.id) {
+            <tr>
+              <td>{{ fullName(user) }}</td>
+              <td>{{ user.username }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                @if (user.isEmailConfirmed) {
+                  <span class="badge badge--success">{{ 'admin.users.confirmed.yes' | translate }}</span>
+                } @else {
+                  <span class="badge badge--neutral">{{ 'admin.users.confirmed.no' | translate }}</span>
+                }
+              </td>
+              <td>
+                @if (user.isActive) {
+                  <span class="badge badge--success">{{ 'admin.users.status.active' | translate }}</span>
+                } @else {
+                  <span class="badge badge--neutral">{{ 'admin.users.status.disabled' | translate }}</span>
+                }
+              </td>
+              <td>{{ ('userRole.' + user.role.toLowerCase()) | translate }}</td>
+              <td>{{ format.date(user.createdAt) }}</td>
+              <td class="text-right">
+                @if (canManage(user)) {
+                  <div class="cluster" style="justify-content: flex-end">
+                    @if (user.isActive) {
+                      <button type="button" class="btn btn--secondary btn--sm" (click)="disable(user)">
+                        {{ 'admin.users.actions.disable' | translate }}
+                      </button>
+                    } @else {
+                      <button type="button" class="btn btn--secondary btn--sm" (click)="enable(user)">
+                        {{ 'admin.users.actions.enable' | translate }}
+                      </button>
+                    }
+                    <button type="button" class="btn btn--danger btn--sm" (click)="remove(user)">
+                      {{ 'admin.users.actions.delete' | translate }}
+                    </button>
+                  </div>
+                }
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+
+    <app-pagination
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>

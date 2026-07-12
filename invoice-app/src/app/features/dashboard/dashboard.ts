@@ -95,7 +95,7 @@ export class DashboardComponent {
           this.customerStats.set([...res.data].sort((a, b) => b.totalSum - a.totalSum));
         }
       },
-      error: (err) => this.notifications.error(extractApiError(err, this.localization.translate('dashboard.customerStatsError'))),
+      error: (err) => this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('dashboard.customerStatsError'))),
     });
 
     this.reportService.getServiceStats(from, to).subscribe({
@@ -104,7 +104,7 @@ export class DashboardComponent {
           this.serviceStats.set([...res.data].sort((a, b) => b.totalSum - a.totalSum));
         }
       },
-      error: (err) => this.notifications.error(extractApiError(err, this.localization.translate('dashboard.serviceStatsError'))),
+      error: (err) => this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('dashboard.serviceStatsError'))),
     });
 
     this.reportService.getInvoiceStatusStats(from, to).subscribe({
@@ -116,7 +116,7 @@ export class DashboardComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        this.notifications.error(extractApiError(err, this.localization.translate('dashboard.statusStatsError')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('dashboard.statusStatsError')));
       },
     });
   }

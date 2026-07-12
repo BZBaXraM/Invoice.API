@@ -78,7 +78,7 @@ export class InvoiceDetailComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        this.notifications.error(extractApiError(err, this.localization.translate('invoices.detail.loadError')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('invoices.detail.loadError')));
       },
     });
   }
@@ -101,7 +101,7 @@ export class InvoiceDetailComponent {
       },
       error: (err) => {
         this.updatingStatus.set(false);
-        this.notifications.error(extractApiError(err, this.localization.translate('invoices.detail.statusUpdateError')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('invoices.detail.statusUpdateError')));
       },
     });
   }
@@ -124,7 +124,7 @@ export class InvoiceDetailComponent {
       },
       error: (err) => {
         this.exporting.set(false);
-        this.notifications.error(extractApiError(err, this.localization.translate('invoices.detail.exportError')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('invoices.detail.exportError')));
       },
     });
   }
@@ -147,7 +147,7 @@ export class InvoiceDetailComponent {
         this.notifications.success(this.localization.translate('invoices.archiveSuccess'));
         this.load();
       },
-      error: (err) => this.notifications.error(extractApiError(err)),
+      error: (err) => this.notifications.error(extractApiError(err, (k) => this.localization.translate(k))),
     });
   }
 
@@ -170,7 +170,7 @@ export class InvoiceDetailComponent {
         this.notifications.success(this.localization.translate('invoices.deleteSuccess'));
         this.router.navigateByUrl('/invoices');
       },
-      error: (err) => this.notifications.error(extractApiError(err, this.localization.translate('invoices.deleteError'))),
+      error: (err) => this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('invoices.deleteError'))),
     });
   }
 }

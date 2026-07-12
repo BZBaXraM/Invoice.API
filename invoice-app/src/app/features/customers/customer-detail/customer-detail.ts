@@ -80,7 +80,7 @@ export class CustomerDetailComponent {
       },
       error: (err) => {
         this.loading.set(false);
-        this.notifications.error(extractApiError(err, this.localization.translate('customers.detail.loadError')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('customers.detail.loadError')));
       },
     });
   }
@@ -117,7 +117,7 @@ export class CustomerDetailComponent {
         this.notifications.success(this.localization.translate('customers.archiveSuccess'));
         this.load();
       },
-      error: (err) => this.notifications.error(extractApiError(err)),
+      error: (err) => this.notifications.error(extractApiError(err, (k) => this.localization.translate(k))),
     });
   }
 
@@ -131,7 +131,7 @@ export class CustomerDetailComponent {
         this.notifications.success(this.localization.translate('customers.unarchiveSuccess'));
         this.load();
       },
-      error: (err) => this.notifications.error(extractApiError(err, this.localization.translate('customers.unarchiveError'))),
+      error: (err) => this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('customers.unarchiveError'))),
     });
   }
 
@@ -157,7 +157,7 @@ export class CustomerDetailComponent {
       error: (err) => {
         const message = err instanceof HttpErrorResponse && err.status === 409
           ? this.localization.translate('customers.deleteError.hasInvoices')
-          : extractApiError(err, this.localization.translate('customers.deleteError'));
+          : extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('customers.deleteError'));
         this.notifications.error(message);
       },
     });

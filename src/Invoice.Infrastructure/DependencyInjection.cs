@@ -54,6 +54,25 @@ public static class DependencyInjection
                         }
 
                         return Task.CompletedTask;
+                    },
+                    // A disabled (or hard-deleted) user must lose access immediately, not when
+                    // their access token expires — the in-memory blacklist can't cover this
+                    // because the admin never sees the victim's token string.
+                    OnTokenValidated = async context =>
+                    {
+                        var userIdRaw = context.Principal?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                        if (!Guid.TryParse(userIdRaw, out var userId))
+                        {
+                            context.Fail("Invalid token");
+                            return;
+                        }
+
+                        var uow = context.HttpContext.RequestServices.GetRequiredService<IUnitOfWork>();
+                        var user = await uow.UserRepository.GetByIdAsync(userId);
+                        if (user is null || !user.IsActive)
+                        {
+                            context.Fail("Account is disabled");
+                        }
                     }
                 };
             });

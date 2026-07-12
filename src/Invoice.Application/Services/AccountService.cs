@@ -17,7 +17,7 @@ public class AccountService(
         var validation = await registerValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure("Validation failed", 400,
+            return ResponseModel.Failure("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 
@@ -67,7 +67,7 @@ public class AccountService(
         var validation = await loginValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure<LoginResponse>("Validation failed", 400,
+            return ResponseModel.Failure<LoginResponse>("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 
@@ -82,6 +82,11 @@ public class AccountService(
             return ResponseModel.Failure<LoginResponse>("Email not confirmed. Please confirm your email before logging in.", 403);
         }
 
+        if (!user.IsActive)
+        {
+            return ResponseModel.Failure<LoginResponse>("Account is disabled", 403);
+        }
+
         IssueTokens(user);
         await uow.CommitAsync();
 
@@ -93,7 +98,7 @@ public class AccountService(
         var validation = await confirmEmailCodeValidator.ValidateAsync(new ConfirmEmailCodeRequest { Code = code });
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure("Validation failed", 400,
+            return ResponseModel.Failure("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 
@@ -167,6 +172,11 @@ public class AccountService(
             return ResponseModel.Failure<LoginResponse>("Refresh token has expired", 401);
         }
 
+        if (!user.IsActive)
+        {
+            return ResponseModel.Failure<LoginResponse>("Account is disabled", 403);
+        }
+
         IssueTokens(user);
         await uow.CommitAsync();
 
@@ -207,7 +217,7 @@ public class AccountService(
         var validation = await updateProfileValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure<UserResponse>("Validation failed", 400,
+            return ResponseModel.Failure<UserResponse>("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 
@@ -277,7 +287,7 @@ public class AccountService(
         var validation = await resetPasswordValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure("Validation failed", 400,
+            return ResponseModel.Failure("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 
@@ -314,7 +324,7 @@ public class AccountService(
         var validation = await changePasswordValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure("Validation failed", 400,
+            return ResponseModel.Failure("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 

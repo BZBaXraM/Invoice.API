@@ -4,11 +4,11 @@ public class ChangePasswordRequestValidator : AbstractValidator<ChangePasswordRe
 {
     public ChangePasswordRequestValidator()
     {
-        RuleFor(x => x.OldPassword).NotEmpty();
+        RuleFor(x => x.OldPassword).NotEmpty().WithMessage("validation.oldPassword.required");
 
         RuleFor(x => x.NewPassword)
-            .NotEmpty()
-            .MinimumLength(10)
+            .NotEmpty().WithMessage("validation.newPassword.required")
+            .MinimumLength(10).WithMessage("validation.password.minLength")
             .Password();
     }
 }

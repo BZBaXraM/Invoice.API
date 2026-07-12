@@ -13,19 +13,19 @@ public static partial class ValidationRulesExtensions
         if (mustContainUppercase)
         {
             options = ruleBuilder.Must(pass => UppercaseRegex().IsMatch(pass))
-                .WithMessage("Password must contain at least 1 uppercase letter");
+                .WithMessage("validation.password.uppercase");
         }
 
         if (mustContainLowercase)
         {
             options = ruleBuilder.Must(pass => LowercaseRegex().IsMatch(pass))
-                .WithMessage("Password must contain at least 1 lowercase letter");
+                .WithMessage("validation.password.lowercase");
         }
 
         if (mustContainDigit)
         {
             options = ruleBuilder.Must(pass => DigitRegex().IsMatch(pass))
-                .WithMessage("Password must contain at least 1 number");
+                .WithMessage("validation.password.digit");
         }
 
         return options!;

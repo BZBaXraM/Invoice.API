@@ -17,6 +17,7 @@ public static class DependencyInjection
             .AddScoped<UpdateInvoiceRequestValidator>()
             .AddValidatorsFromAssemblyContaining<RegisterRequestValidator>()
             .AddScoped<IAccountService, AccountService>()
+            .AddScoped<IAdminService, AdminService>()
             .AddScoped<ICustomerService, CustomerService>()
             .AddScoped<IInvoiceService, InvoiceService>()
             .AddScoped<IReportService, ReportService>()

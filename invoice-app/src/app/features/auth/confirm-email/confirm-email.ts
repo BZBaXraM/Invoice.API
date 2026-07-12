@@ -51,7 +51,7 @@ export class ConfirmEmailComponent {
       },
       error: (err) => {
         this.submitting.set(false);
-        this.errorMessage.set(extractApiError(err, this.localization.translate('auth.confirmEmail.confirmError')));
+        this.errorMessage.set(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('auth.confirmEmail.confirmError')));
       },
     });
   }
@@ -71,7 +71,7 @@ export class ConfirmEmailComponent {
       },
       error: (err) => {
         this.resending.set(false);
-        this.errorMessage.set(extractApiError(err, this.localization.translate('common.errors.generic')));
+        this.errorMessage.set(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('common.errors.generic')));
       },
     });
   }

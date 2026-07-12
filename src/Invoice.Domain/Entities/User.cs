@@ -1,3 +1,5 @@
+using Invoice.Domain.Enums;
+
 namespace Invoice.Domain.Entities;
 
 public class User : BaseEntity
@@ -12,6 +14,8 @@ public class User : BaseEntity
     public string? RefreshToken { get; set; }
     public DateTime? RefreshTokenExpireTime { get; set; }
     public bool IsEmailConfirmed { get; set; }
+    public UserRole Role { get; set; } = UserRole.User;
+    public bool IsActive { get; set; } = true;
     public string? EmailConfirmationCode { get; set; }
     public DateTime? EmailConfirmationCodeExpireTime { get; set; }
     public string? PasswordResetCode { get; set; }

@@ -21,6 +21,7 @@ import { TokenStorageService } from './token-storage.service';
 interface JwtClaims {
   userId: string | null;
   email: string | null;
+  role: string | null;
 }
 
 @Injectable({ providedIn: 'root' })
@@ -34,6 +35,7 @@ export class AuthService {
   readonly currentUser = signal<UserResponse | null>(null);
 
   readonly claims = computed<JwtClaims>(() => this.decode(this.accessTokenSignal()));
+  readonly isAdmin = computed(() => this.claims().role === 'Admin');
 
   register(request: RegisterRequest): Observable<ResponseModel> {
     return this.http.post<ResponseModel>(`${this.baseUrl}/register`, request);
@@ -119,7 +121,7 @@ export class AuthService {
 
   private decode(token: string | null): JwtClaims {
     if (!token) {
-      return { userId: null, email: null };
+      return { userId: null, email: null, role: null };
     }
     try {
       const payload = token.split('.')[1];
@@ -127,9 +129,10 @@ export class AuthService {
       return {
         userId: json['nameid'] ?? json['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'] ?? null,
         email: json['unique_name'] ?? json['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name'] ?? null,
+        role: json['role'] ?? json['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'] ?? null,
       };
     } catch {
-      return { userId: null, email: null };
+      return { userId: null, email: null, role: null };
     }
   }
 }

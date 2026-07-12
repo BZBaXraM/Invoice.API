@@ -104,7 +104,7 @@ export class InvoiceListComponent {
         },
         error: (err) => {
           this.loading.set(false);
-          this.notifications.error(extractApiError(err, this.localization.translate('invoices.list.loadError')));
+          this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('invoices.list.loadError')));
         },
       });
   }
@@ -139,7 +139,7 @@ export class InvoiceListComponent {
         this.notifications.success(this.localization.translate('invoices.deleteSuccess'));
         this.load();
       },
-      error: (err) => this.notifications.error(extractApiError(err, this.localization.translate('invoices.deleteError'))),
+      error: (err) => this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('invoices.deleteError'))),
     });
   }
 }

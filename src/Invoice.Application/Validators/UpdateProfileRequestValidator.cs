@@ -4,17 +4,16 @@ public class UpdateProfileRequestValidator : AbstractValidator<UpdateProfileRequ
 {
     public UpdateProfileRequestValidator()
     {
-        RuleFor(x => x.FirstName).NotEmpty();
+        RuleFor(x => x.FirstName).NotEmpty().WithMessage("validation.firstName.required");
 
-        RuleFor(x => x.LastName).NotEmpty();
+        RuleFor(x => x.LastName).NotEmpty().WithMessage("validation.lastName.required");
 
         RuleFor(x => x.Username)
-            .NotEmpty()
-            .Matches("^[a-zA-Z0-9_.]+$")
-            .WithMessage("Username can only contain letters, digits, underscores and dots.");
+            .NotEmpty().WithMessage("validation.username.required")
+            .Matches("^[a-zA-Z0-9_.]+$").WithMessage("validation.username.pattern");
 
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress();
+            .NotEmpty().WithMessage("validation.email.required")
+            .EmailAddress().WithMessage("validation.email.invalid");
     }
 }

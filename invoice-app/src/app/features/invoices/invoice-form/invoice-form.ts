@@ -80,7 +80,7 @@ export class InvoiceFormComponent {
         },
         error: (err) => {
           this.loading.set(false);
-          this.notifications.error(extractApiError(err, this.localization.translate('invoices.form.loadError')));
+          this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('invoices.form.loadError')));
         },
       });
     }
@@ -152,7 +152,7 @@ export class InvoiceFormComponent {
       },
       error: (err) => {
         this.submitting.set(false);
-        this.errorMessage.set(extractApiError(err));
+        this.errorMessage.set(extractApiError(err, (k) => this.localization.translate(k)));
       },
     });
   }

@@ -49,7 +49,7 @@ export class LoginComponent {
       },
       error: (err) => {
         this.submitting.set(false);
-        this.errorMessage.set(extractApiError(err, this.localization.translate('auth.login.loginFallbackError')));
+        this.errorMessage.set(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('auth.login.loginFallbackError')));
       },
     });
   }

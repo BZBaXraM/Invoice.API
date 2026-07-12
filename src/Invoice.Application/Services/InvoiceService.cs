@@ -11,7 +11,7 @@ public class InvoiceService(
         var validation = await createValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure<InvoiceResponse>("Validation failed", 400,
+            return ResponseModel.Failure<InvoiceResponse>("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 
@@ -56,7 +56,7 @@ public class InvoiceService(
         var validation = await updateValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure<InvoiceResponse>("Validation failed", 400,
+            return ResponseModel.Failure<InvoiceResponse>("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 

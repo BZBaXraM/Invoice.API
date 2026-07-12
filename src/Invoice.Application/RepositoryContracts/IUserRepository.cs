@@ -10,5 +10,11 @@ public interface IUserRepository
     Task<User?> GetByRefreshTokenAsync(string refreshToken);
     Task<User?> GetByConfirmationCodeAsync(string code);
     Task<User?> GetByPasswordResetCodeAsync(string code);
+
+    Task<(List<User> Items, int TotalCount)> GetPagedAsync(
+        int pageNumber,
+        int pageSize,
+        string? searchFilter);
+
     void RemoveUser(User user);
 }

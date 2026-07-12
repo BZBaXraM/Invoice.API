@@ -29,6 +29,8 @@ services:
       EmailConfig__Port: ${EMAIL_PORT:-587}
       EmailConfig__UserName: ${EMAIL_USERNAME:?set EMAIL_USERNAME in .env}
       EmailConfig__Password: ${EMAIL_PASSWORD:?set EMAIL_PASSWORD in .env}
+      AdminSeed__Email: ${ADMIN_SEED_EMAIL:-admin@invoice.com}
+      AdminSeed__Password: ${ADMIN_SEED_PASSWORD:-admin202210BK}
       Groq__ApiKey: ${GROQ_API_KEY:?set GROQ_API_KEY in .env}
       Groq__Model: ${GROQ_MODEL:-llama-3.3-70b-versatile}
       Groq__BaseUrl: ${GROQ_BASE_URL:-https://api.groq.com/openai/v1/}

@@ -53,7 +53,7 @@ export class CustomerFormComponent {
         },
         error: (err) => {
           this.loading.set(false);
-          this.notifications.error(extractApiError(err, this.localization.translate('customers.form.loadError')));
+          this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('customers.form.loadError')));
         },
       });
     }
@@ -93,7 +93,7 @@ export class CustomerFormComponent {
       },
       error: (err) => {
         this.submitting.set(false);
-        this.errorMessage.set(extractApiError(err));
+        this.errorMessage.set(extractApiError(err, (k) => this.localization.translate(k)));
       },
     });
   }

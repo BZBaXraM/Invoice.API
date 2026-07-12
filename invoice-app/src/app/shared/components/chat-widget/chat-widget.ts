@@ -77,7 +77,7 @@ export class ChatWidgetComponent {
       },
       error: (err) => {
         this.sending.set(false);
-        this.notifications.error(extractApiError(err, this.localization.translate('chat.errorGeneric')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('chat.errorGeneric')));
       },
     });
   }
@@ -96,7 +96,7 @@ export class ChatWidgetComponent {
       },
       error: (err) => {
         this.downloadingId.set(null);
-        this.notifications.error(extractApiError(err, this.localization.translate('chat.errorDownload')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('chat.errorDownload')));
       },
     });
   }

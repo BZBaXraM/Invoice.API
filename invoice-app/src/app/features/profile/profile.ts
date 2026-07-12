@@ -61,7 +61,7 @@ export class ProfileComponent {
       error: (err) => {
         this.loading.set(false);
         this.profileForm.patchValue({ email: this.auth.claims().email ?? '' });
-        this.notifications.error(extractApiError(err, this.localization.translate('profile.loadError')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('profile.loadError')));
       },
     });
   }
@@ -89,7 +89,7 @@ export class ProfileComponent {
         },
         error: (err) => {
           this.savingProfile.set(false);
-          this.profileError.set(extractApiError(err));
+          this.profileError.set(extractApiError(err, (k) => this.localization.translate(k)));
         },
       });
   }
@@ -117,7 +117,7 @@ export class ProfileComponent {
       },
       error: (err) => {
         this.changingPassword.set(false);
-        this.passwordError.set(extractApiError(err));
+        this.passwordError.set(extractApiError(err, (k) => this.localization.translate(k)));
       },
     });
   }
@@ -142,7 +142,7 @@ export class ProfileComponent {
       },
       error: (err) => {
         this.deleting.set(false);
-        this.notifications.error(extractApiError(err, this.localization.translate('profile.deleteError')));
+        this.notifications.error(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('profile.deleteError')));
       },
     });
   }

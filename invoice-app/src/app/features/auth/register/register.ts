@@ -59,7 +59,7 @@ export class RegisterComponent {
         },
         error: (err) => {
           this.submitting.set(false);
-          this.errorMessage.set(extractApiError(err, this.localization.translate('common.errors.generic')));
+          this.errorMessage.set(extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('common.errors.generic')));
         },
       });
   }

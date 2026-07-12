@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Component, OnDestroy, OnInit, PLATFORM_ID, inject, signal } from '@angular/core';
+import { Component, OnDestroy, OnInit, PLATFORM_ID, computed, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LocalizationService } from '../../core/services/localization.service';
@@ -23,6 +23,8 @@ const NAV_ITEMS: NavItem[] = [
   { labelKey: 'nav.invoices', path: '/invoices', icon: 'file' },
   { labelKey: 'nav.profile', path: '/profile', icon: 'user' },
 ];
+
+const ADMIN_NAV_ITEM: NavItem = { labelKey: 'nav.admin', path: '/admin/users', icon: 'shield' };
 
 const SIDEBAR_OPEN_KEY = 'invoice_sidebar_open';
 
@@ -49,7 +51,9 @@ export class ShellComponent implements OnInit, OnDestroy {
   private readonly localization = inject(LocalizationService);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  protected readonly navItems = NAV_ITEMS;
+  protected readonly navItems = computed(() =>
+    this.auth.isAdmin() ? [...NAV_ITEMS, ADMIN_NAV_ITEM] : NAV_ITEMS,
+  );
   protected readonly claims = this.auth.claims;
   protected readonly sidebarOpen = signal(this.resolveInitialSidebarOpen());
 

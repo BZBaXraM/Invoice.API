@@ -11,7 +11,7 @@ public class CustomerService(
         var validation = await createValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure<CustomerResponse>("Validation failed", 400,
+            return ResponseModel.Failure<CustomerResponse>("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 
@@ -42,7 +42,7 @@ public class CustomerService(
         var validation = await updateValidator.ValidateAsync(request);
         if (!validation.IsValid)
         {
-            return ResponseModel.Failure<CustomerResponse>("Validation failed", 400,
+            return ResponseModel.Failure<CustomerResponse>("validation.failed", 400,
                 validation.Errors.Select(e => e.ErrorMessage).ToList());
         }
 

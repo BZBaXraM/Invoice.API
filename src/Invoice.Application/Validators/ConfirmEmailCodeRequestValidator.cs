@@ -5,9 +5,8 @@ public class ConfirmEmailCodeRequestValidator : AbstractValidator<ConfirmEmailCo
     public ConfirmEmailCodeRequestValidator()
     {
         RuleFor(x => x.Code)
-            .NotEmpty()
-            .Length(6)
-            .Matches("^[A-Z0-9]+$")
-            .WithMessage("Confirmation code must contain only uppercase letters and numbers.");
+            .NotEmpty().WithMessage("validation.code.required")
+            .Length(6).WithMessage("validation.code.length")
+            .Matches("^[A-Z0-9]+$").WithMessage("validation.code.pattern");
     }
 }

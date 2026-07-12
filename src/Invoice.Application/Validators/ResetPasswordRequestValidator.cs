@@ -5,18 +5,17 @@ public class ResetPasswordRequestValidator : AbstractValidator<ResetPasswordRequ
     public ResetPasswordRequestValidator()
     {
         RuleFor(x => x.Email)
-            .NotEmpty()
-            .EmailAddress();
+            .NotEmpty().WithMessage("validation.email.required")
+            .EmailAddress().WithMessage("validation.email.invalid");
 
         RuleFor(x => x.Code)
-            .NotEmpty()
-            .Length(6)
-            .Matches("^[A-Z0-9]+$")
-            .WithMessage("Reset code must contain only uppercase letters and numbers.");
+            .NotEmpty().WithMessage("validation.code.required")
+            .Length(6).WithMessage("validation.code.length")
+            .Matches("^[A-Z0-9]+$").WithMessage("validation.code.pattern");
 
         RuleFor(x => x.NewPassword)
-            .NotEmpty()
-            .MinimumLength(10)
+            .NotEmpty().WithMessage("validation.newPassword.required")
+            .MinimumLength(10).WithMessage("validation.password.minLength")
             .Password();
     }
 }
