@@ -1,0 +1,129 @@
+<div class="page" style="max-width: 42rem">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ 'companyProfile.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'companyProfile.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="cluster">
+    <a class="btn btn--secondary btn--sm" routerLink="/profile">{{ 'profile.tabs.personal' | translate }}</a>
+    <a class="btn btn--secondary btn--sm" routerLink="/profile/company" aria-current="page" style="pointer-events: none; opacity: 0.7">
+      {{ 'profile.tabs.company' | translate }}
+    </a>
+  </div>
+
+  @if (loading()) {
+    <p class="text-muted">{{ 'common.loading' | translate }}</p>
+  } @else {
+    <div class="card">
+      <h3>{{ 'companyProfile.detailsCard' | translate }}</h3>
+      <form class="stack" [formGroup]="form" (ngSubmit)="save()" novalidate>
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="companyName">{{ 'companyProfile.fields.companyName' | translate }}</label>
+            <input id="companyName" class="input" type="text" formControlName="companyName" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="voen">{{ 'companyProfile.fields.voen' | translate }}</label>
+            <input id="voen" class="input" type="text" inputmode="numeric" maxlength="10" formControlName="voen" />
+            @if (form.controls.voen.touched && form.controls.voen.invalid) {
+              <div class="field__error">{{ 'validation.companyProfile.voenInvalid' | translate }}</div>
+            }
+          </div>
+        </div>
+
+        <h4 style="margin: 0.5rem 0 0">{{ 'companyProfile.bankHeading' | translate }}</h4>
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="bankName">{{ 'companyProfile.fields.bankName' | translate }}</label>
+            <input id="bankName" class="input" type="text" formControlName="bankName" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="bankVoen">{{ 'companyProfile.fields.bankVoen' | translate }}</label>
+            <input id="bankVoen" class="input" type="text" inputmode="numeric" maxlength="10" formControlName="bankVoen" />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="iban">{{ 'companyProfile.fields.iban' | translate }}</label>
+            <input id="iban" class="input" type="text" formControlName="iban" />
+          </div>
+          <div class="field">
+            <label class="field__label" for="bankAccount">{{ 'companyProfile.fields.bankAccount' | translate }}</label>
+            <input id="bankAccount" class="input" type="text" formControlName="bankAccount" />
+          </div>
+        </div>
+
+        <div class="form-grid">
+          <div class="field">
+            <label class="field__label" for="swiftCode">{{ 'companyProfile.fields.swiftCode' | translate }}</label>
+            <input id="swiftCode" class="input" type="text" formControlName="swiftCode" />
+          </div>
+        </div>
+
+        @if (errorMessage()) {
+          <div class="field__error">{{ errorMessage() }}</div>
+        }
+
+        <div class="form-actions">
+          <button type="submit" class="btn btn--accent" [disabled]="saving()">
+            {{ (saving() ? 'common.actions.saving' : 'common.actions.save') | translate }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card">
+      <h3>{{ 'companyProfile.imagesCard' | translate }}</h3>
+      @if (!profileExists()) {
+        <p class="text-muted">{{ 'companyProfile.saveFirstHint' | translate }}</p>
+      } @else {
+        <div class="grid grid--two">
+          <div class="stack">
+            <h4 style="margin: 0">{{ 'companyProfile.logoHeading' | translate }}</h4>
+            @if (logoUrl(); as url) {
+              <img [src]="url" alt="Logo" style="max-width: 12rem; max-height: 6rem; object-fit: contain" />
+            } @else {
+              <p class="text-muted">{{ 'companyProfile.noImage' | translate }}</p>
+            }
+            <div class="cluster">
+              <label class="btn btn--secondary btn--sm">
+                {{ (uploadingLogo() ? 'companyProfile.uploading' : 'companyProfile.uploadButton') | translate }}
+                <input type="file" accept="image/png,image/jpeg" hidden [disabled]="uploadingLogo()" (change)="onFileSelected('logo', $event)" />
+              </label>
+              @if (logoUrl()) {
+                <button type="button" class="btn btn--danger btn--sm" (click)="deleteImage('logo')">
+                  {{ 'common.actions.delete' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="stack">
+            <h4 style="margin: 0">{{ 'companyProfile.signatureHeading' | translate }}</h4>
+            @if (signatureUrl(); as url) {
+              <img [src]="url" alt="Signature" style="max-width: 12rem; max-height: 6rem; object-fit: contain" />
+            } @else {
+              <p class="text-muted">{{ 'companyProfile.noImage' | translate }}</p>
+            }
+            <div class="cluster">
+              <label class="btn btn--secondary btn--sm">
+                {{ (uploadingSignature() ? 'companyProfile.uploading' : 'companyProfile.uploadButton') | translate }}
+                <input type="file" accept="image/png,image/jpeg" hidden [disabled]="uploadingSignature()" (change)="onFileSelected('signature', $event)" />
+              </label>
+              @if (signatureUrl()) {
+                <button type="button" class="btn btn--danger btn--sm" (click)="deleteImage('signature')">
+                  {{ 'common.actions.delete' | translate }}
+                </button>
+              }
+            </div>
+          </div>
+        </div>
+        <p class="text-muted" style="margin-top: 0.75rem">{{ 'companyProfile.imageHint' | translate }}</p>
+      }
+    </div>
+  }
+</div>

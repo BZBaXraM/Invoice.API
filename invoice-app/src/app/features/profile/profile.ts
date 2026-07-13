@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
+import { BackupService } from '../../core/services/backup.service';
 import { LocalizationService } from '../../core/services/localization.service';
 import { NotificationService } from '../../core/services/notification.service';
 import { ConfirmDialogService } from '../../shared/components/confirm-dialog/confirm-dialog.service';
@@ -11,12 +12,13 @@ import { extractApiError } from '../../shared/utils/api-error';
 
 @Component({
   selector: 'app-profile',
-  imports: [ReactiveFormsModule, PasswordInputComponent, TranslatePipe],
+  imports: [ReactiveFormsModule, RouterLink, PasswordInputComponent, TranslatePipe],
   templateUrl: './profile.html',
 })
 export class ProfileComponent {
   private readonly fb = inject(FormBuilder);
   protected readonly auth = inject(AuthService);
+  private readonly backup = inject(BackupService);
   private readonly notifications = inject(NotificationService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly router = inject(Router);
@@ -28,6 +30,7 @@ export class ProfileComponent {
   protected readonly changingPassword = signal(false);
   protected readonly passwordError = signal<string | null>(null);
   protected readonly deleting = signal(false);
+  protected readonly exportingData = signal(false);
 
   protected readonly profileForm = this.fb.nonNullable.group({
     firstName: ['', [Validators.required]],
@@ -118,6 +121,27 @@ export class ProfileComponent {
       error: (err) => {
         this.changingPassword.set(false);
         this.passwordError.set(extractApiError(err, (k) => this.localization.translate(k)));
+      },
+    });
+  }
+
+  protected exportData(): void {
+    this.exportingData.set(true);
+    this.backup.exportMyData().subscribe({
+      next: (blob) => {
+        this.exportingData.set(false);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `my-data-${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        this.exportingData.set(false);
+        this.notifications.error(
+          extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('profile.export.error')),
+        );
       },
     });
   }

@@ -2,6 +2,7 @@ import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AdminService } from '../../../core/services/admin.service';
 import { AuthService } from '../../../core/services/auth.service';
+import { BackupService } from '../../../core/services/backup.service';
 import { FormatService } from '../../../core/services/format.service';
 import { LocalizationService } from '../../../core/services/localization.service';
 import { NotificationService } from '../../../core/services/notification.service';
@@ -18,6 +19,7 @@ import { extractApiError } from '../../../shared/utils/api-error';
 })
 export class AdminUserListComponent {
   private readonly adminService = inject(AdminService);
+  private readonly backupService = inject(BackupService);
   private readonly notifications = inject(NotificationService);
   private readonly confirmDialog = inject(ConfirmDialogService);
   private readonly auth = inject(AuthService);
@@ -31,9 +33,32 @@ export class AdminUserListComponent {
   protected readonly pageNumber = signal(1);
   protected readonly pageSize = signal(10);
   protected readonly searchFilter = signal('');
+  protected readonly downloadingBackup = signal(false);
 
   constructor() {
     this.load();
+  }
+
+  protected downloadBackup(): void {
+    this.downloadingBackup.set(true);
+    this.backupService.downloadBackup().subscribe({
+      next: (blob) => {
+        this.downloadingBackup.set(false);
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `backup-${new Date().toISOString().slice(0, 10)}.json`;
+        link.click();
+        URL.revokeObjectURL(url);
+        this.notifications.success(this.localization.translate('admin.backup.success'));
+      },
+      error: (err) => {
+        this.downloadingBackup.set(false);
+        this.notifications.error(
+          extractApiError(err, (k) => this.localization.translate(k), this.localization.translate('admin.backup.error')),
+        );
+      },
+    });
   }
 
   protected onSearchChange(value: string): void {

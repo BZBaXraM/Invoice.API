@@ -6,6 +6,7 @@ import { environment } from '../../../environments/environment';
 import { CustomerResponse } from '../models/customer.model';
 import { InvoiceResponse } from '../models/invoice.model';
 import { CustomerIdEvent, InvoiceIdEvent, InvoiceStatusChangedEvent } from '../models/realtime.model';
+import { RecurringInvoiceIdEvent, RecurringInvoiceResponse } from '../models/recurring.model';
 import { AuthService } from './auth.service';
 
 function hubUrl(): string {
@@ -33,6 +34,10 @@ export class RealtimeService {
   readonly invoiceArchived$ = new Subject<InvoiceIdEvent>();
   readonly invoiceDeleted$ = new Subject<InvoiceIdEvent>();
 
+  readonly recurringInvoiceCreated$ = new Subject<RecurringInvoiceResponse>();
+  readonly recurringInvoiceUpdated$ = new Subject<RecurringInvoiceResponse>();
+  readonly recurringInvoiceDeleted$ = new Subject<RecurringInvoiceIdEvent>();
+
   connect(): void {
     if (!this.isBrowser || this.connection) {
       return;
@@ -57,6 +62,16 @@ export class RealtimeService {
     );
     connection.on('InvoiceArchived', (payload: InvoiceIdEvent) => this.invoiceArchived$.next(payload));
     connection.on('InvoiceDeleted', (payload: InvoiceIdEvent) => this.invoiceDeleted$.next(payload));
+
+    connection.on('RecurringInvoiceCreated', (payload: RecurringInvoiceResponse) =>
+      this.recurringInvoiceCreated$.next(payload),
+    );
+    connection.on('RecurringInvoiceUpdated', (payload: RecurringInvoiceResponse) =>
+      this.recurringInvoiceUpdated$.next(payload),
+    );
+    connection.on('RecurringInvoiceDeleted', (payload: RecurringInvoiceIdEvent) =>
+      this.recurringInvoiceDeleted$.next(payload),
+    );
 
     connection.onreconnected(() => this.connected.set(true));
     connection.onreconnecting(() => this.connected.set(false));

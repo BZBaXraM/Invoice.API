@@ -60,3 +60,9 @@
 .badge--status-rejected {
   @extend .badge--danger;
 }
+.badge--status-partiallypaid {
+  @extend .badge--warning;
+}
+.badge--status-overdue {
+  @extend .badge--danger;
+}

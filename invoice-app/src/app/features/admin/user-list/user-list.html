@@ -4,6 +4,11 @@
       <h1 class="page-header__title">{{ 'admin.users.title' | translate }}</h1>
       <p class="page-header__subtitle">{{ 'admin.users.subtitle' | translate }}</p>
     </div>
+    <div class="page-actions">
+      <button type="button" class="btn btn--secondary" [disabled]="downloadingBackup()" (click)="downloadBackup()">
+        {{ (downloadingBackup() ? 'admin.backup.downloading' : 'admin.backup.button') | translate }}
+      </button>
+    </div>
   </div>
 
   <div class="table-toolbar">

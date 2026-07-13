@@ -96,8 +96,33 @@ export const routes: Routes = [
               import('./features/invoices/invoice-form/invoice-form').then((m) => m.InvoiceFormComponent),
           },
           {
+            path: 'recurring',
+            loadComponent: () =>
+              import('./features/recurring/recurring-list/recurring-list').then((m) => m.RecurringListComponent),
+          },
+          {
+            path: 'recurring/new',
+            loadComponent: () =>
+              import('./features/recurring/recurring-form/recurring-form').then((m) => m.RecurringFormComponent),
+          },
+          {
+            path: 'recurring/:id/edit',
+            loadComponent: () =>
+              import('./features/recurring/recurring-form/recurring-form').then((m) => m.RecurringFormComponent),
+          },
+          {
+            path: 'history',
+            loadComponent: () =>
+              import('./features/history/history-list/history-list').then((m) => m.HistoryListComponent),
+          },
+          {
             path: 'profile',
             loadComponent: () => import('./features/profile/profile').then((m) => m.ProfileComponent),
+          },
+          {
+            path: 'profile/company',
+            loadComponent: () =>
+              import('./features/profile/company-profile/company-profile').then((m) => m.CompanyProfileComponent),
           },
         ],
       },

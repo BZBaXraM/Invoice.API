@@ -6,12 +6,14 @@
   <div class="page">
     <div class="page-header">
       <div>
-        <h1 class="page-header__title">
-          {{ 'invoices.detail.title' | translate: { start: format.date(inv.startDate), end: format.date(inv.endDate) } }}
-        </h1>
+        <h1 class="page-header__title">{{ inv.number }}</h1>
         <p class="page-header__subtitle">
+          {{ 'invoices.detail.title' | translate: { start: format.date(inv.startDate), end: format.date(inv.endDate) } }}
+          @if (inv.dueDate) {
+            · {{ 'invoices.detail.dueDateLabel' | translate }} {{ format.date(inv.dueDate) }}
+          }
           @if (customer(); as c) {
-            <a [routerLink]="['/customers', c.id]">{{ c.firstName }} {{ c.lastName }}</a>
+            · <a [routerLink]="['/customers', c.id]">{{ c.firstName }} {{ c.lastName }}</a>
           }
         </p>
       </div>
@@ -49,8 +51,101 @@
       <div class="card">
         <h3>{{ 'invoices.detail.totalHeading' | translate }}</h3>
         <div style="font-size: 1.5rem; font-weight: 700">{{ format.currency(inv.totalSum, inv.currency) }}</div>
+        <div class="stack" style="gap: 0.15rem; margin-top: 0.5rem">
+          <div class="text-muted">
+            {{ 'invoices.detail.subtotalLabel' | translate }}{{ format.currency(inv.subtotal, inv.currency) }}
+          </div>
+          @if (inv.discountAmount > 0) {
+            <div class="text-muted">
+              {{ 'invoices.detail.discountLabel' | translate }}
+              @if (inv.discountType === DiscountType.Percent) {
+                ({{ inv.discountValue }}%)
+              }
+              &minus;{{ format.currency(inv.discountAmount, inv.currency) }}
+            </div>
+          }
+          @if (inv.vatAmount > 0) {
+            <div class="text-muted">
+              {{ 'invoices.detail.vatLabel' | translate }} ({{ inv.vatRate }}%): {{ format.currency(inv.vatAmount, inv.currency) }}
+            </div>
+          }
+          @if (inv.paidAmount > 0) {
+            <div class="text-muted">
+              {{ 'invoices.payments.paidLabel' | translate }}{{ format.currency(inv.paidAmount, inv.currency) }}
+            </div>
+            <div style="font-weight: 600">
+              {{ 'invoices.payments.balanceLabel' | translate }}{{ format.currency(inv.balanceDue, inv.currency) }}
+            </div>
+          }
+        </div>
         <p class="text-muted">{{ 'invoices.detail.itemsCount' | translate: { count: inv.rows.length } }}</p>
       </div>
+    </div>
+
+    <div class="card">
+      <h3>{{ 'invoices.payments.heading' | translate }}</h3>
+
+      @if (inv.payments.length > 0) {
+        <table class="table">
+          <thead>
+            <tr>
+              <th>{{ 'invoices.payments.columns.date' | translate }}</th>
+              <th class="text-right">{{ 'invoices.payments.columns.amount' | translate }}</th>
+              <th>{{ 'invoices.payments.columns.note' | translate }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (payment of inv.payments; track payment.id) {
+              <tr>
+                <td>{{ format.date(payment.paymentDate) }}</td>
+                <td class="text-right">{{ format.currency(payment.amount, inv.currency) }}</td>
+                <td>{{ payment.note || '—' }}</td>
+                <td class="text-right">
+                  <button
+                    type="button"
+                    class="btn btn--danger btn--sm"
+                    (click)="deletePayment(payment)"
+                  >
+                    {{ 'common.actions.delete' | translate }}
+                  </button>
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      } @else {
+        <p class="text-muted">{{ 'invoices.payments.empty' | translate }}</p>
+      }
+
+      @if (canRecordPayment()) {
+        <hr class="divider" />
+        <form class="stack" [formGroup]="paymentForm" (ngSubmit)="addPayment()" novalidate>
+          <h4 style="margin: 0">{{ 'invoices.payments.recordHeading' | translate }}</h4>
+          <div class="form-grid">
+            <div class="field">
+              <label class="field__label" for="paymentAmount">{{ 'invoices.payments.fields.amount' | translate }}</label>
+              <input id="paymentAmount" class="input" type="number" step="0.01" min="0.01" formControlName="amount" />
+              <p class="text-muted" style="margin: 0.25rem 0 0">
+                {{ 'invoices.payments.balanceHint' | translate: { balance: format.currency(inv.balanceDue, inv.currency) } }}
+              </p>
+            </div>
+            <div class="field">
+              <label class="field__label" for="paymentDate">{{ 'invoices.payments.fields.date' | translate }}</label>
+              <input id="paymentDate" class="input" type="date" formControlName="paymentDate" />
+            </div>
+            <div class="field">
+              <label class="field__label" for="paymentNote">{{ 'invoices.payments.fields.note' | translate }}</label>
+              <input id="paymentNote" class="input" type="text" formControlName="note" />
+            </div>
+          </div>
+          <div class="form-actions">
+            <button type="submit" class="btn btn--accent" [disabled]="savingPayment()">
+              {{ (savingPayment() ? 'common.actions.saving' : 'invoices.payments.recordButton') | translate }}
+            </button>
+          </div>
+        </form>
+      }
     </div>
 
     <div class="card">

@@ -1,0 +1,73 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ 'recurring.list.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'recurring.list.subtitle' | translate }}</p>
+    </div>
+    <div class="page-actions">
+      <a class="btn btn--accent" routerLink="/recurring/new">{{ 'recurring.list.newButton' | translate }}</a>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ 'recurring.list.columns.customer' | translate }}</th>
+          <th>{{ 'recurring.list.columns.frequency' | translate }}</th>
+          <th>{{ 'recurring.list.columns.nextRun' | translate }}</th>
+          <th>{{ 'recurring.list.columns.endDate' | translate }}</th>
+          <th>{{ 'recurring.list.columns.status' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td colspan="6" class="text-muted">{{ 'common.loading' | translate }}</td>
+          </tr>
+        } @else if (templates().length === 0) {
+          <tr>
+            <td colspan="6">
+              <div class="empty-state">
+                <div class="empty-state__title">{{ 'recurring.list.empty.title' | translate }}</div>
+                <p class="text-muted">{{ 'recurring.list.empty.message' | translate }}</p>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          @for (template of templates(); track template.id) {
+            <tr class="is-clickable" (click)="edit(template.id)">
+              <td>{{ customerName(template.customerId) }}</td>
+              <td>{{ ('recurring.frequency.' + template.frequency.toLowerCase()) | translate }}</td>
+              <td>{{ format.date(template.nextRunDate) }}</td>
+              <td>{{ template.endDate ? format.date(template.endDate) : '—' }}</td>
+              <td>
+                <span class="badge badge--status-{{ template.isActive ? 'sent' : 'cancelled' }}">
+                  {{ (template.isActive ? 'recurring.active' : 'recurring.paused') | translate }}
+                </span>
+              </td>
+              <td class="text-right">
+                <div class="cluster" style="justify-content: flex-end">
+                  <button type="button" class="btn btn--secondary btn--sm" (click)="toggle(template, $event)">
+                    {{ (template.isActive ? 'recurring.pauseButton' : 'recurring.activateButton') | translate }}
+                  </button>
+                  <button type="button" class="btn btn--danger btn--sm" (click)="remove(template, $event)">
+                    {{ 'common.actions.delete' | translate }}
+                  </button>
+                </div>
+              </td>
+            </tr>
+          }
+        }
+      </tbody>
+    </table>
+
+    <app-pagination
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>

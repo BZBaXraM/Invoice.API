@@ -1,8 +1,8 @@
 <div class="page" style="max-width: 52rem">
   <div class="page-header">
     <div>
-      <h1 class="page-header__title">{{ (isEdit ? 'invoices.form.titleEdit' : 'invoices.form.titleNew') | translate }}</h1>
-      <p class="page-header__subtitle">{{ 'invoices.form.subtitle' | translate }}</p>
+      <h1 class="page-header__title">{{ (isEdit ? 'recurring.form.titleEdit' : 'recurring.form.titleNew') | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'recurring.form.subtitle' | translate }}</p>
     </div>
   </div>
 
@@ -21,20 +21,28 @@
               }
             </select>
           </div>
+          <div class="field">
+            <label class="field__label" for="frequency">{{ 'recurring.form.fields.frequency' | translate }}</label>
+            <select id="frequency" class="select" formControlName="frequency">
+              @for (frequency of frequencies; track frequency) {
+                <option [value]="frequency">{{ ('recurring.frequency.' + frequency.toLowerCase()) | translate }}</option>
+              }
+            </select>
+          </div>
         </div>
 
         <div class="form-grid">
           <div class="field">
-            <label class="field__label" for="startDate">{{ 'invoices.form.fields.startDate' | translate }}</label>
-            <input id="startDate" class="input" type="date" formControlName="startDate" />
+            <label class="field__label" for="nextRunDate">{{ 'recurring.form.fields.nextRunDate' | translate }}</label>
+            <input id="nextRunDate" class="input" type="date" formControlName="nextRunDate" />
           </div>
           <div class="field">
-            <label class="field__label" for="endDate">{{ 'invoices.form.fields.endDate' | translate }}</label>
+            <label class="field__label" for="endDate">{{ 'recurring.form.fields.endDate' | translate }}</label>
             <input id="endDate" class="input" type="date" formControlName="endDate" />
           </div>
           <div class="field">
-            <label class="field__label" for="dueDate">{{ 'invoices.form.fields.dueDate' | translate }}</label>
-            <input id="dueDate" class="input" type="date" formControlName="dueDate" />
+            <label class="field__label" for="dueInDays">{{ 'recurring.form.fields.dueInDays' | translate }}</label>
+            <input id="dueInDays" class="input" type="number" min="0" max="365" formControlName="dueInDays" />
           </div>
         </div>
 
@@ -127,7 +135,7 @@
         }
 
         <div class="form-actions">
-          <a class="btn btn--secondary" routerLink="/invoices">{{ 'common.actions.cancel' | translate }}</a>
+          <a class="btn btn--secondary" routerLink="/recurring">{{ 'common.actions.cancel' | translate }}</a>
           <button type="submit" class="btn btn--accent" [disabled]="submitting()">
             {{ (submitting() ? 'common.actions.saving' : 'common.actions.save') | translate }}
           </button>

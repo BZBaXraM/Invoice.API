@@ -5,8 +5,10 @@ import { environment } from '../../../environments/environment';
 import { PagedResult, ResponseModel, ResponseModelData } from '../models/common.model';
 import {
   CreateInvoiceRequest,
+  CreatePaymentRequest,
   InvoiceResponse,
   InvoiceStatus,
+  PaymentResponse,
   UpdateInvoiceRequest,
 } from '../models/invoice.model';
 
@@ -69,5 +71,17 @@ export class InvoiceService {
 
   exportToPdf(id: string): Observable<Blob> {
     return this.http.get(`${this.baseUrl}/${id}/export`, { responseType: 'blob' });
+  }
+
+  addPayment(id: string, request: CreatePaymentRequest): Observable<ResponseModelData<InvoiceResponse>> {
+    return this.http.post<ResponseModelData<InvoiceResponse>>(`${this.baseUrl}/${id}/payments`, request);
+  }
+
+  getPayments(id: string): Observable<ResponseModelData<PaymentResponse[]>> {
+    return this.http.get<ResponseModelData<PaymentResponse[]>>(`${this.baseUrl}/${id}/payments`);
+  }
+
+  deletePayment(id: string, paymentId: string): Observable<ResponseModelData<InvoiceResponse>> {
+    return this.http.delete<ResponseModelData<InvoiceResponse>>(`${this.baseUrl}/${id}/payments/${paymentId}`);
   }
 }

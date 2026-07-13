@@ -21,6 +21,8 @@ const NAV_ITEMS: NavItem[] = [
   { labelKey: 'nav.dashboard', path: '/dashboard', icon: 'grid' },
   { labelKey: 'nav.customers', path: '/customers', icon: 'users' },
   { labelKey: 'nav.invoices', path: '/invoices', icon: 'file' },
+  { labelKey: 'nav.recurring', path: '/recurring', icon: 'repeat' },
+  { labelKey: 'nav.history', path: '/history', icon: 'clock' },
   { labelKey: 'nav.profile', path: '/profile', icon: 'user' },
 ];
 

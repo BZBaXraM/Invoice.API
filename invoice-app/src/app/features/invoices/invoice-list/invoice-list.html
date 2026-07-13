@@ -24,8 +24,10 @@
     <table class="table">
       <thead>
         <tr>
+          <th>{{ 'invoices.list.columns.number' | translate }}</th>
           <th>{{ 'invoices.list.columns.customer' | translate }}</th>
           <th class="sortable" (click)="sort('startDate')">{{ 'invoices.list.columns.period' | translate }}</th>
+          <th>{{ 'invoices.list.columns.dueDate' | translate }}</th>
           <th>{{ 'invoices.list.columns.status' | translate }}</th>
           <th class="sortable text-right" (click)="sort('totalSum')">{{ 'invoices.list.columns.sum' | translate }}</th>
           <th></th>
@@ -34,11 +36,11 @@
       <tbody>
         @if (loading()) {
           <tr>
-            <td colspan="5" class="text-muted">{{ 'common.loading' | translate }}</td>
+            <td colspan="7" class="text-muted">{{ 'common.loading' | translate }}</td>
           </tr>
         } @else if (invoices().length === 0) {
           <tr>
-            <td colspan="5">
+            <td colspan="7">
               <div class="empty-state">
                 <div class="empty-state__title">{{ 'invoices.list.empty.title' | translate }}</div>
                 <p class="text-muted">{{ 'invoices.list.empty.message' | translate }}</p>
@@ -48,8 +50,10 @@
         } @else {
           @for (invoice of invoices(); track invoice.id) {
             <tr class="is-clickable" (click)="view(invoice.id)">
+              <td style="font-weight: 600">{{ invoice.number }}</td>
               <td>{{ customerName(invoice.customerId) }}</td>
               <td>{{ format.date(invoice.startDate) }} – {{ format.date(invoice.endDate) }}</td>
+              <td>{{ invoice.dueDate ? format.date(invoice.dueDate) : '—' }}</td>
               <td><span class="badge badge--status-{{ invoice.status.toLowerCase() }}">{{ ('invoiceStatus.' + invoice.status.toLowerCase()) | translate }}</span></td>
               <td class="text-right">{{ format.currency(invoice.totalSum, invoice.currency) }}</td>
               <td class="text-right">

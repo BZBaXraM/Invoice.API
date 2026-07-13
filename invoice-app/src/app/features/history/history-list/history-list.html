@@ -1,0 +1,104 @@
+<div class="page">
+  <div class="page-header">
+    <div>
+      <h1 class="page-header__title">{{ 'history.title' | translate }}</h1>
+      <p class="page-header__subtitle">{{ 'history.subtitle' | translate }}</p>
+    </div>
+  </div>
+
+  <div class="table-toolbar">
+    <div class="cluster">
+      <select class="select" style="max-width: 14rem" [value]="entityTypeFilter()" (change)="onEntityTypeChange($any($event.target).value)">
+        <option value="">{{ 'history.filter.all' | translate }}</option>
+        @for (entityType of entityTypes; track entityType) {
+          <option [value]="entityType">{{ entityLabel(entityType) }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="table-wrapper">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>{{ 'history.columns.date' | translate }}</th>
+          <th>{{ 'history.columns.actor' | translate }}</th>
+          <th>{{ 'history.columns.entity' | translate }}</th>
+          <th>{{ 'history.columns.action' | translate }}</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        @if (loading()) {
+          <tr>
+            <td colspan="5" class="text-muted">{{ 'common.loading' | translate }}</td>
+          </tr>
+        } @else if (entries().length === 0) {
+          <tr>
+            <td colspan="5">
+              <div class="empty-state">
+                <div class="empty-state__title">{{ 'history.empty.title' | translate }}</div>
+                <p class="text-muted">{{ 'history.empty.message' | translate }}</p>
+              </div>
+            </td>
+          </tr>
+        } @else {
+          @for (entry of entries(); track entry.id) {
+            <tr class="is-clickable" (click)="toggleExpanded(entry.id)">
+              <td>{{ format.dateTime(entry.createdAt) }}</td>
+              <td>
+                {{ entry.actorName === 'system' ? ('history.systemActor' | translate) : entry.actorName }}
+              </td>
+              <td>{{ entityLabel(entry.entityType) }}</td>
+              <td>
+                <span class="badge badge--status-{{ entry.action === 'Created' ? 'paid' : entry.action === 'Deleted' ? 'rejected' : 'sent' }}">
+                  {{ ('history.action.' + entry.action.toLowerCase()) | translate }}
+                </span>
+              </td>
+              <td class="text-right text-muted">
+                {{ (expandedId() === entry.id ? 'history.hideChanges' : 'history.showChanges') | translate }}
+              </td>
+            </tr>
+            @if (expandedId() === entry.id) {
+              <tr>
+                <td colspan="5">
+                  @if (changes(entry); as changeList) {
+                    @if (changeList.length === 0) {
+                      <p class="text-muted" style="margin: 0">{{ 'history.noChanges' | translate }}</p>
+                    } @else {
+                      <table class="table" style="margin: 0">
+                        <thead>
+                          <tr>
+                            <th>{{ 'history.columns.property' | translate }}</th>
+                            <th>{{ 'history.columns.oldValue' | translate }}</th>
+                            <th>{{ 'history.columns.newValue' | translate }}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          @for (change of changeList; track change.property) {
+                            <tr>
+                              <td>{{ change.property }}</td>
+                              <td>{{ renderValue(change.old) }}</td>
+                              <td>{{ renderValue(change.new) }}</td>
+                            </tr>
+                          }
+                        </tbody>
+                      </table>
+                    }
+                  }
+                </td>
+              </tr>
+            }
+          }
+        }
+      </tbody>
+    </table>
+
+    <app-pagination
+      [pageNumber]="pageNumber()"
+      [pageSize]="pageSize()"
+      [totalCount]="totalCount()"
+      (pageChange)="onPageChange($event)"
+    />
+  </div>
+</div>
