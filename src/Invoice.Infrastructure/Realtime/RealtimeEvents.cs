@@ -17,4 +17,8 @@ public static class RealtimeEvents
     public const string InvoiceStatusChanged = "InvoiceStatusChanged";
     public const string InvoiceArchived = "InvoiceArchived";
     public const string InvoiceDeleted = "InvoiceDeleted";
+
+    public const string RecurringInvoiceCreated = "RecurringInvoiceCreated";
+    public const string RecurringInvoiceUpdated = "RecurringInvoiceUpdated";
+    public const string RecurringInvoiceDeleted = "RecurringInvoiceDeleted";
 }

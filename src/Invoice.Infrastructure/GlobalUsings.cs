@@ -16,6 +16,7 @@ global using Invoice.Application.ServiceContracts;
 global using Invoice.Domain.Common;
 global using Invoice.Domain.Entities;
 global using Invoice.Domain.Enums;
+global using Invoice.Infrastructure.BackgroundServices;
 global using Invoice.Infrastructure.Configs;
 global using Invoice.Infrastructure.Data;
 global using Invoice.Infrastructure.Realtime;

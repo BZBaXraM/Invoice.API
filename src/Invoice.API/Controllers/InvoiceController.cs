@@ -6,7 +6,10 @@ namespace Invoice.API.Controllers;
 [Authorize(Policy = AuthPolicies.NotAdmin)]
 [Route("api/invoices")]
 [ApiController]
-public class InvoiceController(IInvoiceService service, ICurrentUserService currentUserService) : ControllerBase
+public class InvoiceController(
+    IInvoiceService service,
+    IPaymentService paymentService,
+    ICurrentUserService currentUserService) : ControllerBase
 {
     /// <summary>
     /// Creates a new invoice.
@@ -97,6 +100,36 @@ public class InvoiceController(IInvoiceService service, ICurrentUserService curr
             return StatusCode(result.StatusCode, result);
         }
 
-        return File(result.Data!, "application/pdf", $"invoice-{id}.pdf");
+        return File(result.Data!.Content, "application/pdf", result.Data.FileName);
+    }
+
+    /// <summary>
+    /// Records a payment against an invoice and returns the refreshed invoice.
+    /// </summary>
+    [HttpPost("{id:guid}/payments")]
+    public async Task<ActionResult<ResponseModel<InvoiceResponse>>> AddPayment(Guid id, [FromBody] CreatePaymentRequest request)
+    {
+        var result = await paymentService.AddAsync(currentUserService.UserId!.Value, id, request);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
+    /// Lists the payments recorded against an invoice.
+    /// </summary>
+    [HttpGet("{id:guid}/payments")]
+    public async Task<ActionResult<ResponseModel<List<PaymentResponse>>>> GetPayments(Guid id)
+    {
+        var result = await paymentService.GetListAsync(currentUserService.UserId!.Value, id);
+        return StatusCode(result.StatusCode, result);
+    }
+
+    /// <summary>
+    /// Deletes a recorded payment and returns the refreshed invoice.
+    /// </summary>
+    [HttpDelete("{id:guid}/payments/{paymentId:guid}")]
+    public async Task<ActionResult<ResponseModel<InvoiceResponse>>> DeletePayment(Guid id, Guid paymentId)
+    {
+        var result = await paymentService.DeleteAsync(currentUserService.UserId!.Value, id, paymentId);
+        return StatusCode(result.StatusCode, result);
     }
 }

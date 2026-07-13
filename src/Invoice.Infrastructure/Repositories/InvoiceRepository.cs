@@ -11,7 +11,30 @@ public class InvoiceRepository(InvoiceDbContext context) : IInvoiceRepository
     public async Task<Domain.Entities.Invoice?> GetByIdWithRowsAsync(Guid id, Guid ownerUserId) =>
         await context.Invoices
             .Include(i => i.Rows)
+            .Include(i => i.Payments)
             .FirstOrDefaultAsync(i => i.Id == id && i.UserId == ownerUserId);
+
+    private static readonly InvoiceStatus[] OverdueEligibleStatuses =
+    [
+        InvoiceStatus.Sent,
+        InvoiceStatus.Received,
+        InvoiceStatus.PartiallyPaid
+    ];
+
+    public async Task<List<Domain.Entities.Invoice>> GetOverdueCandidatesAsync(DateTimeOffset now) =>
+        await context.Invoices
+            .Where(i => i.DeletedAt == null
+                        && i.DueDate != null && i.DueDate < now
+                        && OverdueEligibleStatuses.Contains(i.Status))
+            .ToListAsync();
+
+    public async Task<int> GetNextInvoiceNumberAsync(Guid ownerUserId)
+    {
+        var maxNumber = await context.Invoices
+            .Where(i => i.UserId == ownerUserId)
+            .MaxAsync(i => (int?)i.InvoiceNumber);
+        return (maxNumber ?? 0) + 1;
+    }
 
     public async Task<(List<Domain.Entities.Invoice> Items, int TotalCount)> GetPagedAsync(
         Guid ownerUserId,
@@ -24,6 +47,7 @@ public class InvoiceRepository(InvoiceDbContext context) : IInvoiceRepository
     {
         var query = context.Invoices
             .Include(i => i.Rows)
+            .Include(i => i.Payments)
             .Where(i => i.UserId == ownerUserId && i.DeletedAt == null);
 
         if (customerId.HasValue)

@@ -32,6 +32,15 @@ public class SignalRRealtimeNotifier(IHubContext<NotificationsHub> hubContext) :
     public Task InvoiceDeletedAsync(Guid ownerUserId, Guid invoiceId) =>
         Send(ownerUserId, RealtimeEvents.InvoiceDeleted, new { invoiceId });
 
+    public Task RecurringInvoiceCreatedAsync(Guid ownerUserId, RecurringInvoiceResponse recurringInvoice) =>
+        Send(ownerUserId, RealtimeEvents.RecurringInvoiceCreated, recurringInvoice);
+
+    public Task RecurringInvoiceUpdatedAsync(Guid ownerUserId, RecurringInvoiceResponse recurringInvoice) =>
+        Send(ownerUserId, RealtimeEvents.RecurringInvoiceUpdated, recurringInvoice);
+
+    public Task RecurringInvoiceDeletedAsync(Guid ownerUserId, Guid recurringInvoiceId) =>
+        Send(ownerUserId, RealtimeEvents.RecurringInvoiceDeleted, new { recurringInvoiceId });
+
     private Task Send(Guid ownerUserId, string method, object payload) =>
         hubContext.Clients.Group(NotificationsHub.GroupName(ownerUserId.ToString())).SendAsync(method, payload);
 }

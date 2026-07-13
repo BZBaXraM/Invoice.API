@@ -12,18 +12,48 @@ public static class InvoiceMappingExtensions
         Sum = row.Sum
     };
 
-    public static InvoiceResponse ToInvoiceResponse(this Domain.Entities.Invoice invoice) => new()
+    public static PaymentResponse ToPaymentResponse(this Payment payment) => new()
     {
-        Id = invoice.Id,
-        CustomerId = invoice.CustomerId,
-        StartDate = invoice.StartDate,
-        EndDate = invoice.EndDate,
-        Rows = invoice.Rows.Select(r => r.ToInvoiceRowResponse()).ToList(),
-        TotalSum = invoice.TotalSum,
-        Comment = invoice.Comment,
-        Status = invoice.Status,
-        CreatedAt = invoice.CreatedAt,
-        UpdatedAt = invoice.UpdatedAt,
-        DeletedAt = invoice.DeletedAt
+        Id = payment.Id,
+        InvoiceId = payment.InvoiceId,
+        Amount = payment.Amount,
+        PaymentDate = payment.PaymentDate,
+        Note = payment.Note,
+        CreatedAt = payment.CreatedAt
     };
+
+    public static InvoiceResponse ToInvoiceResponse(this Domain.Entities.Invoice invoice)
+    {
+        var paidAmount = invoice.Payments.Sum(p => p.Amount);
+
+        return new InvoiceResponse
+        {
+            Id = invoice.Id,
+            CustomerId = invoice.CustomerId,
+            InvoiceNumber = invoice.InvoiceNumber,
+            Number = InvoiceTotalsCalculator.FormatInvoiceNumber(invoice.InvoiceNumber),
+            StartDate = invoice.StartDate,
+            EndDate = invoice.EndDate,
+            DueDate = invoice.DueDate,
+            Rows = invoice.Rows.Select(r => r.ToInvoiceRowResponse()).ToList(),
+            VatRate = invoice.VatRate,
+            DiscountType = invoice.DiscountType,
+            DiscountValue = invoice.DiscountValue,
+            Subtotal = invoice.Subtotal,
+            DiscountAmount = invoice.DiscountAmount,
+            VatAmount = invoice.VatAmount,
+            TotalSum = invoice.TotalSum,
+            PaidAmount = paidAmount,
+            BalanceDue = invoice.TotalSum - paidAmount,
+            Payments = invoice.Payments
+                .OrderBy(p => p.PaymentDate)
+                .Select(p => p.ToPaymentResponse())
+                .ToList(),
+            Comment = invoice.Comment,
+            Status = invoice.Status,
+            CreatedAt = invoice.CreatedAt,
+            UpdatedAt = invoice.UpdatedAt,
+            DeletedAt = invoice.DeletedAt
+        };
+    }
 }

@@ -18,5 +18,5 @@ public interface IInvoiceService
 
     Task<ResponseModel> DeleteAsync(Guid ownerUserId, Guid id);
     Task<ResponseModel> ArchiveAsync(Guid ownerUserId, Guid id);
-    Task<ResponseModel<byte[]>> ExportToPdfAsync(Guid ownerUserId, Guid id);
+    Task<ResponseModel<InvoicePdfResponse>> ExportToPdfAsync(Guid ownerUserId, Guid id);
 }

@@ -24,4 +24,5 @@ public class User : BaseEntity
     public DateTimeOffset UpdatedAt { get; set; }
     public ICollection<Customer> Customers { get; set; } = [];
     public ICollection<Invoice> Invoices { get; set; } = [];
+    public CompanyProfile? CompanyProfile { get; set; }
 }

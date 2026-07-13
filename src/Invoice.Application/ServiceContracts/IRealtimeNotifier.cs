@@ -17,4 +17,8 @@ public interface IRealtimeNotifier
     Task InvoiceStatusChangedAsync(Guid ownerUserId, Guid invoiceId, InvoiceStatus status);
     Task InvoiceArchivedAsync(Guid ownerUserId, Guid invoiceId);
     Task InvoiceDeletedAsync(Guid ownerUserId, Guid invoiceId);
+
+    Task RecurringInvoiceCreatedAsync(Guid ownerUserId, RecurringInvoiceResponse recurringInvoice);
+    Task RecurringInvoiceUpdatedAsync(Guid ownerUserId, RecurringInvoiceResponse recurringInvoice);
+    Task RecurringInvoiceDeletedAsync(Guid ownerUserId, Guid recurringInvoiceId);
 }

@@ -4,9 +4,11 @@ public static class DependencyInjection
 {
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
-        services.AddDbContext<InvoiceDbContext>(options =>
+        services.AddScoped<AuditSaveChangesInterceptor>();
+        services.AddDbContext<InvoiceDbContext>((sp, options) =>
             options.UseNpgsql(configuration.GetConnectionString("DefaultConnection") ??
-                              configuration.GetConnectionString("DockerConnection")));
+                              configuration.GetConnectionString("DockerConnection"))
+                .AddInterceptors(sp.GetRequiredService<AuditSaveChangesInterceptor>()));
 
         JwtConfig jwtConfig = new();
         configuration.GetSection("JWT").Bind(jwtConfig);
@@ -97,6 +99,8 @@ public static class DependencyInjection
             .AddSingleton<IBlackListService, BlackListService>()
             .AddSingleton<IRealtimeNotifier, SignalRRealtimeNotifier>()
             .AddSingleton<ITranslationService, TranslationService>();
+
+        services.AddHostedService<InvoiceSchedulerHostedService>();
 
         return services;
     }

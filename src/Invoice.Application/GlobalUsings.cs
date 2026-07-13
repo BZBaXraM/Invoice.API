@@ -14,6 +14,7 @@ global using Invoice.Application.Validators;
 global using Invoice.Domain.Common;
 global using Invoice.Domain.Entities;
 global using Invoice.Domain.Enums;
+global using Invoice.Domain.Exceptions;
 global using Microsoft.Extensions.DependencyInjection;
 global using QuestPDF.Fluent;
 global using QuestPDF.Helpers;

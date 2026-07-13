@@ -6,8 +6,33 @@ namespace Invoice.API.Controllers;
 [Authorize(Roles = "Admin")]
 [Route("api/admin")]
 [ApiController]
-public class AdminController(IAdminService service, ICurrentUserService currentUserService) : ControllerBase
+public class AdminController(
+    IAdminService service,
+    IBackupService backupService,
+    ICurrentUserService currentUserService) : ControllerBase
 {
+    private static readonly JsonSerializerOptions BackupJsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters = { new JsonStringEnumConverter() },
+        WriteIndented = true
+    };
+
+    /// <summary>
+    /// Downloads a full-database JSON backup (all users and their data).
+    /// </summary>
+    [HttpGet("backup")]
+    public async Task<IActionResult> DownloadBackup()
+    {
+        var result = await backupService.ExportAllAsync();
+        if (result.IsFailed)
+        {
+            return StatusCode(result.StatusCode, result);
+        }
+
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(result.Data, BackupJsonOptions);
+        return File(bytes, "application/json", $"backup-{DateTimeOffset.UtcNow:yyyyMMdd-HHmm}.json");
+    }
+
     /// <summary>
     /// Gets a paginated list of all users, including those who never confirmed their email.
     /// </summary>

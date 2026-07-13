@@ -123,6 +123,30 @@ public class AccountController(IAccountService accountService, ICurrentUserServi
         return StatusCode(result.StatusCode, result);
     }
 
+    private static readonly JsonSerializerOptions ExportJsonOptions = new(JsonSerializerDefaults.Web)
+    {
+        Converters = { new JsonStringEnumConverter() },
+        WriteIndented = true
+    };
+
+    /// <summary>
+    /// Downloads everything belonging to the current user as a JSON file
+    /// (profile, company requisites, customers, invoices, payments, history).
+    /// </summary>
+    [Authorize(Policy = AuthPolicies.NotAdmin)]
+    [HttpGet("profile/export")]
+    public async Task<IActionResult> ExportMyData([FromServices] IBackupService backupService)
+    {
+        var result = await backupService.ExportUserDataAsync(currentUserService.UserId!.Value);
+        if (result.IsFailed)
+        {
+            return StatusCode(result.StatusCode, result);
+        }
+
+        var bytes = JsonSerializer.SerializeToUtf8Bytes(result.Data, ExportJsonOptions);
+        return File(bytes, "application/json", $"my-data-{DateTimeOffset.UtcNow:yyyyMMdd-HHmm}.json");
+    }
+
     /// <summary>
     /// Deletes the current user's profile (hard delete).
     /// </summary>

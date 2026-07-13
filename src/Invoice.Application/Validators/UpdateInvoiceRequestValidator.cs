@@ -7,6 +7,14 @@ public class UpdateInvoiceRequestValidator : AbstractValidator<UpdateInvoiceRequ
         RuleFor(x => x.CustomerId).NotEqual(Guid.Empty).WithMessage("validation.invoice.customerRequired");
         RuleFor(x => x.EndDate).GreaterThanOrEqualTo(x => x.StartDate)
             .WithMessage("validation.invoice.endDateBeforeStartDate");
+        RuleFor(x => x.DueDate).GreaterThanOrEqualTo(x => x.EndDate)
+            .WithMessage("validation.invoice.dueDateBeforeEndDate")
+            .When(x => x.DueDate.HasValue);
+        RuleFor(x => x.VatRate).InclusiveBetween(0, 100).WithMessage("validation.invoice.vatRateRange");
+        RuleFor(x => x.DiscountValue).GreaterThanOrEqualTo(0).WithMessage("validation.invoice.discountValueNegative");
+        RuleFor(x => x.DiscountValue).LessThanOrEqualTo(100)
+            .WithMessage("validation.invoice.discountPercentRange")
+            .When(x => x.DiscountType == DiscountType.Percent);
         RuleFor(x => x.Rows).NotEmpty().WithMessage("validation.invoice.rowsRequired");
 
         RuleForEach(x => x.Rows).ChildRules(row =>

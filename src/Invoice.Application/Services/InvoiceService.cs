@@ -27,6 +27,10 @@ public class InvoiceService(
             CustomerId = request.CustomerId,
             StartDate = request.StartDate,
             EndDate = request.EndDate,
+            DueDate = request.DueDate,
+            VatRate = request.VatRate,
+            DiscountType = request.DiscountType,
+            DiscountValue = request.DiscountValue,
             Comment = request.Comment,
             Status = InvoiceStatus.Created,
             CreatedAt = DateTimeOffset.UtcNow,
@@ -36,14 +40,14 @@ public class InvoiceService(
                 Service = r.Service,
                 Quantity = r.Quantity,
                 Rate = r.Rate,
-                Sum = r.Quantity * r.Rate
+                Sum = InvoiceTotalsCalculator.RowSum(r.Quantity, r.Rate)
             }).ToList()
         };
 
-        invoice.TotalSum = invoice.Rows.Sum(r => r.Sum);
+        InvoiceTotalsCalculator.ApplyTotals(invoice);
 
         uow.InvoiceRepository.AddInvoice(invoice);
-        await uow.CommitAsync();
+        await InvoiceNumberAllocator.CommitWithAllocatedNumberAsync(uow, invoice);
 
         var response = invoice.ToInvoiceResponse();
         await realtimeNotifier.InvoiceCreatedAsync(ownerUserId, response);
@@ -75,6 +79,10 @@ public class InvoiceService(
         invoice.CustomerId = request.CustomerId;
         invoice.StartDate = request.StartDate;
         invoice.EndDate = request.EndDate;
+        invoice.DueDate = request.DueDate;
+        invoice.VatRate = request.VatRate;
+        invoice.DiscountType = request.DiscountType;
+        invoice.DiscountValue = request.DiscountValue;
         invoice.Comment = request.Comment;
         invoice.UpdatedAt = DateTimeOffset.UtcNow;
 
@@ -86,11 +94,11 @@ public class InvoiceService(
                 Service = row.Service,
                 Quantity = row.Quantity,
                 Rate = row.Rate,
-                Sum = row.Quantity * row.Rate
+                Sum = InvoiceTotalsCalculator.RowSum(row.Quantity, row.Rate)
             });
         }
 
-        invoice.TotalSum = invoice.Rows.Sum(r => r.Sum);
+        InvoiceTotalsCalculator.ApplyTotals(invoice);
 
         await uow.CommitAsync();
 
@@ -181,16 +189,17 @@ public class InvoiceService(
         return ResponseModel.Success("Invoice archived successfully");
     }
 
-    public async Task<ResponseModel<byte[]>> ExportToPdfAsync(Guid ownerUserId, Guid id)
+    public async Task<ResponseModel<InvoicePdfResponse>> ExportToPdfAsync(Guid ownerUserId, Guid id)
     {
         var invoice = await uow.InvoiceRepository.GetByIdWithRowsAsync(id, ownerUserId);
         if (invoice is null)
         {
-            return ResponseModel.Failure<byte[]>("Invoice not found", 404);
+            return ResponseModel.Failure<InvoicePdfResponse>("Invoice not found", 404);
         }
 
         var customer = await uow.CustomerRepository.GetByIdAsync(invoice.CustomerId, ownerUserId);
         var biller = await uow.UserRepository.GetByIdAsync(ownerUserId);
+        var companyProfile = await uow.CompanyProfileRepository.GetByUserIdAsync(ownerUserId);
 
         QuestPDF.Settings.License = LicenseType.Community;
 
@@ -203,8 +212,8 @@ public class InvoiceService(
                 page.PageColor(Colors.White);
                 page.DefaultTextStyle(x => x.FontSize(10));
 
-                page.Header().Element(header => ComposeHeader(header, invoice, biller));
-                page.Content().Element(content => ComposeContent(content, invoice, customer));
+                page.Header().Element(header => ComposeHeader(header, invoice, biller, companyProfile));
+                page.Content().Element(content => ComposeContent(content, invoice, customer, companyProfile));
 
                 page.Footer().AlignCenter().Text(text =>
                 {
@@ -216,16 +225,40 @@ public class InvoiceService(
             });
         });
 
-        return ResponseModel.Success(document.GeneratePdf());
+        return ResponseModel.Success(new InvoicePdfResponse
+        {
+            Content = document.GeneratePdf(),
+            FileName = $"invoice-{InvoiceTotalsCalculator.FormatInvoiceNumber(invoice.InvoiceNumber)}.pdf"
+        });
     }
 
-    private static void ComposeHeader(IContainer container, Domain.Entities.Invoice invoice, User? biller)
+    private static void ComposeHeader(
+        IContainer container,
+        Domain.Entities.Invoice invoice,
+        User? biller,
+        CompanyProfile? companyProfile)
     {
         container.Row(row =>
         {
+            if (companyProfile?.LogoImage is { Length: > 0 } logo)
+            {
+                row.ConstantItem(90).AlignMiddle().Image(logo).FitArea();
+                row.ConstantItem(12);
+            }
+
             row.RelativeItem().Column(column =>
             {
-                column.Item().Text(biller is not null ? $"{biller.FirstName} {biller.LastName}" : "Company").FontSize(16).SemiBold();
+                // Prefer company requisites; fall back to the personal profile so
+                // pre-existing accounts without a company profile keep working.
+                var sellerName = companyProfile?.CompanyName
+                                 ?? (biller is not null ? $"{biller.FirstName} {biller.LastName}" : "Company");
+                column.Item().Text(sellerName).FontSize(16).SemiBold();
+
+                if (companyProfile is not null)
+                {
+                    column.Item().Text($"VÖEN: {companyProfile.Voen}");
+                }
+
                 if (!string.IsNullOrWhiteSpace(biller?.Address))
                 {
                     column.Item().Text(biller.Address);
@@ -239,20 +272,60 @@ public class InvoiceService(
                         column.Item().Text(biller.PhoneNumber);
                     }
                 }
+
+                if (companyProfile is not null)
+                {
+                    column.Item().PaddingTop(4).Column(bank =>
+                    {
+                        if (!string.IsNullOrWhiteSpace(companyProfile.BankName))
+                        {
+                            bank.Item().Text($"Bank: {companyProfile.BankName}");
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(companyProfile.BankVoen))
+                        {
+                            bank.Item().Text($"Bank VÖEN: {companyProfile.BankVoen}");
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(companyProfile.Iban))
+                        {
+                            bank.Item().Text($"IBAN: {companyProfile.Iban}");
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(companyProfile.BankAccount))
+                        {
+                            bank.Item().Text($"Account: {companyProfile.BankAccount}");
+                        }
+
+                        if (!string.IsNullOrWhiteSpace(companyProfile.SwiftCode))
+                        {
+                            bank.Item().Text($"SWIFT: {companyProfile.SwiftCode}");
+                        }
+                    });
+                }
             });
 
             row.ConstantItem(180).Column(column =>
             {
                 column.Item().AlignRight().Text("INVOICE").FontSize(22).SemiBold().FontColor(Colors.Blue.Medium);
-                column.Item().AlignRight().Text($"# {invoice.Id.ToString()[..8].ToUpperInvariant()}");
+                column.Item().AlignRight().Text($"# {InvoiceTotalsCalculator.FormatInvoiceNumber(invoice.InvoiceNumber)}");
                 column.Item().AlignRight().Text($"Issued: {invoice.CreatedAt:yyyy-MM-dd}");
                 column.Item().AlignRight().Text($"Period: {invoice.StartDate:yyyy-MM-dd} – {invoice.EndDate:yyyy-MM-dd}");
+                if (invoice.DueDate.HasValue)
+                {
+                    column.Item().AlignRight().Text($"Due: {invoice.DueDate.Value:yyyy-MM-dd}");
+                }
+
                 column.Item().AlignRight().Text($"Status: {invoice.Status}").SemiBold();
             });
         });
     }
 
-    private static void ComposeContent(IContainer container, Domain.Entities.Invoice invoice, Customer? customer)
+    private static void ComposeContent(
+        IContainer container,
+        Domain.Entities.Invoice invoice,
+        Customer? customer,
+        CompanyProfile? companyProfile)
     {
         container.PaddingTop(20).Column(column =>
         {
@@ -260,18 +333,70 @@ public class InvoiceService(
 
             column.Item().Element(c => ComposeBillTo(c, customer));
             column.Item().Element(c => ComposeTable(c, invoice));
+            column.Item().Element(c => ComposeTotals(c, invoice));
 
-            column.Item().AlignRight().Width(220).Row(row =>
+            if (companyProfile?.SignatureImage is { Length: > 0 } signature)
             {
-                row.RelativeItem().Text("Total").SemiBold();
-                row.ConstantItem(100).AlignRight().Text($"{invoice.TotalSum:N2} AZN").SemiBold().FontSize(12);
-            });
+                column.Item().AlignRight().Width(120).Column(sig =>
+                {
+                    sig.Item().Image(signature).FitWidth();
+                    sig.Item().AlignCenter().Text("Signature").FontSize(9).FontColor(Colors.Grey.Medium);
+                });
+            }
 
             if (!string.IsNullOrWhiteSpace(invoice.Comment))
             {
                 column.Item().PaddingTop(10).Text("Notes").SemiBold().FontColor(Colors.Grey.Darken2);
                 column.Item().Text(invoice.Comment);
             }
+        });
+    }
+
+    private static void ComposeTotals(IContainer container, Domain.Entities.Invoice invoice)
+    {
+        var paidAmount = invoice.Payments.Sum(p => p.Amount);
+
+        container.AlignRight().Width(260).Column(column =>
+        {
+            column.Spacing(2);
+
+            column.Item().Element(c => TotalsRow(c, "Subtotal", invoice.Subtotal));
+
+            if (invoice.DiscountAmount > 0)
+            {
+                var label = invoice.DiscountType == DiscountType.Percent
+                    ? $"Discount ({invoice.DiscountValue:0.##}%)"
+                    : "Discount";
+                column.Item().Element(c => TotalsRow(c, label, -invoice.DiscountAmount));
+            }
+
+            if (invoice.VatRate > 0)
+            {
+                column.Item().Element(c => TotalsRow(c, $"VAT ({invoice.VatRate:0.##}%)", invoice.VatAmount));
+            }
+
+            column.Item().BorderTop(1).BorderColor(Colors.Grey.Lighten2).PaddingTop(2).Row(row =>
+            {
+                row.RelativeItem().Text("Total").SemiBold();
+                row.ConstantItem(110).AlignRight().Text($"{invoice.TotalSum:N2} AZN").SemiBold().FontSize(12);
+            });
+
+            if (paidAmount > 0)
+            {
+                column.Item().Element(c => TotalsRow(c, "Paid", paidAmount));
+                column.Item().Row(row =>
+                {
+                    row.RelativeItem().Text("Balance due").SemiBold();
+                    row.ConstantItem(110).AlignRight()
+                        .Text($"{invoice.TotalSum - paidAmount:N2} AZN").SemiBold().FontSize(11);
+                });
+            }
+        });
+
+        static void TotalsRow(IContainer c, string label, decimal amount) => c.Row(row =>
+        {
+            row.RelativeItem().Text(label);
+            row.ConstantItem(110).AlignRight().Text($"{amount:N2} AZN");
         });
     }
 
