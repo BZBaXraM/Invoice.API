@@ -8,6 +8,12 @@ public class InvoiceRepository(InvoiceDbContext context) : IInvoiceRepository
         return invoice;
     }
 
+    public InvoiceRow AddRow(InvoiceRow row)
+    {
+        context.InvoiceRows.Add(row);
+        return row;
+    }
+
     public async Task<Domain.Entities.Invoice?> GetByIdWithRowsAsync(Guid id, Guid ownerUserId) =>
         await context.Invoices
             .Include(i => i.Rows)

@@ -88,12 +88,17 @@ public class RecurringInvoiceService(
         recurring.Rows.Clear();
         foreach (var row in request.Rows)
         {
-            recurring.Rows.Add(new RecurringInvoiceRow
+            // AddRow marks the new row as Added explicitly — nav-collection discovery
+            // alone would track it as Modified (its Guid key is pre-set) and fail.
+            var newRow = new RecurringInvoiceRow
             {
+                RecurringInvoiceId = recurring.Id,
                 Service = row.Service,
                 Quantity = row.Quantity,
                 Rate = row.Rate
-            });
+            };
+            recurring.Rows.Add(newRow);
+            uow.RecurringInvoiceRepository.AddRow(newRow);
         }
 
         await uow.CommitAsync();

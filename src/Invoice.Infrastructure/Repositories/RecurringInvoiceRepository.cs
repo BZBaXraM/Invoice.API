@@ -8,6 +8,12 @@ public class RecurringInvoiceRepository(InvoiceDbContext context) : IRecurringIn
         return recurringInvoice;
     }
 
+    public RecurringInvoiceRow AddRow(RecurringInvoiceRow row)
+    {
+        context.RecurringInvoiceRows.Add(row);
+        return row;
+    }
+
     public async Task<RecurringInvoice?> GetByIdWithRowsAsync(Guid id, Guid ownerUserId) =>
         await context.RecurringInvoices
             .Include(r => r.Rows)

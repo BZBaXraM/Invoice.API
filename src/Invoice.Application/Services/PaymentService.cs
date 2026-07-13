@@ -40,7 +40,9 @@ public class PaymentService(
             return ResponseModel.Failure<InvoiceResponse>("invoices.payments.error.overpay", 409);
         }
 
-        invoice.Payments.Add(new Payment
+        // AddPayment marks the entity as Added explicitly — nav-collection discovery
+        // alone would track it as Modified (its Guid key is pre-set) and fail.
+        var payment = new Payment
         {
             InvoiceId = invoice.Id,
             UserId = ownerUserId,
@@ -48,7 +50,9 @@ public class PaymentService(
             PaymentDate = request.PaymentDate,
             Note = request.Note,
             CreatedAt = DateTimeOffset.UtcNow
-        });
+        };
+        invoice.Payments.Add(payment);
+        uow.PaymentRepository.AddPayment(payment);
 
         var statusChanged = ApplyPaymentDerivedStatus(invoice);
         invoice.UpdatedAt = DateTimeOffset.UtcNow;

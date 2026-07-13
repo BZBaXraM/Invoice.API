@@ -4,6 +4,11 @@ public interface IRecurringInvoiceRepository
 {
     RecurringInvoice AddRecurringInvoice(RecurringInvoice recurringInvoice);
 
+    /// <summary>
+    /// Explicitly tracks a new row as Added (see IInvoiceRepository.AddRow for why).
+    /// </summary>
+    RecurringInvoiceRow AddRow(RecurringInvoiceRow row);
+
     Task<RecurringInvoice?> GetByIdWithRowsAsync(Guid id, Guid ownerUserId);
 
     Task<(List<RecurringInvoice> Items, int TotalCount)> GetPagedAsync(

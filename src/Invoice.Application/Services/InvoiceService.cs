@@ -89,13 +89,18 @@ public class InvoiceService(
         invoice.Rows.Clear();
         foreach (var row in request.Rows)
         {
-            invoice.Rows.Add(new InvoiceRow
+            // AddRow marks the new row as Added explicitly — nav-collection discovery
+            // alone would track it as Modified (its Guid key is pre-set) and fail.
+            var newRow = new InvoiceRow
             {
+                InvoiceId = invoice.Id,
                 Service = row.Service,
                 Quantity = row.Quantity,
                 Rate = row.Rate,
                 Sum = InvoiceTotalsCalculator.RowSum(row.Quantity, row.Rate)
-            });
+            };
+            invoice.Rows.Add(newRow);
+            uow.InvoiceRepository.AddRow(newRow);
         }
 
         InvoiceTotalsCalculator.ApplyTotals(invoice);
