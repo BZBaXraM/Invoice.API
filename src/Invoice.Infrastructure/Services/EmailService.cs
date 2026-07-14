@@ -1,6 +1,6 @@
 namespace Invoice.Infrastructure.Services;
 
-public class EmailService(EmailConfig config, ILogger<EmailService> logger, SmtpClient client) : IEmailService
+public class EmailService(EmailConfig config, ILogger<EmailService> logger) : IEmailService
 {
     private const string Subject = "Invoice.API - Email Confirmation";
 
@@ -18,6 +18,10 @@ public class EmailService(EmailConfig config, ILogger<EmailService> logger, Smtp
                 Text = message
             };
 
+            // One client per send: a shared client is not thread-safe, and a failure
+            // between Connect and Disconnect would leave it stuck in the connected
+            // state, poisoning every later send with "SmtpClient is already connected".
+            using var client = new SmtpClient();
             client.ServerCertificateValidationCallback = (_, _, _, _) => true;
 
             await client.ConnectAsync(config.SmtpServer, config.Port, SecureSocketOptions.StartTls);

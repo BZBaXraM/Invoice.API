@@ -17,7 +17,6 @@ public static class DependencyInjection
         EmailConfig emailConfig = new();
         configuration.GetSection("EmailConfig").Bind(emailConfig);
         services.AddSingleton(emailConfig);
-        services.AddSingleton<SmtpClient>();
 
         GroqConfig groqConfig = new();
         configuration.GetSection("Groq").Bind(groqConfig);
