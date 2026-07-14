@@ -94,6 +94,7 @@ public static class DependencyInjection
             .AddScoped<IUnitOfWork, UnitOfWork>()
             .AddScoped<IJwtService, JwtService>()
             .AddScoped<ICurrentUserService, CurrentUserService>()
+            .AddScoped<IDatabaseBackupService, PgDumpBackupService>()
             .AddSingleton<IEmailService, EmailService>()
             .AddSingleton<IBlackListService, BlackListService>()
             .AddSingleton<IRealtimeNotifier, SignalRRealtimeNotifier>()

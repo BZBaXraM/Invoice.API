@@ -47,7 +47,7 @@ export class AdminUserListComponent {
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.download = `backup-${new Date().toISOString().slice(0, 10)}.json`;
+        link.download = `backup-${new Date().toISOString().slice(0, 10)}.dump`;
         link.click();
         URL.revokeObjectURL(url);
         this.notifications.success(this.localization.translate('admin.backup.success'));

@@ -16,6 +16,4 @@ public class UserDataGraph
 public interface IBackupRepository
 {
     Task<UserDataGraph?> GetUserGraphAsync(Guid userId);
-
-    Task<List<Guid>> GetAllUserIdsAsync();
 }

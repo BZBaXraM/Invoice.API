@@ -38,9 +38,4 @@ public class BackupRepository(InvoiceDbContext context) : IBackupRepository
         };
     }
 
-    public async Task<List<Guid>> GetAllUserIdsAsync() =>
-        await context.Users.AsNoTracking()
-            .OrderBy(u => u.CreatedAt)
-            .Select(u => u.Id)
-            .ToListAsync();
 }

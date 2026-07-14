@@ -8,29 +8,23 @@ namespace Invoice.API.Controllers;
 [ApiController]
 public class AdminController(
     IAdminService service,
-    IBackupService backupService,
+    IDatabaseBackupService databaseBackupService,
     ICurrentUserService currentUserService) : ControllerBase
 {
-    private static readonly JsonSerializerOptions BackupJsonOptions = new(JsonSerializerDefaults.Web)
-    {
-        Converters = { new JsonStringEnumConverter() },
-        WriteIndented = true
-    };
-
     /// <summary>
-    /// Downloads a full-database JSON backup (all users and their data).
+    /// Downloads a full-database backup (pg_dump custom format).
+    /// Restore with: pg_restore --clean --if-exists -d InvoiceDb backup-*.dump
     /// </summary>
     [HttpGet("backup")]
-    public async Task<IActionResult> DownloadBackup()
+    public async Task<IActionResult> DownloadBackup(CancellationToken cancellationToken)
     {
-        var result = await backupService.ExportAllAsync();
+        var result = await databaseBackupService.CreateDumpAsync(cancellationToken);
         if (result.IsFailed)
         {
             return StatusCode(result.StatusCode, result);
         }
 
-        var bytes = JsonSerializer.SerializeToUtf8Bytes(result.Data, BackupJsonOptions);
-        return File(bytes, "application/json", $"backup-{DateTimeOffset.UtcNow:yyyyMMdd-HHmm}.json");
+        return File(result.Data!.Content, "application/octet-stream", result.Data.FileName);
     }
 
     /// <summary>

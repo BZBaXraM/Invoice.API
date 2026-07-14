@@ -18,8 +18,17 @@ FROM mcr.microsoft.com/dotnet/aspnet:10.0 AS runtime
 WORKDIR /app
 
 
+# pg_dump (pinned to the PGDG major matching the compose postgres:17 service)
+# powers the admin database-backup endpoint. The distro's own postgres-client
+# is older than the server and refuses to dump it, hence the PGDG repo.
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends libgssapi-krb5-2 \
+    && apt-get install -y --no-install-recommends libgssapi-krb5-2 ca-certificates curl gnupg \
+    && curl -fsSL https://www.postgresql.org/media/keys/ACCC4CF8.asc | gpg --dearmor -o /usr/share/keyrings/pgdg.gpg \
+    && echo "deb [signed-by=/usr/share/keyrings/pgdg.gpg] http://apt.postgresql.org/pub/repos/apt $(. /etc/os-release && echo "$VERSION_CODENAME")-pgdg main" > /etc/apt/sources.list.d/pgdg.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends postgresql-client-17 \
+    && apt-get purge -y curl gnupg \
+    && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/publish .

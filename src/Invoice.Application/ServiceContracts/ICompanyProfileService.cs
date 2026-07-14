@@ -1,14 +1,5 @@
 namespace Invoice.Application.ServiceContracts;
 
-/// <summary>
-/// The kind of image stored on a company profile.
-/// </summary>
-public enum CompanyImageKind
-{
-    Logo,
-    Signature
-}
-
 public interface ICompanyProfileService
 {
     Task<ResponseModel<CompanyProfileResponse?>> GetAsync(Guid ownerUserId);

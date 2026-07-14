@@ -14,17 +14,7 @@ public class AuditService(IUnitOfWork uow) : IAuditService
 
         return ResponseModel.Success(new PagedResult<AuditLogResponse>
         {
-            Items = items.Select(a => new AuditLogResponse
-            {
-                Id = a.Id,
-                ActorName = a.ActorName,
-                ActorEmail = a.ActorEmail,
-                EntityType = a.EntityType,
-                EntityId = a.EntityId,
-                Action = a.Action,
-                ChangesJson = a.ChangesJson,
-                CreatedAt = a.CreatedAt
-            }).ToList(),
+            Items = items.Select(a => a.ToAuditLogResponse()).ToList(),
             TotalCount = totalCount,
             PageNumber = pageNumber,
             PageSize = pageSize
