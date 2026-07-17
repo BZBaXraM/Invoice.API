@@ -75,15 +75,17 @@ POSTGRES_DB=InvoiceDb
 # минимум 64 символа (HmacSha512): openssl rand -hex 48
 JWT_SECRET=<64+ случайных символов>
 
-EMAIL_FROM=4211ru@gmail.com
+EMAIL_FROM=invoice.aspnet@gmail.com
 EMAIL_SMTP_SERVER=smtp.gmail.com
 EMAIL_PORT=587
-EMAIL_USERNAME=4211ru@gmail.com
+EMAIL_USERNAME=invoice.aspnet@gmail.com
 EMAIL_PASSWORD=<gmail app password — тот же, что в локальном .env репозитория>
 
 GROQ_API_KEY=<тот же, что в локальном .env репозитория>
 GROQ_MODEL=openai/gpt-oss-120b
 ```
+
+Если Gmail начнёт отклонять отправку с EC2 ошибкой `534 WebLoginRequired` (Google периодически блокирует SMTP-логин с дата-центровых IP даже с app-паролем — такое уже случалось), запасной вариант — Brevo: `EMAIL_SMTP_SERVER=smtp-relay.brevo.com`, `EMAIL_PORT=587`, логин/ключ из аккаунта Brevo, `EMAIL_FROM` — подтверждённый там отправитель. В настройках Brevo функция Authorised IPs должна быть выключена или содержать `ELASTIC_IP`, иначе будет `525 Unauthorized IP address`. После правки `.env`: `docker compose -f /opt/invoice/docker-compose.prod.yml up -d api`.
 
 Gotcha из CLAUDE.md: сменить `POSTGRES_PASSWORD` на живом volume нельзя — Postgres запомнил старый при инициализации (`docker compose down -v` стирает данные вместе с volume).
 
@@ -127,6 +129,6 @@ curl -I https://invoice.bahram.site
 
 ## Что осталось за кадром (осознанно)
 
-- **Бэкапы БД** — Postgres живёт в Docker-volume на инстансе. Минимум: cron с `docker compose exec postgres pg_dump ... | gzip > backup.sql.gz` и выгрузкой в S3.
+- **Бэкапы БД** — на сервере настроен cron (03:00 UTC): `/opt/invoice/backup.sh` делает `pg_dump | gzip` в `/opt/invoice/backups/` с ротацией 14 дней. Бэкапы лежат на том же диске — выгрузка в S3 ещё не сделана (нужен bucket + IAM-роль).
 - **Миграции** применяются автоматически при старте API (`InitialiseDatabaseAsync()` в `Program.cs`) — отдельного шага в CI нет.
 - Смена `vars.DOMAIN` требует пересборки клиентского образа (URL запекается на этапе билда) — просто перезапустите Deploy-workflow.

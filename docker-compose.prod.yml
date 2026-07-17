@@ -40,7 +40,7 @@ services:
       # Client and API are same-origin behind Caddy, so CORS is only a
       # fallback here; kept pointing at the public origin for safety.
       Cors__AllowedOrigins__0: "https://${DOMAIN:?set DOMAIN in .env}"
-      EmailConfig__From: ${EMAIL_FROM:-4211ru@gmail.com}
+      EmailConfig__From: ${EMAIL_FROM:-invoice.aspnet@gmail.com}
       EmailConfig__SmtpServer: ${EMAIL_SMTP_SERVER:-smtp.gmail.com}
       EmailConfig__Port: ${EMAIL_PORT:-587}
       EmailConfig__UserName: ${EMAIL_USERNAME:?set EMAIL_USERNAME in .env}
