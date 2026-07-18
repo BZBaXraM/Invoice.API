@@ -183,6 +183,7 @@
   "auth.login.subtitle": "Введите данные, чтобы продолжить работу со счетами и клиентами.",
   "auth.login.fields.usernameOrEmail": "Email или логин",
   "auth.login.fields.password": "Пароль",
+  "auth.login.fields.rememberMe": "Запомнить меня",
   "auth.login.submit": "Войти",
   "auth.login.submitting": "Вход…",
   "auth.login.footer.forgotPassword": "Забыли пароль?",

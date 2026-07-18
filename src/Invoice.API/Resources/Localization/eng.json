@@ -183,6 +183,7 @@
   "auth.login.subtitle": "Enter your details to keep working with invoices and customers.",
   "auth.login.fields.usernameOrEmail": "Email or username",
   "auth.login.fields.password": "Password",
+  "auth.login.fields.rememberMe": "Remember me",
   "auth.login.submit": "Sign in",
   "auth.login.submitting": "Signing in…",
   "auth.login.footer.forgotPassword": "Forgot password?",

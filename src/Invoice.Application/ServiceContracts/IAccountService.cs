@@ -6,7 +6,7 @@ public interface IAccountService
     Task<ResponseModel<LoginResponse>> LoginAsync(LoginRequest request);
     Task<ResponseModel> ConfirmEmailAsync(string code);
     Task<ResponseModel> RequestConfirmationCodeAsync(string email);
-    Task<ResponseModel<LoginResponse>> RefreshTokenAsync(string refreshToken);
+    Task<ResponseModel<LoginResponse>> RefreshTokenAsync(string refreshToken, bool rememberMe);
     Task<ResponseModel> LogoutAsync(string accessToken, Guid? currentUserId);
     Task<ResponseModel<UserResponse>> GetProfileAsync(Guid currentUserId);
     Task<ResponseModel<UserResponse>> UpdateProfileAsync(Guid currentUserId, UpdateProfileRequest request);

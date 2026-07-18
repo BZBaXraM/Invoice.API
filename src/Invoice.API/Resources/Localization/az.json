@@ -183,6 +183,7 @@
   "auth.login.subtitle": "Hesab-fakturalar və müştərilərlə işə davam etmək üçün məlumatlarınızı daxil edin.",
   "auth.login.fields.usernameOrEmail": "Email və ya istifadəçi adı",
   "auth.login.fields.password": "Şifrə",
+  "auth.login.fields.rememberMe": "Məni yadda saxla",
   "auth.login.submit": "Daxil ol",
   "auth.login.submitting": "Giriş edilir…",
   "auth.login.footer.forgotPassword": "Şifrəni unutmusunuz?",

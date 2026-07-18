@@ -25,6 +25,11 @@
         <app-password-input id="password" formControlName="password" autocomplete="current-password" />
       </div>
 
+      <label class="checkbox-row">
+        <input type="checkbox" formControlName="rememberMe" />
+        {{ 'auth.login.fields.rememberMe' | translate }}
+      </label>
+
       @if (errorMessage()) {
         <div class="field__error">{{ errorMessage() }}</div>
       }

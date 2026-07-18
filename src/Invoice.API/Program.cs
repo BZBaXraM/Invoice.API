@@ -92,7 +92,7 @@ app.UseAuthentication();
 app.UseMiddleware<BlackListMiddleware>();
 app.UseAuthorization();
 
-app.UseStaticFiles();
+// app.UseStaticFiles();
 app.UseDefaultFiles();
 
 app.MapControllers();

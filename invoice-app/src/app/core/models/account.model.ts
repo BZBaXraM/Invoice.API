@@ -11,6 +11,7 @@ export interface RegisterRequest {
 export interface LoginRequest {
   usernameOrEmail: string;
   password: string;
+  rememberMe: boolean;
 }
 
 export interface LoginResponse {
@@ -21,6 +22,7 @@ export interface LoginResponse {
 
 export interface RefreshTokenRequest {
   refreshToken: string;
+  rememberMe: boolean;
 }
 
 export interface ConfirmEmailCodeRequest {

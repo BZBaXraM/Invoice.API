@@ -27,6 +27,7 @@ export class LoginComponent {
   protected readonly form = this.fb.nonNullable.group({
     usernameOrEmail: ['', [Validators.required]],
     password: ['', [Validators.required]],
+    rememberMe: [true],
   });
 
   protected submit(): void {

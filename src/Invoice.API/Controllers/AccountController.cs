@@ -54,7 +54,7 @@ public class AccountController(IAccountService accountService, ICurrentUserServi
     [HttpPost("refresh-token")]
     public async Task<ActionResult<ResponseModel<LoginResponse>>> RefreshToken([FromBody] RefreshTokenRequest request)
     {
-        var result = await accountService.RefreshTokenAsync(request.RefreshToken);
+        var result = await accountService.RefreshTokenAsync(request.RefreshToken, request.RememberMe);
         return StatusCode(result.StatusCode, result);
     }
 

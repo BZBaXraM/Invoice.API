@@ -52,14 +52,15 @@ export class AuthService {
   login(request: LoginRequest): Observable<ResponseModelData<LoginResponse>> {
     return this.http
       .post<ResponseModelData<LoginResponse>>(`${this.baseUrl}/login`, request)
-      .pipe(tap((res) => this.applyLoginResponse(res)));
+      .pipe(tap((res) => this.applyLoginResponse(res, request.rememberMe)));
   }
 
   refreshToken(): Observable<ResponseModelData<LoginResponse>> {
-    const request: RefreshTokenRequest = { refreshToken: this.tokenStorage.getRefreshToken() ?? '' };
+    const rememberMe = this.tokenStorage.isRemembered();
+    const request: RefreshTokenRequest = { refreshToken: this.tokenStorage.getRefreshToken() ?? '', rememberMe };
     return this.http
       .post<ResponseModelData<LoginResponse>>(`${this.baseUrl}/refresh-token`, request)
-      .pipe(tap((res) => this.applyLoginResponse(res)));
+      .pipe(tap((res) => this.applyLoginResponse(res, rememberMe)));
   }
 
   logout(): Observable<ResponseModel> {
@@ -102,8 +103,8 @@ export class AuthService {
     return this.tokenStorage.getRefreshToken();
   }
 
-  applyTokens(accessToken: string, refreshToken: string, refreshTokenExpireTime: string): void {
-    this.tokenStorage.setTokens(accessToken, refreshToken, refreshTokenExpireTime);
+  applyTokens(accessToken: string, refreshToken: string, refreshTokenExpireTime: string, rememberMe: boolean): void {
+    this.tokenStorage.setTokens(accessToken, refreshToken, refreshTokenExpireTime, rememberMe);
     this.accessTokenSignal.set(accessToken);
   }
 
@@ -113,9 +114,9 @@ export class AuthService {
     this.currentUser.set(null);
   }
 
-  private applyLoginResponse(res: ResponseModelData<LoginResponse>): void {
+  private applyLoginResponse(res: ResponseModelData<LoginResponse>, rememberMe: boolean): void {
     if (res.isSucceeded && res.data) {
-      this.applyTokens(res.data.accessToken, res.data.refreshToken, res.data.refreshTokenExpireTime);
+      this.applyTokens(res.data.accessToken, res.data.refreshToken, res.data.refreshTokenExpireTime, rememberMe);
     }
   }
 

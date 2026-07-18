@@ -87,7 +87,7 @@ public class AccountService(
             return ResponseModel.Failure<LoginResponse>("Account is disabled", 403);
         }
 
-        IssueTokens(user);
+        IssueTokens(user, request.RememberMe);
         await uow.CommitAsync();
 
         return ResponseModel.Success(BuildLoginResponse(user));
@@ -156,7 +156,7 @@ public class AccountService(
         }
     }
 
-    public async Task<ResponseModel<LoginResponse>> RefreshTokenAsync(string refreshToken)
+    public async Task<ResponseModel<LoginResponse>> RefreshTokenAsync(string refreshToken, bool rememberMe)
     {
         var user = await uow.UserRepository.GetByRefreshTokenAsync(refreshToken);
         if (user is null)
@@ -177,7 +177,7 @@ public class AccountService(
             return ResponseModel.Failure<LoginResponse>("Account is disabled", 403);
         }
 
-        IssueTokens(user);
+        IssueTokens(user, rememberMe);
         await uow.CommitAsync();
 
         return ResponseModel.Success(BuildLoginResponse(user));
@@ -363,10 +363,14 @@ public class AccountService(
         return ResponseModel.Success("Profile deleted successfully");
     }
 
-    private void IssueTokens(User user)
+    private const int RememberedRefreshTokenDays = 7;
+    private const int NotRememberedRefreshTokenDays = 1;
+
+    private void IssueTokens(User user, bool rememberMe)
     {
+        var days = rememberMe ? RememberedRefreshTokenDays : NotRememberedRefreshTokenDays;
         user.RefreshToken = jwtService.GenerateRefreshToken();
-        user.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(7);
+        user.RefreshTokenExpireTime = DateTime.UtcNow.AddDays(days);
     }
 
     private LoginResponse BuildLoginResponse(User user) => new()
